@@ -1,0 +1,19 @@
+database:
+  local_db:
+    host: localhost
+    port: 3306
+    user: root
+    password: 123q
+    name: stock_db
+    charset: utf8mb4
+
+  analytics_db:
+    host: localhost
+    port: 3306
+    user:
+    password: 123q
+    name: analytics
+    charset: utf8
+
+event:
+  start_date: "2025-08-01"
