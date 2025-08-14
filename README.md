@@ -10,5 +10,9 @@
 
 
 
-### config
+### structure
+
+- data_sources: 收入原始数据
+- utils: 工具
+- config: 配置
 
