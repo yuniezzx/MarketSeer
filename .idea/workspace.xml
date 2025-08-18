@@ -4,13 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7de08efc-fc60-48e8-a789-d105f5cb26a5" name="Changes" comment="update readme">
-      <change afterPath="$PROJECT_DIR$/test.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+    <list default="true" id="7de08efc-fc60-48e8-a789-d105f5cb26a5" name="Changes" comment="update lhb api">
+      <change afterPath="$PROJECT_DIR$/jupyter/lhb_stock_statistic.ipynb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data_sources/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/data_sources/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/data_sources/akshare_client.py" beforeDir="false" afterPath="$PROJECT_DIR$/data_sources/akshare_client.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/jupyter/test.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/jupyter/lhb_detail.ipynb" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -75,6 +74,7 @@
       <recent name="C:\Users\Max\Programs\MarketSeer\model" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Max\Programs\MarketSeer\jupyter" />
       <recent name="C:\Users\Max\Programs\MarketSeer" />
       <recent name="C:\Users\Max\Programs\finance_machine" />
     </key>
@@ -157,7 +157,7 @@
       <workItem from="1754319270724" duration="32379000" />
       <workItem from="1755177513193" duration="4524000" />
       <workItem from="1755184418377" duration="363000" />
-      <workItem from="1755184795301" duration="21060000" />
+      <workItem from="1755184795301" duration="21943000" />
     </task>
     <task id="LOCAL-00001" summary="add readme">
       <option name="closed" value="true" />
@@ -183,7 +183,15 @@
       <option name="project" value="LOCAL" />
       <updated>1755190354616</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="update lhb api">
+      <option name="closed" value="true" />
+      <created>1755531804870</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1755531804870</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -196,7 +204,8 @@
     <MESSAGE value="init commit" />
     <MESSAGE value="add readme" />
     <MESSAGE value="update readme" />
-    <option name="LAST_COMMIT_MESSAGE" value="update readme" />
+    <MESSAGE value="update lhb api" />
+    <option name="LAST_COMMIT_MESSAGE" value="update lhb api" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/finance_machine$main.coverage" NAME="main Coverage Results" MODIFIED="1754063279722" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />

@@ -172,9 +172,8 @@ def get_lhb_detail(start_date: DateLike, end_date: DateLike) -> pd.DataFrame:
 
 """东方财富网-数据中心-龙虎榜单-个股上榜统计"""
 @safe_call(cache=True)
-def get_lhb_stock_statistic(stock_code: str) -> pd.DataFrame:
-    code = normalize_stock_code(stock_code)
-    return ak.stock_lhb_stock_statistic_em(symbol=code)
+def get_lhb_stock_statistic(period: Literal["近一月", "近三月", "近六月", "近一年"]) -> pd.DataFrame:
+    return ak.stock_lhb_stock_statistic_em(symbol=period)
 
 """东方财富网-数据中心-龙虎榜单-机构买卖每日统计"""
 @safe_call(cache=True)
