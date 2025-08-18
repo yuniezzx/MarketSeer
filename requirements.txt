@@ -14,7 +14,8 @@ efinance~=0.5.5.2
 
 # === 配置加载 ===
 pyyaml>=6.0
+ipywidgets>=7.0.0
 
 # === 日志记录 ===
 loguru>=0.7.2
-
+charset-normalizer>=3.3

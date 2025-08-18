@@ -1,5 +1,7 @@
+from __future__ import annotations
 from typing import Literal, Union, Any, Callable
 from datetime import date, datetime
+from functools import wraps
 import os
 import time
 import logging
@@ -8,6 +10,7 @@ import pandas as pd
 import akshare as ak
 
 # ============ Logging ============
+
 logger = logging.getLogger("akshare_client")
 if not logger.handlers:
     logging.basicConfig(
@@ -17,274 +20,268 @@ if not logger.handlers:
 
 
 # ============ Types ============
+
 DateLike = Union[str, date, datetime]
 
-# === 工具函数 ===
 
-def _detect_market_prefix(stock_code: str) -> Literal["SH", "SZ"]:
+# ============ Utils ============
+
+def normalize_stock_code(code: str) -> str:
+    """Return 6-digit numeric stock code. Accepts 'sh600000', 'SZ000001', '000001.SZ'."""
+    s = (code or "").strip()
+    s = s.replace(".", "").lower()
+    # remove possible prefixes
+    if s.startswith(("sh", "sz")):
+        s = s[2:]
+    # remove possible suffixes (e.g., 600000ss or 000001sz)
+    s = s.replace("ss", "").replace("sz", "")
+    # keep digits only
+    s = "".join(ch for ch in s if ch.isdigit())
+    if len(s) != 6:
+        raise ValueError(f"Invalid stock code: {code!r}")
+    return s
+
+def detect_market_prefix(stock_code: str) -> Literal["SH", "SZ"]:
     """
-    XQ 接口需要带市场前缀：
-    - 600/601/603/605/688 -> SH
-    - 其余常见 A 股代码 -> SZ
+    市场前缀推断（A股常见规则）：
+    - 上交所：600/601/603/605/688 开头 -> SH
+    - 深交所：000/001/002/003/300 开头 -> SZ
+    其余默认 SZ（可按需扩充）
     """
-    code = stock_code.strip()
-    if code.startswith(("600", "601", "603", "605", "688")):
+    c = normalize_stock_code(stock_code)
+    if c.startswith(("600", "601", "603", "605", "688")):
         return "SH"
     return "SZ"
 
+def to_em_date(d: DateLike) -> str:
+    """YYYYMMDD for EastMoney"""
+    if isinstance(d, datetime):
+        return d.strftime("%Y%m%d")
+    if isinstance(d, date):
+        return d.strftime("%Y%m%d")
+    s = str(d).strip()
+    if "-" in s:
+        return s.replace("-", "")
+    if len(s) == 8 and s.isdigit():
+        return s
+    raise ValueError(f"Invalid EM date: {d!r}")
 
-# === 现货行情 ===
+def to_sina_date(d: DateLike) -> str:
+    """YYYY-MM-DD for Sina."""
+    if isinstance(d, datetime):
+        return d.strftime("%Y-%m-%d")
+    if isinstance(d, date):
+        return d.strftime("%Y-%m-%d")
+    s = str(d).strip()
+    if len(s) == 8 and s.isdigit():  # 20250115 -> 2025-01-15
+        return f"{s[0:4]}-{s[4:6]}-{s[6:8]}"
+    if len(s) == 10 and s.count("-") == 2:
+        return s
+    raise ValueError(f"Invalid SINA date: {d!r}")
 
-def get_sh_a_spot():
+
+# ============ Decorators ============
+
+def safe_call(retries: int = 2, backoff: float = 1.6, cache: bool = False):
     """
-    上证 A 股现货行情
-    对应：ak.stock_sh_a_spot_em()
-    返回：pandas.DataFrame（原始列）
+    轻量容错（带可选缓存）：
+    - retries/backoff: 简单退避
+    - cache: 通过 AK_CLIENT_CACHE_TTL 启用/禁用（秒）
     """
+    ttl = int(os.getenv("AK_CLIENT_CACHE_TTL", "0") or 0)
+    _cache: dict[str, tuple[float, Any]] = {} if (cache and ttl > 0) else None
+
+    def deco(fn: Callable[..., Any]):
+        @wraps(fn)
+        def wrapper(*args, **kwargs):
+            key = None
+            if _cache is not None:
+                key = f"{fn.__name__}|{args!r}|{sorted(kwargs.items())!r}"
+                hit = _cache.get(key)
+                if hit and (time.time() - hit[0] <= ttl):
+                    return hit[1]
+
+            t0 = time.time()
+            attempt = 0
+            while True:
+                try:
+                    df = fn(*args, **kwargs)
+                    elapsed = (time.time() - t0) * 1000
+                    if isinstance(df, pd.DataFrame):
+                        logger.info(
+                            f"{fn.__name__} ok rows={len(df)} cols={len(df.columns)} "
+                            f"elapsed={elapsed:.1f}ms args={args!r} kwargs={kwargs!r}"
+                        )
+                    else:
+                        logger.info(
+                            f"{fn.__name__} ok type={type(df)} elapsed={elapsed:.1f}ms"
+                        )
+                    if _cache is not None and key is not None:
+                        _cache[key] = (time.time(), df)
+                    return df
+                except Exception as e:
+                    attempt += 1
+                    if attempt > retries:
+                        logger.error(f"{fn.__name__} failed after {attempt} tries: {e!r}")
+                        raise
+                    sleep_s = backoff ** attempt
+                    logger.warning(f"{fn.__name__} retry {attempt}/{retries} in {sleep_s:.2f}s: {e!r}")
+                    time.sleep(sleep_s)
+        return wrapper
+    return deco
+
+
+# ============ Spot ============
+
+"""上证 A 股现货行情"""
+@safe_call(cache=True)
+def get_sh_a_spot() -> pd.DataFrame:
     return ak.stock_sh_a_spot_em()
 
-
-def get_zh_a_spot():
-    """
-    A 股（沪深）整体现货行情
-    对应：ak.stock_zh_a_spot_em()
-    返回：pandas.DataFrame（原始列）
-    """
+"""A 股（沪深）整体现货行情"""
+@safe_call(cache=True)
+def get_zh_a_spot() -> pd.DataFrame:
     return ak.stock_zh_a_spot_em()
 
 
-# === 基础资料（直接返回原始 DF） ===
+# ============ Profiles ============
 
-def get_profile_em(stock_code: str):
-    """
-    东方财富-个股基础信息（item/value 结构）
-    对应：ak.stock_individual_info_em(symbol=xxx)
-    参数：
-        stock_code: 6 位股票代码（不带市场前缀），如 '600000'
-    返回：pandas.DataFrame（原始列）
-    """
-    return ak.stock_individual_info_em(symbol=stock_code)
+""" 东方财富-个股基础信息（item/value 结构）"""
+@safe_call(cache=True)
+def get_profile_em(stock_code: str) -> pd.DataFrame:
+    code = normalize_stock_code(stock_code)
+    return ak.stock_individual_info_em(symbol=code)
 
-
-def get_profile_xq(stock_code: str):
-    """
-    雪球-个股基础信息（AkShare 封装）
-    对应：ak.stock_individual_basic_info_xq(symbol='SH600000' / 'SZ000001')
-    参数：
-        stock_code: 6 位股票代码（不带市场前缀），自动拼接 SH/SZ
-    返回：pandas.DataFrame（原始列）
-    """
-    market = _detect_market_prefix(stock_code)
-    symbol = f"{market}{stock_code}"
+"""雪球-个股基础信息（AkShare 封装）"""
+@safe_call(cache=True)
+def get_profile_xq(stock_code: str) -> pd.DataFrame:
+    code = normalize_stock_code(stock_code)
+    market = detect_market_prefix(code)
+    symbol = f"{market}{code}"
     return ak.stock_individual_basic_info_xq(symbol)
 
 
-# === 龙虎榜 ===
+# ============ LHB - EastMoney ============
 
-def get_lhb_detail(date: str, stock_code: str):
-    """
-    东方财富网-数据中心-龙虎榜单-龙虎榜详情
-    对应：ak.stock_lhb_detail_em(date='YYYYMMDD', symbol='600000')
-    参数：
-        date: 交易日，格式 'YYYYMMDD'，如 '20250115'
-        stock_code: 6 位股票代码（不带市场前缀），如 '600000'
-    返回：
-        pandas.DataFrame（原始列，包含买入/卖出席位明细）
-    """
-    return ak.stock_lhb_detail_em(date=date, symbol=stock_code)
+"""东方财富网-数据中心-龙虎榜单-龙虎榜详情"""
+@safe_call(cache=False)
+def get_lhb_detail(start_date: DateLike, end_date: DateLike) -> pd.DataFrame:
+    sd = to_em_date(start_date)
+    ed = to_em_date(end_date)
+    return ak.stock_lhb_detail_em(start_date=sd, end_date=ed)
 
-
+"""东方财富网-数据中心-龙虎榜单-个股上榜统计"""
+@safe_call(cache=True)
 def get_lhb_stock_statistic(stock_code: str) -> pd.DataFrame:
-    """
-    东方财富网-数据中心-龙虎榜单-个股上榜统计
-    对应：ak.stock_lhb_stock_statistic_em(symbol='600000')
-    参数：
-        stock_code: 6 位股票代码（不带市场前缀），如 '600000'
-    返回：
-        pandas.DataFrame（原始列，包含该股票历次上榜统计信息）
-    """
-    return ak.stock_lhb_stock_statistic_em(symbol=stock_code)
+    code = normalize_stock_code(stock_code)
+    return ak.stock_lhb_stock_statistic_em(symbol=code)
 
-
+"""东方财富网-数据中心-龙虎榜单-机构买卖每日统计"""
+@safe_call(cache=True)
 def get_lhb_institution_stat() -> pd.DataFrame:
-    """
-    东方财富网-数据中心-龙虎榜单-机构买卖每日统计
-    对应: ak.stock_lhb_jgmmtj_em()
-    参数:
-        无
-    返回:
-        pandas.DataFrame（原始列，单次返回所有历史数据）
-    """
     return ak.stock_lhb_jgmmtj_em()
 
-
+"""东方财富网-数据中心-龙虎榜单-机构席位追踪"""
+@safe_call(cache=True)
 def get_lhb_institution_tracking() -> pd.DataFrame:
-    """
-    东方财富网-数据中心-龙虎榜单-机构席位追踪
-    对应: ak.stock_lhb_jgstatistic_em()
-
-    参数:
-        无
-
-    返回:
-        pandas.DataFrame（原始列，单次返回所有历史数据）
-    """
     return ak.stock_lhb_jgstatistic_em()
 
-
+"""东方财富网-数据中心-龙虎榜单-每日活跃营业部"""
+@safe_call(cache=True)
 def get_lhb_active_broker() -> pd.DataFrame:
-    """
-    东方财富网-数据中心-龙虎榜单-每日活跃营业部
-    对应: ak.stock_lhb_hyyyb_em()
-    参数:
-        无
-    返回:
-        pandas.DataFrame（原始列，单次返回所有历史数据）
-    """
     return ak.stock_lhb_hyyyb_em()
 
-
+"""东方财富网-数据中心-龙虎榜单-营业部历史交易明细-营业部交易明细"""
+@safe_call(cache=True)
 def get_lhb_broker_detail(broker_code: str) -> pd.DataFrame:
-    """
-    东方财富网-数据中心-龙虎榜单-营业部历史交易明细-营业部交易明细
-    对应: ak.stock_lhb_yyb_detail_em(symbol='营业部代码')
-    参数:
-        broker_code: 营业部代码，如 '10188715'
-    返回:
-        pandas.DataFrame（原始列，单次返回该营业部的所有历史数据）
-    """
     return ak.stock_lhb_yyb_detail_em(symbol=broker_code)
 
-
+"""东方财富网-数据中心-龙虎榜单-营业部排行"""
+@safe_call(cache=True)
 def get_lhb_broker_rank() -> pd.DataFrame:
-    """
-    东方财富网-数据中心-龙虎榜单-营业部排行
-    对应: ak.stock_lhb_yybph_em()
-    参数:
-        无
-    返回:
-        pandas.DataFrame（原始列，单次返回所有历史数据）
-    """
     return ak.stock_lhb_yybph_em()
 
-
+"""东方财富网-数据中心-龙虎榜单-营业部统计"""
+@safe_call(cache=True)
 def get_lhb_broker_statistic() -> pd.DataFrame:
-    """
-    东方财富网-数据中心-龙虎榜单-营业部统计
-    对应: ak.stock_lhb_traderstatistic_em()
-    参数:
-        无
-    返回:
-        pandas.DataFrame（原始列，单次返回所有历史数据）
-    """
     return ak.stock_lhb_traderstatistic_em()
 
-
+"""东方财富网-数据中心-龙虎榜单-个股龙虎榜详情"""
+@safe_call(cache=True)
 def get_lhb_stock_detail(stock_code: str) -> pd.DataFrame:
-    """
-    东方财富网-数据中心-龙虎榜单-个股龙虎榜详情
-    对应: ak.stock_lhb_stock_detail_em(symbol='600077')
-    参数:
-        stock_code: 股票代码（6 位，不带市场前缀），如 '600077'
-    返回:
-        pandas.DataFrame（原始列，单次返回该股票的所有历史龙虎榜详情数据）
-    """
-    return ak.stock_lhb_stock_detail_em(symbol=stock_code)
+    code = normalize_stock_code(stock_code)
+    return ak.stock_lhb_stock_detail_em(symbol=code)
 
-
+"""龙虎榜-营业部排行-上榜次数最多"""
+@safe_call(cache=True)
 def get_lhb_broker_most() -> pd.DataFrame:
-    """
-    同花顺-龙虎榜-营业部排行-上榜次数最多
-    对应: ak.stock_lh_yyb_most()
-    参数:
-        无
-    返回:
-        pandas.DataFrame（原始列，单次返回所有历史数据）
-    """
     return ak.stock_lh_yyb_most()
 
-
+"""龙虎榜-营业部排行-资金实力最强"""
+@safe_call(cache=True)
 def get_lhb_broker_capital() -> pd.DataFrame:
-    """
-    同花顺-龙虎榜-营业部排行-资金实力最强
-    目标地址: https://data.10jqka.com.cn/market/longhu/
-    对应: ak.stock_lh_yyb_capital()
-    参数:
-        无
-    返回:
-        pandas.DataFrame（原始列，单次返回所有历史数据）
-    """
     return ak.stock_lh_yyb_capital()
 
-
+"""龙虎榜-营业部排行-抱团操作实力"""
+@safe_call(cache=True)
 def get_lhb_broker_control() -> pd.DataFrame:
-    """
-    同花顺-龙虎榜-营业部排行-抱团操作实力
-    对应: ak.stock_lh_yyb_control()
-    参数:
-        无
-    返回:
-        pandas.DataFrame（原始列，单次返回所有历史数据）
-    """
     return ak.stock_lh_yyb_control()
 
 
-def get_lhb_detail_daily_sina(date: str) -> pd.DataFrame:
-    """
-    新浪财经-龙虎榜-每日详情
-    对应: ak.stock_lhb_detail_daily_sina(date='YYYY-MM-DD')
-    参数:
-        date: 交易日，格式 'YYYY-MM-DD'，如 '2025-01-15'
-    返回:
-        pandas.DataFrame（原始列，单次返回指定日期的所有数据）
-    """
-    return ak.stock_lhb_detail_daily_sina(date=date)
+# ============ LHB - Sina ============
 
+"""新浪财经-龙虎榜-每日详情"""
+@safe_call(cache=False)
+def get_lhb_detail_daily_sina(date_: DateLike) -> pd.DataFrame:
+    d = to_sina_date(date_)
+    return ak.stock_lhb_detail_daily_sina(date=d)
 
-def get_lhb_stock_statistic_sina(symbol: str) -> pd.DataFrame:
-    """
-    新浪财经-龙虎榜-个股上榜统计
-    对应: ak.stock_lhb_ggtj_sina(symbol='600000')
-    参数:
-        symbol: 股票代码（6 位，不带市场前缀），如 '600000'
-    返回:
-        pandas.DataFrame（原始列，单次返回该股票的所有历史上榜统计数据）
-    """
+"""新浪财经-龙虎榜-个股上榜统计"""
+@safe_call(cache=True)
+def get_lhb_stock_statistic_sina(stock_code: str) -> pd.DataFrame:
+    # 新浪这里就是 symbol，兼容 '600000' 或 'sh600000'
+    symbol = stock_code.strip()
+    if symbol.isdigit() and len(symbol) == 6:
+        # 允许纯 6 位，AkShare 会处理，但也可按需拼前缀
+        pass
     return ak.stock_lhb_ggtj_sina(symbol=symbol)
 
+"""新浪财经-龙虎榜-营业上榜统计"""
+@safe_call(cache=True)
+def get_lhb_broker_statistic_sina(broker_symbol: str) -> pd.DataFrame:
+    return ak.stock_lhb_yytj_sina(symbol=broker_symbol)
 
-def get_lhb_broker_statistic_sina(symbol: str) -> pd.DataFrame:
-    """
-    新浪财经-龙虎榜-营业部上榜统计
-    对应: ak.stock_lhb_yytj_sina(symbol='营业部代码')
-    参数:
-        symbol: 营业部代码，如 'sz000001' 或 'sh600000' 对应的营业部代号（需按 AkShare 要求传入）
-    返回:
-        pandas.DataFrame（原始列，单次返回该营业部的所有历史上榜统计数据）
-    """
-    return ak.stock_lhb_yytj_sina(symbol=symbol)
+"""新浪财经-龙虎榜-机构席位追踪"""
+@safe_call(cache=True)
+def get_lhb_institution_tracking_sina(stock_symbol: str) -> pd.DataFrame:
+    return ak.stock_lhb_jgzz_sina(symbol=stock_symbol)
 
-
-def get_lhb_institution_tracking_sina(symbol: str) -> pd.DataFrame:
-    """
-    新浪财经-龙虎榜-机构席位追踪
-    对应: ak.stock_lhb_jgzz_sina(symbol='600000')
-    参数:
-        symbol: 股票代码（6 位，不带市场前缀），如 '600000'
-    返回:
-        pandas.DataFrame（原始列，单次返回该股票的所有历史机构席位追踪数据）
-    """
-    return ak.stock_lhb_jgzz_sina(symbol=symbol)
-
-
+"""新浪财经-龙虎榜-机构席位成交明细"""
+@safe_call(cache=True)
 def get_lhb_institution_detail_sina() -> pd.DataFrame:
-    """
-    新浪财经-龙虎榜-机构席位成交明细
-    对应: ak.stock_lhb_jgmx_sina()
-    参数:
-        无
-    返回:
-        pandas.DataFrame（原始列，单次返回所有历史机构席位成交明细数据）
-    """
     return ak.stock_lhb_jgmx_sina()
+
+
+__all__ = [
+    "get_sh_a_spot", "get_zh_a_spot",
+    "get_profile_em", "get_profile_xq",
+    "get_lhb_detail", "get_lhb_stock_statistic", "get_lhb_institution_stat",
+    "get_lhb_institution_tracking", "get_lhb_active_broker",
+    "get_lhb_broker_detail", "get_lhb_broker_rank", "get_lhb_broker_statistic",
+    "get_lhb_stock_detail",
+    "get_lhb_broker_most", "get_lhb_broker_capital", "get_lhb_broker_control",
+    "get_lhb_detail_daily_sina", "get_lhb_stock_statistic_sina",
+    "get_lhb_broker_statistic_sina", "get_lhb_institution_tracking_sina",
+    "get_lhb_institution_detail_sina",
+]
+
+
+
+
+
+
+
+
+
+
 
