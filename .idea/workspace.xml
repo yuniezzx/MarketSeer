@@ -4,12 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7de08efc-fc60-48e8-a789-d105f5cb26a5" name="Changes" comment="update lhb api">
-      <change afterPath="$PROJECT_DIR$/jupyter/lhb_stock_statistic.ipynb" afterDir="false" />
+    <list default="true" id="7de08efc-fc60-48e8-a789-d105f5cb26a5" name="Changes" comment="update lhb api -v2">
+      <change afterPath="$PROJECT_DIR$/jupyter/lhb_institution_tracking.ipynb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/data_sources/akshare_client.py" beforeDir="false" afterPath="$PROJECT_DIR$/data_sources/akshare_client.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/jupyter/test.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/jupyter/lhb_detail.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/jupyter/lhb_detail.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/jupyter/lhb_detail.ipynb" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -157,7 +156,7 @@
       <workItem from="1754319270724" duration="32379000" />
       <workItem from="1755177513193" duration="4524000" />
       <workItem from="1755184418377" duration="363000" />
-      <workItem from="1755184795301" duration="21943000" />
+      <workItem from="1755184795301" duration="27161000" />
     </task>
     <task id="LOCAL-00001" summary="add readme">
       <option name="closed" value="true" />
@@ -191,7 +190,15 @@
       <option name="project" value="LOCAL" />
       <updated>1755531804870</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="update lhb api -v2">
+      <option name="closed" value="true" />
+      <created>1755532740737</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1755532740737</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -205,7 +212,8 @@
     <MESSAGE value="add readme" />
     <MESSAGE value="update readme" />
     <MESSAGE value="update lhb api" />
-    <option name="LAST_COMMIT_MESSAGE" value="update lhb api" />
+    <MESSAGE value="update lhb api -v2" />
+    <option name="LAST_COMMIT_MESSAGE" value="update lhb api -v2" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/finance_machine$main.coverage" NAME="main Coverage Results" MODIFIED="1754063279722" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />

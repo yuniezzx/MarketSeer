@@ -177,8 +177,10 @@ def get_lhb_stock_statistic(period: Literal["近一月", "近三月", "近六月
 
 """东方财富网-数据中心-龙虎榜单-机构买卖每日统计"""
 @safe_call(cache=True)
-def get_lhb_institution_stat() -> pd.DataFrame:
-    return ak.stock_lhb_jgmmtj_em()
+def get_lhb_institution_stat(start_date: DateLike, end_date: DateLike) -> pd.DataFrame:
+    sd = to_em_date(start_date)
+    ed = to_em_date(end_date)
+    return ak.stock_lhb_jgmmtj_em(start_date=sd, end_date=ed)
 
 """东方财富网-数据中心-龙虎榜单-机构席位追踪"""
 @safe_call(cache=True)
