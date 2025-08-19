@@ -2,7 +2,6 @@
 
 ```
 project-root/
-├─ db.py
 ├─ utils/
 │  ├─ __init__.py
 │  ├─ config_loader.py
