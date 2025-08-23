@@ -6,6 +6,12 @@ import os
 import time
 import pandas as pd
 
+from utils.logger import  get_data_sources_logger
+
+
+# ============ Logging ============
+logger = get_data_sources_logger("datasource.efinance")
+
 
 def normalize_stock_code(code: str) -> str:
     """Return 6-digit numeric stock code. Accepts 'sh600000', 'SZ000001', '000001.SZ'."""
@@ -22,17 +28,41 @@ def normalize_stock_code(code: str) -> str:
         raise ValueError(f"Invalid stock code: {code!r}")
     return s
 
+# helpers.py
+from typing import Literal
+
 def detect_market_prefix(stock_code: str) -> Literal["SH", "SZ"]:
     """
-    市场前缀推断（A股常见规则）：
-    - 上交所：600/601/603/605/688 开头 -> SH
-    - 深交所：000/001/002/003/300 开头 -> SZ
-    其余默认 SZ（可按需扩充）
+    Robust market detector for CN A/B shares.
+    - Prefer explicit prefix/suffix in the original input.
+    - Match known numeric prefixes for SH/SZ.
+    - Fallback by first digit.
     """
-    c = normalize_stock_code(stock_code)
-    if c.startswith(("600", "601", "603", "605", "688")):
+    s = (stock_code or "").strip().lower()
+
+    # 1) Respect explicit prefix/suffix in original input
+    if s.startswith("sh") or s.endswith(".sh"):
         return "SH"
-    return "SZ"
+    if s.startswith("sz") or s.endswith(".sz"):
+        return "SZ"
+
+    # 2) Normalize to pure 6-digit code
+    c = normalize_stock_code(stock_code)
+
+    # 3) Explicit prefix tables
+    sh_prefixes = ("600", "601", "603", "605", "688", "900")  # SH A & B, STAR
+    sz_prefixes = ("000", "001", "002", "003", "200", "300", "301")  # SZ A & B, ChiNext
+
+    if any(c.startswith(p) for p in sh_prefixes):
+        return "SH"
+    if any(c.startswith(p) for p in sz_prefixes):
+        return "SZ"
+
+    # 4) Fallback (keep simple and practical)
+    # - SH: codes starting with '6' or '9' (6xx A/STAR, 900 B)
+    # - otherwise SZ
+    return "SH" if c[0] in ("6", "9") else "SZ"
+
 
 def to_em_date(d: DateLike) -> str:
     """YYYYMMDD for EastMoney"""
@@ -93,13 +123,21 @@ def safe_call(retries: int = 2, backoff: float = 1.6, cache: bool = False):
                     df = fn(*args, **kwargs)
                     elapsed = (time.time() - t0) * 1000
                     if isinstance(df, pd.DataFrame):
-                        logger.info(
-                            f"{fn.__name__} ok rows={len(df)} cols={len(df.columns)} "
-                            f"elapsed={elapsed:.1f}ms args={args!r} kwargs={kwargs!r}"
+                        logger.bind(fn=fn.__name__).info(
+                            "ok rows={} cols={} elapsed={:.1f}ms args={} kwargs={}",
+                            len(df),
+                            len(df.columns),
+                            elapsed,
+                            args,
+                            kwargs,
                         )
                     else:
-                        logger.info(
-                            f"{fn.__name__} ok type={type(df)} elapsed={elapsed:.1f}ms"
+                        logger.bind(fn=fn.__name__).info(
+                            "ok type={} elapsed={:.1f}ms args={} kwargs={}",
+                            type(df),
+                            elapsed,
+                            args,
+                            kwargs,
                         )
                     if _cache is not None and key is not None:
                         _cache[key] = (time.time(), df)
@@ -107,10 +145,14 @@ def safe_call(retries: int = 2, backoff: float = 1.6, cache: bool = False):
                 except Exception as e:
                     attempt += 1
                     if attempt > retries:
-                        logger.error(f"{fn.__name__} failed after {attempt} tries: {e!r}")
+                        logger.bind(fn=fn.__name__).error(
+                            "failed after {} tries: {}", attempt, repr(e)
+                        )
                         raise
                     sleep_s = backoff ** attempt
-                    logger.warning(f"{fn.__name__} retry {attempt}/{retries} in {sleep_s:.2f}s: {e!r}")
+                    logger.bind(fn=fn.__name__).warning(
+                        "retry {}/{} in {:.2f}s: {}", attempt, retries, sleep_s, repr(e)
+                    )
                     time.sleep(sleep_s)
         return wrapper
     return deco

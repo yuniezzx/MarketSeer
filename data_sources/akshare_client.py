@@ -1,3 +1,6 @@
+"""
+数据源更新：pip install akshare --upgrade -i https://pypi.org/simple
+"""
 from __future__ import annotations
 import os
 import pandas as pd
@@ -39,7 +42,10 @@ def get_profile_xq(stock_code: str) -> pd.DataFrame:
     code = normalize_stock_code(stock_code)
     market = detect_market_prefix(code)
     symbol = f"{market}{code}"
-    return ak.stock_individual_basic_info_xq(symbol)
+    data_json = ak.stock_individual_basic_info_xq(symbol)
+    if not isinstance(data_json, pd.DataFrame):  # AkShare 正常返回就是 DataFrame
+        raise ValueError(f"Unexpected response for symbol={symbol}: {data_json}")
+    return data_json
 
 
 # ============ LHB - EastMoney ============

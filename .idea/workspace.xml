@@ -4,9 +4,21 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7de08efc-fc60-48e8-a789-d105f5cb26a5" name="Changes" comment="update lhb api -v4">
-      <change afterPath="$PROJECT_DIR$/data_sources/efinance_client.py" afterDir="false" />
+    <list default="true" id="7de08efc-fc60-48e8-a789-d105f5cb26a5" name="Changes" comment="update efinance client">
+      <change afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/sqldialects.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/db.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/db/init_stock_db.sql" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/jupyter/stock_info.ipynb" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/utils/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data_sources/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/data_sources/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data_sources/akshare_client.py" beforeDir="false" afterPath="$PROJECT_DIR$/data_sources/akshare_client.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data_sources/efinance_client.py" beforeDir="false" afterPath="$PROJECT_DIR$/data_sources/efinance_client.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data_sources/helpers.py" beforeDir="false" afterPath="$PROJECT_DIR$/data_sources/helpers.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/logger.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/logger.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -17,6 +29,7 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="Jupyter Notebook" />
+        <option value="SQL File" />
         <option value="Python Script" />
       </list>
     </option>
@@ -47,10 +60,11 @@
     "Python.main.executor": "Run",
     "Python.yfinance_data.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "database.data.extractors.current.export.id": "Comma-separated (CSV)_id",
     "deletionFromPopupRequiresConfirmation": "false",
     "git-widget-placeholder": "main",
-    "last_opened_file_path": "C:/Users/Max/Programs/MarketSeer/repositories",
+    "last_opened_file_path": "C:/Users/Max/Programs/MarketSeer/utils",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -67,6 +81,7 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\Max\Programs\MarketSeer\utils" />
       <recent name="C:\Users\Max\Programs\MarketSeer\repositories" />
       <recent name="C:\Users\Max\Programs\MarketSeer\model" />
     </key>
@@ -154,7 +169,7 @@
       <workItem from="1754319270724" duration="32379000" />
       <workItem from="1755177513193" duration="4524000" />
       <workItem from="1755184418377" duration="363000" />
-      <workItem from="1755184795301" duration="30783000" />
+      <workItem from="1755184795301" duration="41158000" />
     </task>
     <task id="LOCAL-00001" summary="add readme">
       <option name="closed" value="true" />
@@ -212,7 +227,15 @@
       <option name="project" value="LOCAL" />
       <updated>1755620518586</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="update efinance client">
+      <option name="closed" value="true" />
+      <created>1755621365054</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1755621365054</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -229,11 +252,12 @@
     <MESSAGE value="update lhb api -v2" />
     <MESSAGE value="update lhb api -v3" />
     <MESSAGE value="update lhb api -v4" />
-    <option name="LAST_COMMIT_MESSAGE" value="update lhb api -v4" />
+    <MESSAGE value="update efinance client" />
+    <option name="LAST_COMMIT_MESSAGE" value="update efinance client" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/finance_machine$main.coverage" NAME="main Coverage Results" MODIFIED="1754063279722" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/MarketSeer$main.coverage" NAME="main Coverage Results" MODIFIED="1755440056730" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/MarketSeer$main.coverage" NAME="main Coverage Results" MODIFIED="1755875061681" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/finance_machine$akshare_data.coverage" NAME="akshare_data Coverage Results" MODIFIED="1753889946841" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/stockdata" />
     <SUITE FILE_PATH="coverage/MarketSeer$db.coverage" NAME="db Coverage Results" MODIFIED="1755000982133" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/finance_machine$efinance_data__1_.coverage" NAME="efinance_data (1) Coverage Results" MODIFIED="1753879460659" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/stockdata" />
