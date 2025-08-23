@@ -1,6 +1,5 @@
 # scripts/init_db.py
 from __future__ import annotations
-import os
 import sys
 import mysql.connector
 from mysql.connector import errorcode
@@ -9,7 +8,7 @@ from utils.logger import get_data_sources_logger
 
 logger = get_data_sources_logger("scripts.init_db")
 
-SQL_PATH = os.path.join(os.path.dirname(__file__), "scripts", "init_stock_db.sql")
+INIT_DB_PATH = "db/init_stock_db.sql"
 
 def read_sql_file(path: str) -> str:
     """Read entire SQL file"""
@@ -29,13 +28,15 @@ def get_mysql_conn(cfg: dict):
         allow_local_infile=True,
     )
 
-def exec_sql_multistatement(conn, sql_text: str):
-    """Execute multi-statement SQL atomically"""
+def exec_sql(conn, sql_text: str):
+    """Execute multi-statement SQL atomically (manual split, no `multi=True`)"""
     cursor = conn.cursor()
     try:
-        # iterate to ensure all statements are sent & all resultsets consumed
-        for _ in cursor.execute(sql_text, multi=True):
-            pass
+        # 手动按分号切分语句
+        for statement in sql_text.split(";"):
+            stmt = statement.strip()
+            if stmt:  # 忽略空语句
+                cursor.execute(stmt)
         conn.commit()
         logger.info("All statements executed and committed.")
     except Exception as e:
@@ -45,22 +46,25 @@ def exec_sql_multistatement(conn, sql_text: str):
     finally:
         cursor.close()
 
-def main():
+
+def init_stock_db():
     # 1) load config
-    cfg = load_config()              # expects {"mysql": {...}}
-    mysql_cfg = cfg.get("mysql") or {}
-    if not mysql_cfg:
+    cfg = load_config()
+    database_cfg = cfg.get("database") or {}
+    local_db_cfg = database_cfg.get("local_db") or {}
+    print(local_db_cfg)
+    if not local_db_cfg:
         logger.error("Missing 'mysql' section in config/settings.yaml")
         sys.exit(1)
 
     # 2) read SQL
-    sql_text = read_sql_file(SQL_PATH)
+    sql_text = read_sql_file(INIT_DB_PATH)
 
     # 3) connect & execute
     conn = None
     try:
-        conn = get_mysql_conn(mysql_cfg)
-        exec_sql_multistatement(conn, sql_text)
+        conn = get_mysql_conn(local_db_cfg)
+        exec_sql(conn, sql_text)
         logger.info("✅ Database initialization finished.")
     except mysql.connector.Error as err:
         if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
@@ -77,6 +81,9 @@ def main():
                 conn.close()
             except Exception:
                 pass
+
+def main():
+    init_stock_db()
 
 if __name__ == "__main__":
     main()

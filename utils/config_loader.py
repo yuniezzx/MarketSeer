@@ -1,6 +1,6 @@
 import yaml
 
-def load_config(config_path="config/config.yaml") -> dict:
+def load_config(config_path="config/settings.yaml") -> dict:
     """
     加载 YAML 配置文件，返回字典
     """
