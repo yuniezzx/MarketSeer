@@ -37,7 +37,7 @@ class YFinanceCollector(BaseCollector):
         Args:
             config: 配置字典，可选
         """
-        super().__init__(config)
+        super().__init__("yfinance", config)
         self.source = "yfinance"
         # 从配置中获取速率限制延迟，处理不同的配置类型
         if hasattr(self.config, 'get'):
@@ -402,6 +402,13 @@ class YFinanceCollector(BaseCollector):
         if len(date_str) == 8 and date_str.isdigit():
             return f"{date_str[:4]}-{date_str[4:6]}-{date_str[6:8]}"
         return date_str
+
+    def _update_stats(self, result_type: str):
+        """更新统计信息"""
+        if result_type == 'success':
+            self.stats['requests_success'] += 1
+        elif result_type == 'error':
+            self.stats['requests_failed'] += 1
 
     def _safe_float_yf(self, value) -> float:
         """安全转换yfinance数据为浮点数"""

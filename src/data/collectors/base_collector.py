@@ -71,6 +71,11 @@ class BaseCollector(ABC):
     def _load_config_from_file(self) -> DataCollectorConfig:
         """从配置文件加载收集器配置"""
         try:
+            # 检查收集器名称是否有效
+            if not self.name or not isinstance(self.name, str):
+                self.logger.warning(f"收集器名称无效: {self.name}，使用默认配置")
+                return DataCollectorConfig()
+
             # 获取数据源配置
             if hasattr(self.app_config, 'config') and self.app_config.config:
                 data_sources = self.app_config.config.get('data_sources', {})

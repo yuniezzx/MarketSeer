@@ -37,7 +37,7 @@ class AKShareCollector(BaseCollector):
         Args:
             config: 配置字典，可选
         """
-        super().__init__(config)
+        super().__init__("akshare", config)
         self.source = "akshare"
         # 从配置中获取速率限制延迟，处理不同的配置类型
         if hasattr(self.config, 'get'):
@@ -393,6 +393,13 @@ class AKShareCollector(BaseCollector):
             return int(value)
         except:
             return None
+
+    def _update_stats(self, result_type: str):
+        """更新统计信息"""
+        if result_type == 'success':
+            self.stats['requests_success'] += 1
+        elif result_type == 'error':
+            self.stats['requests_failed'] += 1
 
     def _safe_float(self, value) -> float:
         """安全转换为浮点数"""
