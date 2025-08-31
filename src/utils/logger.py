@@ -101,7 +101,7 @@ class LoggerManager:
         log_dir = Path('logs')
         log_dir.mkdir(exist_ok=True)
 
-    def get_logger(self, name: Optional[str] = None) -> "logger":
+    def get_logger(self, name: Optional[str] = None):
         """
         获取日志器
 
@@ -118,7 +118,7 @@ class LoggerManager:
             return logger.bind(name=name)
         return logger
 
-    def get_database_logger(self) -> "logger":
+    def get_database_logger(self):
         """获取数据库专用日志器"""
         return logger.bind(database=True)
 
@@ -127,7 +127,7 @@ class LoggerManager:
 _logger_manager = LoggerManager()
 
 
-def get_logger(name: Optional[str] = None) -> "logger":
+def get_logger(name: Optional[str] = None):
     """
     获取日志器
 
@@ -140,7 +140,7 @@ def get_logger(name: Optional[str] = None) -> "logger":
     return _logger_manager.get_logger(name)
 
 
-def get_database_logger() -> "logger":
+def get_database_logger():
     """获取数据库专用日志器"""
     return _logger_manager.get_database_logger()
 

@@ -28,7 +28,7 @@ def test_database_connection():
 
         # 测试基本查询
         logger.info("执行基本查询测试...")
-        result = db.execute_query("SELECT 1 as test_value, NOW() as current_time")
+        result = db.execute_query("SELECT 1 as test_value, NOW() as current_datetime")
         logger.info(f"查询结果: {result}")
 
         # 获取数据库连接信息

@@ -7,7 +7,19 @@
 import time
 from contextlib import contextmanager
 from typing import Any, Dict, List, Optional, Union
-from sqlalchemy import create_engine, text, MetaData, Table, Column, Integer, String, DateTime, Float, Text
+from sqlalchemy import (
+    create_engine,
+    text,
+    MetaData,
+    Table,
+    Column,
+    Integer,
+    String,
+    DateTime,
+    Float,
+    Text,
+    inspect,
+)
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, Session
 from sqlalchemy.pool import QueuePool
@@ -264,7 +276,8 @@ class DatabaseManager:
             表是否存在
         """
         try:
-            return self.engine.dialect.has_table(self.engine, table_name)
+            inspector = inspect(self.engine)
+            return inspector.has_table(table_name)
         except Exception as e:
             log_db_error(str(e), f'check_table_exists_{table_name}')
             return False
