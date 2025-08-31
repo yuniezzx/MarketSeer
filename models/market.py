@@ -4,7 +4,7 @@
 包含市场指数、板块等相关模型定义
 """
 
-from sqlalchemy import Column, String, Integer, Decimal, Date, DateTime, Boolean, Text, Index
+from sqlalchemy import Column, String, Integer, Numeric, Date, DateTime, Boolean, Text, Index as SAIndex
 from .base import BaseModel
 
 
@@ -48,7 +48,7 @@ class Index(BaseModel):
 
     # 指数属性
     base_date = Column(Date, comment="基准日期")
-    base_point = Column(Decimal(10, 2), comment="基准点数")
+    base_point = Column(Numeric(20, 6), comment="基准点数")
     weight_method = Column(String(50), comment="加权方式（市值加权/等权重等）")
     constituent_count = Column(Integer, comment="成分股数量")
 
@@ -62,9 +62,9 @@ class Index(BaseModel):
 
     # 索引定义
     __table_args__ = (
-        Index('idx_market', 'market'),
-        Index('idx_category', 'category'),
-        Index('idx_name', 'name'),
+        SAIndex('idx_market', 'market'),
+        SAIndex('idx_category', 'category'),
+        SAIndex('idx_name', 'name'),
     )
 
     def __repr__(self):
@@ -82,25 +82,25 @@ class IndexPrice(BaseModel):
     trade_date = Column(Date, nullable=False, comment="交易日期")
 
     # 价格数据
-    open_point = Column(Decimal(10, 2), comment="开盘点数")
-    high_point = Column(Decimal(10, 2), comment="最高点数")
-    low_point = Column(Decimal(10, 2), comment="最低点数")
-    close_point = Column(Decimal(10, 2), comment="收盘点数")
-    pre_close = Column(Decimal(10, 2), comment="昨收点数")
+    open_point = Column(Numeric(20, 6), comment="开盘点数")
+    high_point = Column(Numeric(20, 6), comment="最高点数")
+    low_point = Column(Numeric(20, 6), comment="最低点数")
+    close_point = Column(Numeric(20, 6), comment="收盘点数")
+    pre_close = Column(Numeric(20, 6), comment="昨收点数")
 
     # 交易数据
-    volume = Column(Decimal(20, 2), comment="成交量")
-    amount = Column(Decimal(20, 2), comment="成交额")
+    volume = Column(Numeric(20, 2), comment="成交量")
+    amount = Column(Numeric(20, 2), comment="成交额")
 
     # 涨跌数据
-    change = Column(Decimal(10, 2), comment="涨跌点数")
-    pct_change = Column(Decimal(8, 4), comment="涨跌幅（%）")
+    change = Column(Numeric(20, 6), comment="涨跌点数")
+    pct_change = Column(Numeric(10, 6), comment="涨跌幅（%）")
 
     # 索引定义
     __table_args__ = (
-        Index('idx_code_date', 'code', 'trade_date'),
-        Index('idx_trade_date', 'trade_date'),
-        Index('idx_code', 'code'),
+        SAIndex('idx_code_date', 'code', 'trade_date'),
+        SAIndex('idx_trade_date', 'trade_date'),
+        SAIndex('idx_code', 'code'),
     )
 
     def __repr__(self):
@@ -121,8 +121,8 @@ class Sector(BaseModel):
 
     # 板块属性
     stock_count = Column(Integer, comment="包含股票数量")
-    total_market_cap = Column(Decimal(20, 2), comment="总市值")
-    avg_pe_ratio = Column(Decimal(10, 2), comment="平均市盈率")
+    total_market_cap = Column(Numeric(20, 2), comment="总市值")
+    avg_pe_ratio = Column(Numeric(10, 2), comment="平均市盈率")
 
     # 描述信息
     description = Column(Text, comment="板块描述")
@@ -132,9 +132,9 @@ class Sector(BaseModel):
 
     # 索引定义
     __table_args__ = (
-        Index('idx_category', 'category'),
-        Index('idx_parent_code', 'parent_code'),
-        Index('idx_name', 'name'),
+        SAIndex('idx_category', 'category'),
+        SAIndex('idx_parent_code', 'parent_code'),
+        SAIndex('idx_name', 'name'),
     )
 
     def __repr__(self):
@@ -152,15 +152,15 @@ class SectorPrice(BaseModel):
     trade_date = Column(Date, nullable=False, comment="交易日期")
 
     # 价格数据
-    open_price = Column(Decimal(10, 3), comment="开盘价")
-    high_price = Column(Decimal(10, 3), comment="最高价")
-    low_price = Column(Decimal(10, 3), comment="最低价")
-    close_price = Column(Decimal(10, 3), comment="收盘价")
-    pre_close = Column(Decimal(10, 3), comment="昨收价")
+    open_price = Column(Numeric(20, 6), comment="开盘价")
+    high_price = Column(Numeric(20, 6), comment="最高价")
+    low_price = Column(Numeric(20, 6), comment="最低价")
+    close_price = Column(Numeric(20, 6), comment="收盘价")
+    pre_close = Column(Numeric(20, 6), comment="昨收价")
 
     # 涨跌数据
-    change = Column(Decimal(10, 3), comment="涨跌额")
-    pct_change = Column(Decimal(8, 4), comment="涨跌幅（%）")
+    change = Column(Numeric(20, 6), comment="涨跌额")
+    pct_change = Column(Numeric(10, 6), comment="涨跌幅（%）")
 
     # 统计数据
     up_count = Column(Integer, comment="上涨股票数")
@@ -169,9 +169,9 @@ class SectorPrice(BaseModel):
 
     # 索引定义
     __table_args__ = (
-        Index('idx_code_date', 'code', 'trade_date'),
-        Index('idx_trade_date', 'trade_date'),
-        Index('idx_code', 'code'),
+        SAIndex('idx_code_date', 'code', 'trade_date'),
+        SAIndex('idx_trade_date', 'trade_date'),
+        SAIndex('idx_code', 'code'),
     )
 
     def __repr__(self):

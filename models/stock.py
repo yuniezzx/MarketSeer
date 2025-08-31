@@ -4,7 +4,20 @@
 包含股票基本信息、价格数据等模型定义
 """
 
-from sqlalchemy import Column, String, Integer, Decimal, Date, DateTime, Boolean, BigInteger, Text, Index
+from sqlalchemy import (
+    Column,
+    String,
+    Integer,
+    Numeric,
+    Date,
+    DateTime,
+    Boolean,
+    BigInteger,
+    Text,
+    Index,
+    UniqueConstraint,
+    func,
+)
 from .base import BaseModel
 
 
@@ -25,11 +38,13 @@ class StockInfo(BaseModel):
     industry = Column(String(100), comment="所属行业")
     sector = Column(String(100), comment="所属板块")
     concept = Column(Text, comment="概念板块（逗号分隔）")
+    isin = Column(String(12), comment="ISIN（国际证券识别码）")
+    delist_date = Column(Date, comment="退市日期")
 
     # 公司基本信息
     company_type = Column(String(50), comment="公司类型")
     legal_representative = Column(String(100), comment="法定代表人")
-    registered_capital = Column(Decimal(20, 2), comment="注册资本（万元）")
+    registered_capital = Column(Numeric(20, 2), comment="注册资本（万元）")
     establishment_date = Column(Date, comment="成立日期")
     listing_date = Column(Date, comment="上市日期")
     province = Column(String(50), comment="所在省份")
@@ -42,14 +57,14 @@ class StockInfo(BaseModel):
     # 财务相关字段
     total_shares = Column(BigInteger, comment="总股本（股）")
     circulating_shares = Column(BigInteger, comment="流通股本（股）")
-    market_cap = Column(Decimal(20, 2), comment="总市值（元）")
-    circulating_market_cap = Column(Decimal(20, 2), comment="流通市值（元）")
-    pe_ratio = Column(Decimal(10, 2), comment="市盈率")
-    pb_ratio = Column(Decimal(10, 2), comment="市净率")
-    eps = Column(Decimal(10, 4), comment="每股收益")
-    bps = Column(Decimal(10, 4), comment="每股净资产")
-    roe = Column(Decimal(8, 4), comment="净资产收益率")
-    debt_ratio = Column(Decimal(8, 4), comment="资产负债率")
+    market_cap = Column(Numeric(20, 2), comment="总市值（元）")
+    circulating_market_cap = Column(Numeric(20, 2), comment="流通市值（元）")
+    pe_ratio = Column(Numeric(10, 2), comment="市盈率")
+    pb_ratio = Column(Numeric(10, 2), comment="市净率")
+    eps = Column(Numeric(10, 4), comment="每股收益")
+    bps = Column(Numeric(10, 4), comment="每股净资产")
+    roe = Column(Numeric(8, 4), comment="净资产收益率")
+    debt_ratio = Column(Numeric(8, 4), comment="资产负债率")
 
     # 交易相关字段
     status = Column(String(20), default="正常", comment="交易状态")
@@ -61,6 +76,8 @@ class StockInfo(BaseModel):
     description = Column(Text, comment="公司简介")
     remarks = Column(Text, comment="备注信息")
     last_sync_time = Column(DateTime, comment="最后同步时间")
+    created_at = Column(DateTime, server_default=func.now(), comment="创建时间")
+    updated_at = Column(DateTime, server_default=func.now(), onupdate=func.now(), comment="更新时间")
 
     # 索引定义
     __table_args__ = (
@@ -70,7 +87,8 @@ class StockInfo(BaseModel):
         Index('idx_market', 'market'),
         Index('idx_listing_date', 'listing_date'),
         Index('idx_market_industry', 'market', 'industry'),
-        Index('idx_status_active', 'status', 'is_active'),
+        Index('idx_status', 'status'),
+        UniqueConstraint('market', 'code', name='ux_market_code'),
     )
 
     def __repr__(self):
@@ -88,25 +106,26 @@ class StockPrice(BaseModel):
     trade_date = Column(Date, nullable=False, comment="交易日期")
 
     # 价格数据
-    open_price = Column(Decimal(10, 3), comment="开盘价")
-    high_price = Column(Decimal(10, 3), comment="最高价")
-    low_price = Column(Decimal(10, 3), comment="最低价")
-    close_price = Column(Decimal(10, 3), comment="收盘价")
-    pre_close = Column(Decimal(10, 3), comment="昨收价")
+    open_price = Column(Numeric(20, 6), comment="开盘价")
+    high_price = Column(Numeric(20, 6), comment="最高价")
+    low_price = Column(Numeric(20, 6), comment="最低价")
+    close_price = Column(Numeric(20, 6), comment="收盘价")
+    pre_close = Column(Numeric(20, 6), comment="昨收价")
 
     # 交易量数据
     volume = Column(BigInteger, comment="成交量（股）")
-    amount = Column(Decimal(20, 2), comment="成交额（元）")
+    amount = Column(Numeric(20, 2), comment="成交额（元）")
 
     # 涨跌数据
-    change = Column(Decimal(10, 3), comment="涨跌额")
-    pct_change = Column(Decimal(8, 4), comment="涨跌幅（%）")
+    change = Column(Numeric(20, 6), comment="涨跌额")
+    pct_change = Column(Numeric(10, 6), comment="涨跌幅（%）")
 
     # 其他指标
-    turnover_rate = Column(Decimal(8, 4), comment="换手率（%）")
+    turnover_rate = Column(Numeric(10, 6), comment="换手率（%）")
 
     # 索引定义
     __table_args__ = (
+        UniqueConstraint('symbol', 'trade_date', name='ux_symbol_trade_date'),
         Index('idx_symbol_date', 'symbol', 'trade_date'),
         Index('idx_trade_date', 'trade_date'),
         Index('idx_symbol', 'symbol'),
@@ -127,8 +146,8 @@ class Stock(BaseModel):
     industry = Column(String(100), comment="所属行业")
 
     # 最新价格信息
-    latest_price = Column(Decimal(10, 3), comment="最新价格")
-    latest_change = Column(Decimal(8, 4), comment="最新涨跌幅")
+    latest_price = Column(Numeric(20, 6), comment="最新价格")
+    latest_change = Column(Numeric(10, 6), comment="最新涨跌幅")
     latest_update = Column(DateTime, comment="最新更新时间")
 
     def __repr__(self):
