@@ -8,7 +8,16 @@
 """
 
 from .akshare_client import AkshareClient
-from .data_fetcher import DataFetcher
-from .validators import DataValidator
 
-__all__ = ['AkshareClient', 'DataFetcher', 'DataValidator']
+# Optional imports for backward compatibility; ignore if modules are missing
+try:
+    from .data_fetcher import DataFetcher  # type: ignore
+except Exception:
+    DataFetcher = None  # type: ignore
+
+try:
+    from .validators import DataValidator  # type: ignore
+except Exception:
+    DataValidator = None  # type: ignore
+
+__all__ = ['AkshareClient']
