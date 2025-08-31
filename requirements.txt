@@ -1,0 +1,29 @@
+# 数据获取相关
+pandas>=1.5.0
+numpy>=1.23.0
+requests>=2.28.0
+tushare>=1.2.89
+akshare>=1.9.0
+yfinance>=0.2.0
+
+# 数据库相关
+sqlalchemy>=1.4.0
+pymysql>=1.0.0
+psycopg2-binary>=2.9.0
+
+# 配置管理
+python-dotenv>=0.19.0
+pyyaml>=6.0
+
+# 日志和工具
+loguru>=0.6.0
+schedule>=1.2.0
+click>=8.0.0
+
+# 测试相关
+pytest>=7.0.0
+pytest-cov>=4.0.0
+
+# 数据处理
+openpyxl>=3.0.0
+xlrd>=2.0.0

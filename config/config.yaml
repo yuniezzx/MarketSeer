@@ -1,0 +1,69 @@
+# MarketSeer 配置文件
+
+# 数据库配置
+database:
+    # MySQL数据库连接配置
+    mysql:
+        host: localhost
+        port: 3306
+        database: marketseer
+        username: root
+        # 密码通过环境变量设置，格式: ${MYSQL_PASSWORD}
+        password: ${MYSQL_PASSWORD}
+        charset: utf8mb4
+
+        # 连接池配置
+        pool:
+            pool_size: 10 # 连接池大小
+            max_overflow: 20 # 最大溢出连接数
+            pool_timeout: 30 # 获取连接超时时间(秒)
+            pool_recycle: 3600 # 连接回收时间(秒)
+            pool_pre_ping: true # 连接前ping检查
+
+        # 连接选项
+        connect_args:
+            connect_timeout: 10 # 连接超时时间(秒)
+            read_timeout: 30 # 读取超时时间(秒)
+            write_timeout: 30 # 写入超时时间(秒)
+
+# 日志配置
+logging:
+    level: INFO
+    format: '{time:YYYY-MM-DD HH:mm:ss} | {level} | {name}:{function}:{line} | {message}'
+
+    # 日志文件配置
+    files:
+        app_log: 'logs/app.log'
+        error_log: 'logs/error.log'
+        db_log: 'logs/database.log'
+
+    # 日志轮转配置
+    rotation:
+        size: '100 MB' # 文件大小轮转
+        time: '1 day' # 时间轮转
+        retention: '30 days' # 保留时间
+
+# 数据源配置
+data_sources:
+    # Tushare配置
+    tushare:
+        token: ${TUSHARE_TOKEN}
+        timeout: 30
+        retry_count: 3
+
+    # AKShare配置
+    akshare:
+        timeout: 30
+        retry_count: 3
+
+    # yfinance配置
+    yfinance:
+        timeout: 30
+        retry_count: 3
+
+# 应用配置
+app:
+    name: 'MarketSeer'
+    version: '1.0.0'
+    debug: false
+    timezone: 'Asia/Shanghai'
