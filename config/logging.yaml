@@ -1,0 +1,85 @@
+# MarketSeer 日志配置文件
+version: 1
+disable_existing_loggers: False
+
+formatters:
+    default:
+        format: '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+        datefmt: '%Y-%m-%d %H:%M:%S'
+
+    detailed:
+        format: '%(asctime)s - %(name)s - %(levelname)s - %(funcName)s:%(lineno)d - %(message)s'
+        datefmt: '%Y-%m-%d %H:%M:%S'
+
+    json:
+        format: '{"timestamp": "%(asctime)s", "logger": "%(name)s", "level": "%(levelname)s", "function": "%(funcName)s", "line": %(lineno)d, "message": "%(message)s"}'
+        datefmt: '%Y-%m-%d %H:%M:%S'
+
+handlers:
+    console:
+        class: logging.StreamHandler
+        level: INFO
+        formatter: default
+        stream: ext://sys.stdout
+
+    file:
+        class: logging.handlers.RotatingFileHandler
+        level: DEBUG
+        formatter: detailed
+        filename: logs/marketseer.log
+        maxBytes: 10485760 # 10MB
+        backupCount: 5
+        encoding: utf8
+
+    error_file:
+        class: logging.handlers.RotatingFileHandler
+        level: ERROR
+        formatter: detailed
+        filename: logs/error.log
+        maxBytes: 10485760 # 10MB
+        backupCount: 5
+        encoding: utf8
+
+    data_file:
+        class: logging.handlers.RotatingFileHandler
+        level: INFO
+        formatter: json
+        filename: logs/data.log
+        maxBytes: 10485760 # 10MB
+        backupCount: 10
+        encoding: utf8
+
+loggers:
+    finance.data:
+        level: INFO
+        handlers: [console, file, data_file]
+        propagate: no
+
+    finance.analysis:
+        level: INFO
+        handlers: [console, file]
+        propagate: no
+
+    finance.database:
+        level: INFO
+        handlers: [console, file]
+        propagate: no
+
+    sqlalchemy.engine:
+        level: WARNING
+        handlers: [console]
+        propagate: no
+
+    requests:
+        level: WARNING
+        handlers: [console]
+        propagate: no
+
+    urllib3:
+        level: WARNING
+        handlers: [console]
+        propagate: no
+
+root:
+    level: INFO
+    handlers: [console, file, error_file]
