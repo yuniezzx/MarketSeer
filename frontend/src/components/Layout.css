@@ -1,0 +1,35 @@
+.layout {
+  min-height: 100vh;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  padding: 0 50px;
+  background: #001529;
+}
+
+.logo {
+  color: white;
+  font-size: 24px;
+  font-weight: bold;
+  margin-right: 50px;
+  cursor: pointer;
+}
+
+.content {
+  padding: 24px 50px;
+  min-height: calc(100vh - 134px);
+}
+
+.content-wrapper {
+  background: white;
+  padding: 24px;
+  border-radius: 8px;
+  min-height: 100%;
+}
+
+.footer {
+  text-align: center;
+  background: #f0f2f5;
+}

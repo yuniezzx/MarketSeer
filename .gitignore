@@ -1,15 +1,4 @@
-# MarketSeer .gitignore
-
-# ========================================
-# 环境变量和敏感配置
-# ========================================
-config/.env
-*.env
-.env.*
-
-# ========================================
-# Python 相关
-# ========================================
+# Python
 __pycache__/
 *.py[cod]
 *$py.class
@@ -27,175 +16,66 @@ parts/
 sdist/
 var/
 wheels/
-share/python-wheels/
 *.egg-info/
 .installed.cfg
 *.egg
 MANIFEST
 
-# PyInstaller
-*.manifest
-*.spec
-
-# Installer logs
-pip-log.txt
-pip-delete-this-directory.txt
-
-# Unit test / coverage reports
-htmlcov/
-.tox/
-.nox/
-.coverage
-.coverage.*
-.cache
-nosetests.xml
-coverage.xml
-*.cover
-*.py,cover
-.hypothesis/
-.pytest_cache/
-cover/
-
-# ========================================
-# 虚拟环境
-# ========================================
-venv/
-env/
-ENV/
+# Virtual Environment
 .venv/
-.ENV/
-env.bak/
-venv.bak/
+venv/
+ENV/
+env/
 
-# ========================================
-# IDE 和编辑器
-# ========================================
+# Flask
+instance/
+.webassets-cache
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+backend/data/*.db
+
+# Logs
+*.log
+backend/logs/
+
+# IDE
 .vscode/
 .idea/
 *.swp
 *.swo
 *~
-.sublime-project
-.sublime-workspace
-
-# ========================================
-# 日志文件
-# ========================================
-logs/*.log
-*.log
-*.log.*
-
-# ========================================
-# 数据文件
-# ========================================
-data/raw/*
-data/processed/*
-data/exports/*
-# 保留目录结构
-!data/raw/.gitkeep
-!data/processed/.gitkeep
-!data/exports/.gitkeep
-
-# ========================================
-# 临时文件和缓存
-# ========================================
-*.tmp
-*.temp
-.cache/
-.mypy_cache/
-.dmypy.json
-dmypy.json
-
-# ========================================
-# Jupyter Notebook
-# ========================================
-.ipynb_checkpoints
-*.ipynb
-
-# ========================================
-# 操作系统相关
-# ========================================
-# Windows
-Thumbs.db
-ehthumbs.db
-Desktop.ini
-$RECYCLE.BIN/
-
-# macOS
 .DS_Store
-.AppleDouble
-.LSOverride
-._*
 
-# Linux
-*~
-.directory
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
 
-# ========================================
-# 数据库文件
-# ========================================
-*.db
-*.sqlite
-*.sqlite3
+# Frontend build
+frontend/dist/
+frontend/build/
+frontend/.vite/
 
-# ========================================
-# 备份文件
-# ========================================
-*.bak
-*.backup
-*.old
-
-# ========================================
-# 压缩文件
-# ========================================
-*.zip
-*.tar.gz
-*.rar
-*.7z
-
-# ========================================
-# 配置文件（特定）
-# ========================================
-# 本地配置覆盖
-config/local.yaml
-config/production.yaml
-
-# ========================================
-# 第三方工具
-# ========================================
-# Celery
-celerybeat-schedule
-celerybeat.pid
-
-# SageMath parsed files
-*.sage.py
-
-# Environments
+# Environment variables
 .env
-.venv
-env/
-venv/
-ENV/
-env.bak/
-venv.bak/
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
 
-# Spyder project settings
-.spyderproject
-.spyproject
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
 
-# Rope project settings
-.ropeproject
-
-# mkdocs documentation
-/site
-
-# mypy
-.mypy_cache/
-.dmypy.json
-dmypy.json
-
-# Pyre type checker
-.pyre/
-
-# pytype static type analyzer
-.pytype/
+# Misc
+*.bak
+.cache/
+.temp/
+temp/

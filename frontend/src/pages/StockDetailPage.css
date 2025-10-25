@@ -1,0 +1,17 @@
+.stock-detail-page {
+  padding: 20px 0;
+}
+
+.loading-container,
+.error-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.detail-card {
+  margin-bottom: 24px;
+}
