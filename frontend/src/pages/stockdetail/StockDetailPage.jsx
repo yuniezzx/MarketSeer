@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Card, Descriptions, Button, message, Spin, Tag } from 'antd';
 import { ArrowLeftOutlined } from '@ant-design/icons';
-import { stockAPI } from '../services/api';
+import { stockAPI } from '../../services/api';
 import './StockDetailPage.css';
 
 function StockDetailPage() {

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Table, Input, Button, message, Space, Tag } from 'antd';
 import { SearchOutlined, ReloadOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
-import { stockAPI } from '../services/api';
+import { stockAPI } from '../../services/api';
 import './StockListPage.css';
 
 function StockListPage() {
