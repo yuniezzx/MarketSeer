@@ -102,16 +102,49 @@ Content-Type: application/json
 }
 ```
 
-## 环境变量
+## 环境配置
 
-创建 `.env` 文件配置环境变量：
+### .env 文件配置
+
+项目使用 `.env` 文件进行配置管理。首先复制示例配置文件：
 
 ```bash
+cp .env.example .env
+```
+
+然后根据需要修改 `.env` 文件中的配置项：
+
+```bash
+# Flask 配置
 FLASK_DEBUG=True
+SECRET_KEY=dev-secret-key-change-in-production
+
+# 服务器配置
 FLASK_HOST=0.0.0.0
 FLASK_PORT=5000
-SECRET_KEY=your-secret-key-here
+
+# 数据库配置 (可选，默认使用 SQLite)
+# SQLALCHEMY_DATABASE_URI=sqlite:///data/marketseer.db
+
+# 数据源配置 (可选，默认启用 akshare 和 efinance)
+# DATA_SOURCES_AKSHARE_ENABLED=True
+# DATA_SOURCES_AKSHARE_PRIORITY=1
+# DATA_SOURCES_EFINANCE_ENABLED=True
+# DATA_SOURCES_EFINANCE_PRIORITY=2
+# DATA_SOURCES_YFINANCE_ENABLED=False
+# DATA_SOURCES_YFINANCE_PRIORITY=3
+
+# 数据更新配置 (可选，默认 3600 秒)
+# UPDATE_INTERVAL=3600
+
+# 日志配置 (可选)
+# LOG_LEVEL=INFO
+
+# CORS 配置 (可选，默认允许 localhost:3000 和 localhost:5173)
+# CORS_ORIGINS=http://localhost:3000,http://localhost:5173
 ```
+
+**注意**: `.env` 文件已被添加到 `.gitignore`，不会被提交到版本控制中。请妥善保管生产环境的 `.env` 文件。
 
 ## 开发指南
 

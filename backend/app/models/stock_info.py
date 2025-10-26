@@ -19,8 +19,6 @@ class StockInfo(db.Model):
     market = db.Column(db.String(20), comment='市场（SH/SZ等）')
     industry = db.Column(db.String(50), comment='行业分类')
     list_date = db.Column(db.String(20), comment='上市日期')
-    status = db.Column(db.String(20), default='上市', comment='当前状态')
-    source = db.Column(db.String(50), comment='数据来源')
     update_time = db.Column(db.String(30), default=lambda: datetime.now().isoformat(), comment='最后更新时间')
     
     def __repr__(self):
@@ -35,8 +33,6 @@ class StockInfo(db.Model):
             'market': self.market,
             'industry': self.industry,
             'list_date': self.list_date,
-            'status': self.status,
-            'source': self.source,
             'update_time': self.update_time
         }
     

@@ -2,15 +2,15 @@
 MarketSeer 后端启动脚本
 """
 import os
+from dotenv import load_dotenv
 from app import create_app
 from app.models import db
 
+# 加载 .env 文件
+load_dotenv()
+
 # 创建 Flask 应用
 app = create_app()
-
-# 初始化数据库
-with app.app_context():
-    db.init_app(app)
 
 
 if __name__ == '__main__':

@@ -3,6 +3,10 @@ MarketSeer 全局配置
 """
 import os
 from pathlib import Path
+from dotenv import load_dotenv
+
+# 加载 .env 文件
+load_dotenv()
 
 
 # 基础路径
