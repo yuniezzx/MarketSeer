@@ -10,10 +10,10 @@
 from .base import db, init_db, BaseModel
 
 # 导入股票相关模型
-from .stock import StockInfo, StockDaily, StockMinute
+from .stock import StockInfo
 
-# 导入市场相关模型
-from .market import IndexInfo, SectorInfo
+# 导入市场相关模型（暂时注释，等文件创建后再启用）
+# from .market import IndexInfo, SectorInfo
 
 # 定义公开接口
 __all__ = [
@@ -21,11 +21,6 @@ __all__ = [
     'db',
     'init_db',
     'BaseModel',
-
     # 股票模型
     'StockInfo',
-
-    # 市场模型
-    'IndexInfo',
-    'SectorInfo',
 ]
