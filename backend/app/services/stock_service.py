@@ -57,19 +57,37 @@ class StockService:
             logger.error(f"更新股票数据失败: {str(e)}")
             raise
     
-    def _fetch_from_akshare(self):
+    def _fetch_from_akshare(self, api_name, api_params=None):
         """
-        从 AkShare 获取股票数据
-        TODO: 实现 AkShare 数据采集逻辑
+        通用 AkShare 数据获取函数
+        Args:
+            api_name (str): akshare 接口名称，如 'stock_info_a_code_name'
+            api_params (dict): 传递给接口的参数字典
+        Returns:
+            list: 获取到的数据列表
         """
-        logger.info("从 AkShare 获取数据")
-        
-        # 示例数据结构，实际需要调用 akshare 库
-        # import akshare as ak
-        # df = ak.stock_info_a_code_name()
-        
-        # 临时返回空列表，待后续实现
-        return []
+        logger.info(f"从 AkShare 获取数据，接口: {api_name}, 参数: {api_params}")
+        try:
+            import akshare as ak
+            # 获取接口函数
+            api_func = getattr(ak, api_name, None)
+            if not api_func:
+                logger.error(f"AkShare 未找到接口: {api_name}")
+                return []
+            # 调用接口
+            if api_params:
+                df = api_func(**api_params)
+            else:
+                df = api_func()
+            # 转换为 dict list
+            if hasattr(df, 'to_dict'):
+                return df.to_dict(orient='records')
+            else:
+                logger.error("AkShare 返回结果无法转换为 dict list")
+                return []
+        except Exception as e:
+            logger.error(f"AkShare 数据获取失败: {str(e)}")
+            return []
     
     def _fetch_from_efinance(self):
         """
