@@ -2,7 +2,7 @@ import React from 'react';
 import { Layout as AntLayout, Menu } from 'antd';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { HomeOutlined, StockOutlined } from '@ant-design/icons';
-import './Layout.css';
+import './Layout.scss';
 
 const { Header, Content, Footer } = AntLayout;
 

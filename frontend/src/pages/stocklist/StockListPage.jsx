@@ -3,7 +3,7 @@ import { Table, Input, Button, message, Space, Tag } from 'antd';
 import { SearchOutlined, ReloadOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { stockAPI } from '../../services/api';
-import './StockListPage.css';
+import './StockListPage.scss';
 
 function StockListPage() {
   const navigate = useNavigate();

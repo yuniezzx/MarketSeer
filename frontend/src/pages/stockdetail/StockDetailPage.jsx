@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Card, Descriptions, Button, message, Spin, Tag } from 'antd';
 import { ArrowLeftOutlined } from '@ant-design/icons';
 import { stockAPI } from '../../services/api';
-import './StockDetailPage.css';
+import './StockDetailPage.scss';
 
 function StockDetailPage() {
   const { code } = useParams();

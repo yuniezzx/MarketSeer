@@ -6,7 +6,7 @@ import Layout from './components/Layout';
 import HomePage from './pages/HomePage';
 import StockListPage from './pages/stocklist/StockListPage';
 import StockDetailPage from './pages/stockdetail/StockDetailPage';
-import './App.css';
+import './App.scss';
 
 function App() {
   return (

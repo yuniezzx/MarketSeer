@@ -2,7 +2,7 @@ import React from 'react';
 import { Card, Row, Col, Typography, Button } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { StockOutlined, LineChartOutlined, DatabaseOutlined } from '@ant-design/icons';
-import './HomePage.css';
+import './HomePage.scss';
 
 const { Title, Paragraph } = Typography;
 
