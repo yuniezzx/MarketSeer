@@ -1,0 +1,13 @@
+.add-stock-modal {
+  .ant-modal-title {
+    font-weight: bold;
+    font-size: 18px;
+  }
+
+  .ant-modal-body {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-top: 12px;
+  }
+}

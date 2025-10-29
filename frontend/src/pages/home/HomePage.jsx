@@ -2,6 +2,7 @@ import React from 'react';
 import { Card, Row, Col, Typography, Button } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { StockOutlined, LineChartOutlined, DatabaseOutlined } from '@ant-design/icons';
+import AddStock from '../../components/AddStock';
 import './HomePage.scss';
 
 const { Title, Paragraph } = Typography;
@@ -14,9 +15,12 @@ function HomePage() {
       <div className='hero-section'>
         <Title level={1}>MarketSeer</Title>
         <Paragraph className='subtitle'>金融数据采集、整合与分析系统</Paragraph>
-        <Button type='primary' size='large' onClick={() => navigate('/stocks')}>
+        <Button type='primary' size='small' onClick={() => navigate('/stocks')}>
           开始使用
         </Button>
+        <div className='add-stock-btn'>
+          <AddStock />
+        </div>
       </div>
 
       <Row gutter={[24, 24]} className='features-section'>
