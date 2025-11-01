@@ -19,7 +19,7 @@ function AddStock() {
     setIsModalOpen(false);
   };
 
-  const fetchStockData = async code => {
+  const fetchStockInfoData = async code => {
     // Placeholder for fetching stock data logic
     console.log(`Fetching data for stock code: ${code}`);
   };

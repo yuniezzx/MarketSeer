@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Table, Input, Button, message, Space, Tag } from 'antd';
 import { SearchOutlined, ReloadOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
-import { stockAPI } from '../../services/api';
+import { stocksAPI } from '../../services';
 import './StockListPage.scss';
 
 function StockListPage() {
@@ -67,7 +67,7 @@ function StockListPage() {
   const fetchStocks = async (page = 1, pageSize = 50) => {
     setLoading(true);
     try {
-      const response = await stockAPI.getStocks({
+      const response = await stocksAPI.getStocks({
         page,
         per_page: pageSize,
       });
@@ -96,7 +96,7 @@ function StockListPage() {
 
     setLoading(true);
     try {
-      const response = await stockAPI.searchStocks(searchKeyword);
+      const response = await stocksAPI.searchStocks(searchKeyword);
       if (response.status === 'success') {
         setStocks(response.data);
         setPagination(prev => ({ ...prev, total: response.data.length }));
