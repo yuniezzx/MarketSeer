@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Button, Modal, Input } from 'antd';
+import { stocksAPI } from '../../services';
 import './AddStock.scss';
 
 function AddStock() {
@@ -12,6 +13,8 @@ function AddStock() {
 
   const handleOk = () => {
     setIsModalOpen(false);
+    handleAddStock();
+    console.log('api confirm clicked.');
   };
 
   const handleCancel = () => {
@@ -19,9 +22,12 @@ function AddStock() {
     setIsModalOpen(false);
   };
 
-  const fetchStockInfoData = async code => {
-    // Placeholder for fetching stock data logic
-    console.log(`Fetching data for stock code: ${code}`);
+  const handleAddStock = async () => {
+    try {
+      await stocksAPI.addStock({ code: stockCode });
+    } catch (error) {
+      console.error('Failed to add stock:', error);
+    }
   };
 
   return (

@@ -3,22 +3,28 @@ name = "marketseer-backend"
 version = "0.1.0"
 description = "MarketSeer 金融数据采集与分析系统后端"
 authors = [{ name = "MarketSeer Team" }]
-requires-python = ">=3.9"
+requires-python = ">=3.11"
 dependencies = [
     "flask>=3.0.0",
     "flask-sqlalchemy>=3.1.1",
     "flask-cors>=4.0.0",
     "sqlalchemy>=2.0.0",
-    "akshare>=1.12.0",
+    "akshare>=1.17.79",
     "efinance>=0.5.0",
     "yfinance>=0.2.0",
     "pandas>=2.0.0",
-    "numpy>=1.24.0",
+    "numpy>=2.3.4",
     "python-dotenv>=1.0.0",
 ]
 
 [project.optional-dependencies]
-dev = ["pytest>=7.4.0", "pytest-cov>=4.1.0", "black>=23.7.0", "flake8>=6.1.0"]
+dev = [
+    "pytest>=7.4.0",
+    "pytest-cov>=4.1.0",
+    "black>=23.7.0",
+    "flake8>=6.1.0",
+    "notebook>=7.0.0",
+]
 
 [build-system]
 requires = ["hatchling"]

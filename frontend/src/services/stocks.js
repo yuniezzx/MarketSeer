@@ -3,7 +3,7 @@ import api from './api';
 // 股票相关 API
 export const stocksAPI = {
   // 添加新股票
-  addStock: code => api.post('/stocks', { code }),
+  addStock: code => api.post('/stocks/AddStock', { code }),
 
   // 获取股票列表
   getStocks: params => api.get('/stocks', { params }),

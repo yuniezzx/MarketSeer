@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Card, Descriptions, Button, message, Spin, Tag } from 'antd';
 import { ArrowLeftOutlined } from '@ant-design/icons';
-import { stockAPI } from '../../services/api';
+// import { stockAPI } from '../../services/api';
 import './StockDetailPage.scss';
 
 function StockDetailPage() {
@@ -13,17 +13,17 @@ function StockDetailPage() {
 
   const fetchStockDetail = async () => {
     setLoading(true);
-    try {
-      const response = await stockAPI.getStock(code);
-      if (response.status === 'success') {
-        setStock(response.data);
-      }
-    } catch (error) {
-      message.error('获取股票详情失败');
-      console.error(error);
-    } finally {
-      setLoading(false);
-    }
+    // try {
+    //   const response = await stockAPI.getStock(code);
+    //   if (response.status === 'success') {
+    //     setStock(response.data);
+    //   }
+    // } catch (error) {
+    //   message.error('获取股票详情失败');
+    //   console.error(error);
+    // } finally {
+    //   setLoading(false);
+    // }
   };
 
   useEffect(() => {
