@@ -166,8 +166,10 @@ class StockInfoService:
         # 保存到数据库
         try:
             # 从列表中提取第一个元素（因为 _fetch_from_akshare 返回的是列表）
-            em_info_dict = em_info_data[0] if em_info_data else None
-            xq_info_dict = xq_info_data[0] if xq_info_data else None
+            em_info_dict = em_info_data
+            print(em_info_dict)
+            xq_info_dict = xq_info_data
+            print(xq_info_dict)
 
             # 使用映射函数处理数据源
             mapping_data = stock_info_mapper(em_source=em_info_dict, xq_source=xq_info_dict)

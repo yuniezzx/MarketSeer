@@ -1,3 +1,50 @@
+.cell-ellipsis {
+  max-width: 300px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
+}
+
+.operating-scope-tooltip {
+  .ant-tooltip-inner {
+    max-height: 400px;
+    overflow-y: auto;
+    max-width: 500px;
+    background-color: #fafafa;
+    color: #333;
+  }
+}
+
+.expanded-row-content {
+  padding: 16px 24px;
+  background-color: #fafafa;
+
+  .expanded-section {
+    margin-bottom: 16px;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+
+    strong {
+      color: #333;
+      font-size: 14px;
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    p {
+      color: #666;
+      font-size: 14px;
+      line-height: 1.6;
+      margin: 0;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+  }
+}
+
 .stock-list-page {
   padding: 20px 0;
 }

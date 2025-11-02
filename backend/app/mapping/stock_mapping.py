@@ -19,7 +19,7 @@ XQ_FIELD_MAPPING = {
     'establish_date': 'established_date',  # StockInfo.establish_date <- xq_info_data['established_date']
     'list_date': 'listed_date',  # StockInfo.list_date <- xq_info_data['listed_date']
     'main_operation_business': 'main_operation_business',  # StockInfo.main_operation_business <- xq_info_data['main_operation_business']
-    'operating_scope': 'business_scope',  # StockInfo.operating_scope <- xq_info_data['business_scope']
+    'operating_scope': 'operating_scope',  # StockInfo.operating_scope <- xq_info_data['operating_scope']
     # 如需添加新字段，在这里添加：
     # 'new_field': 'source_field_name',  # 注释说明映射关系
 }
@@ -38,21 +38,34 @@ def stock_info_mapper(em_source, xq_source):
     """
     mapped_data = {}
 
+    # 处理数据源为字典
+    em_dict = {}
+    if isinstance(em_source, list):
+        em_dict = {item['item']: item['value'] for item in em_source if 'item' in item and 'value' in item}
+    elif isinstance(em_source, dict):
+        em_dict = em_source
+
+    xq_dict = {}
+    if isinstance(xq_source, list):
+        xq_dict = {item['item']: item['value'] for item in xq_source if 'item' in item and 'value' in item}
+    elif isinstance(xq_source, dict):
+        xq_dict = xq_source
+
     # 映射东方财富数据
-    if em_source:
+    if em_dict:
         for model_field, source_field in EM_FIELD_MAPPING.items():
-            if source_field in em_source:
-                mapped_data[model_field] = em_source[source_field]
+            if source_field in em_dict:
+                mapped_data[model_field] = em_dict[source_field]
 
     # 映射雪球数据
-    if xq_source:
+    if xq_dict:
         for model_field, source_field in XQ_FIELD_MAPPING.items():
             if model_field == 'industry_code':
-                mapped_data[model_field] = xq_source['affiliate_industry']['ind_code']
+                mapped_data[model_field] = xq_dict['affiliate_industry']['ind_code']
             elif model_field == 'industry':
-                mapped_data[model_field] = xq_source['affiliate_industry']['ind_name']
+                mapped_data[model_field] = xq_dict['affiliate_industry']['ind_name']
             else:
-                if source_field in xq_source:
-                    mapped_data[model_field] = xq_source[source_field]
+                if source_field in xq_dict:
+                    mapped_data[model_field] = xq_dict[source_field]
 
     return mapped_data
