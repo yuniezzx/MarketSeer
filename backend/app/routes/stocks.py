@@ -53,6 +53,22 @@ def get_stocks():
         return jsonify({'status': 'error', 'message': str(e)}), 500
 
 
+@api_bp.route('/stocks/<string:code>', methods=['GET'])
+def get_stock_detail(code):
+    """
+    获取指定股票的详细信息
+    """
+    try:
+        stock = StockInfo.query.filter_by(code=code).first()
+        if not stock:
+            return jsonify({'status': 'error', 'message': f'未找到股票代码 {code} 的信息'}), 404
+
+        return jsonify({'status': 'success', 'data': stock.to_dict()}), 200
+
+    except Exception as e:
+        return jsonify({'status': 'error', 'message': str(e)}), 500
+
+
 @api_bp.route('/stocks/AddStock', methods=['POST'])
 def add_stock():
     """

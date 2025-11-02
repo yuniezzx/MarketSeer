@@ -16,7 +16,7 @@ function App() {
           <Routes>
             <Route path='/' element={<HomePage />} />
             <Route path='/stocks' element={<StockListPage />} />
-            {/* <Route path='/stocks/:code' element={<StockDetailPage />} /> */}
+            <Route path='/stocks/:code' element={<StockDetailPage />} />
           </Routes>
         </Layout>
       </Router>

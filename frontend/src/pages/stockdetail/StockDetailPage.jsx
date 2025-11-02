@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import dayjs from 'dayjs';
 import { Card, Descriptions, Button, message, Spin, Tag } from 'antd';
 import { ArrowLeftOutlined } from '@ant-design/icons';
-// import { stockAPI } from '../../services/api';
+import { stocksAPI } from '../../services';
 import './StockDetailPage.scss';
 
 function StockDetailPage() {
@@ -13,17 +14,17 @@ function StockDetailPage() {
 
   const fetchStockDetail = async () => {
     setLoading(true);
-    // try {
-    //   const response = await stockAPI.getStock(code);
-    //   if (response.status === 'success') {
-    //     setStock(response.data);
-    //   }
-    // } catch (error) {
-    //   message.error('获取股票详情失败');
-    //   console.error(error);
-    // } finally {
-    //   setLoading(false);
-    // }
+    try {
+      const response = await stocksAPI.getStock(code);
+      if (response.status === 'success') {
+        setStock(response.data);
+      }
+    } catch (error) {
+      message.error('获取股票详情失败');
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -61,12 +62,12 @@ function StockDetailPage() {
             <Tag color='blue'>{stock.market}</Tag>
           </Descriptions.Item>
           <Descriptions.Item label='行业'>{stock.industry || '-'}</Descriptions.Item>
-          <Descriptions.Item label='上市日期'>{stock.list_date || '-'}</Descriptions.Item>
+          <Descriptions.Item label='上市日期'>
+            {dayjs(Number(stock.list_date)).format('YYYY-MM-DD') || '-'}
+          </Descriptions.Item>
           <Descriptions.Item label='状态'>
             <Tag color={stock.status === '上市' ? 'green' : 'red'}>{stock.status}</Tag>
           </Descriptions.Item>
-          <Descriptions.Item label='数据来源'>{stock.source || '-'}</Descriptions.Item>
-          <Descriptions.Item label='更新时间'>{stock.update_time || '-'}</Descriptions.Item>
         </Descriptions>
       </Card>
 
