@@ -107,7 +107,7 @@ wheels = [
 
 [[package]]
 name = "akshare"
-version = "1.17.80"
+version = "1.17.82"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "aiohttp" },
@@ -128,9 +128,9 @@ dependencies = [
     { name = "urllib3" },
     { name = "xlrd" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/3c/10/ae25a8d38152b72e68cd09ea7e06226cefbbbc4121571361b90350a0db2d/akshare-1.17.80.tar.gz", hash = "sha256:1aed4f2e0a0d35178233ffca4033722f66ee91611212e6c8f2a187991083e4c2", size = 849481, upload-time = "2025-10-30T11:49:58.779Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/fe/9f/786f9e00a4cd40b9362ef4045c40124e82265e664079120eaa1574616045/akshare-1.17.82.tar.gz", hash = "sha256:1a782ed96635421443a4286c84da3c874df4a4d581a6e9ea5dbb80e48adc1c3c", size = 849697, upload-time = "2025-11-03T15:16:10.553Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/15/f2/9606c234c7ad7955182e6c89f428f3cdad5a97170ee96cfb98b2be70b42e/akshare-1.17.80-py3-none-any.whl", hash = "sha256:fb6b2ca2746e4d887bdaf1af6e31588bc0240352571517df111fb755f72d76a5", size = 1067950, upload-time = "2025-10-30T11:49:55.251Z" },
+    { url = "https://files.pythonhosted.org/packages/6b/65/f7d42b37e775096f0ce02a3810fdd2e4fc17b6b5cb40c9e9df12d5b20867/akshare-1.17.82-py3-none-any.whl", hash = "sha256:b31fcc41c366dd657d936fa07759dc4214beaa3373e3b2b8f7cacaa9f010d45b", size = 1068168, upload-time = "2025-11-03T15:16:08.412Z" },
 ]
 
 [[package]]
@@ -602,6 +602,23 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/d3/38/af70d7ab1ae9d4da450eeec1fa3918940a5fafb9055e934af8d6eb0c2313/et_xmlfile-2.0.0.tar.gz", hash = "sha256:dab3f4764309081ce75662649be815c4c9081e88f0837825f90fd28317d4da54", size = 17234, upload-time = "2024-10-25T17:25:40.039Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/c1/8b/5fe2cc11fee489817272089c4203e679c63b570a5aaeb18d852ae3cbba6a/et_xmlfile-2.0.0-py3-none-any.whl", hash = "sha256:7a91720bc756843502c3b7504c77b8fe44217c85c537d85037f0f536151b2caa", size = 18059, upload-time = "2024-10-25T17:25:39.051Z" },
+]
+
+[[package]]
+name = "exchange-calendars"
+version = "4.11.2"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "korean-lunar-calendar" },
+    { name = "numpy" },
+    { name = "pandas" },
+    { name = "pyluach" },
+    { name = "toolz" },
+    { name = "tzdata" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/c6/58/b69e7f5a019bd2df225b2063deb94360f5db314e3b8d2ceaea1dadecda14/exchange_calendars-4.11.2.tar.gz", hash = "sha256:cbdd4930a1357fbaebab613643fc0ad5d3405fa47acc0e27d2328e792e685ea6", size = 4051939, upload-time = "2025-10-16T07:28:14.344Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/eb/e2/a46e68e9b8c0fc75032fc1e7beb6fccf8cd6152b7ce51d815121f403e6cd/exchange_calendars-4.11.2-py3-none-any.whl", hash = "sha256:00b8672b567d52ff81ebfb0e9be8b3932f343de98496b65bbda4ee48540a2d36", size = 205348, upload-time = "2025-10-16T07:28:12.812Z" },
 ]
 
 [[package]]
@@ -1222,6 +1239,15 @@ wheels = [
 ]
 
 [[package]]
+name = "korean-lunar-calendar"
+version = "0.3.1"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/5a/93/a0bd2bd53ab19330e83ecc5652b7774ae86fd2fee19bc05ad220cf9db08b/korean_lunar_calendar-0.3.1.tar.gz", hash = "sha256:eb2c485124a061016926bdea6d89efdf9b9fdbf16db55895b6cf1e5bec17b857", size = 9877, upload-time = "2022-09-16T10:53:25.713Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/9c/96/30f3fe51b336bb6da4714f4fdad7bbdce8f13af79af2eb75e22908f3f9f4/korean_lunar_calendar-0.3.1-py3-none-any.whl", hash = "sha256:392757135c492c4f42a604e6038042953c35c6f449dda5f27e3f86a7f9c943e5", size = 9033, upload-time = "2022-09-16T10:53:23.771Z" },
+]
+
+[[package]]
 name = "lark"
 version = "1.3.1"
 source = { registry = "https://pypi.org/simple" }
@@ -1315,6 +1341,7 @@ source = { editable = "." }
 dependencies = [
     { name = "akshare" },
     { name = "efinance" },
+    { name = "exchange-calendars" },
     { name = "flask" },
     { name = "flask-cors" },
     { name = "flask-sqlalchemy" },
@@ -1322,7 +1349,6 @@ dependencies = [
     { name = "pandas" },
     { name = "python-dotenv" },
     { name = "sqlalchemy" },
-    { name = "trading-calendars" },
     { name = "yfinance" },
 ]
 
@@ -1344,9 +1370,10 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "akshare", specifier = ">=1.17.79" },
+    { name = "akshare", specifier = ">=1.17.82" },
     { name = "black", marker = "extra == 'dev'", specifier = ">=23.7.0" },
     { name = "efinance", specifier = ">=0.5.0" },
+    { name = "exchange-calendars", specifier = ">=4.0.0" },
     { name = "flake8", marker = "extra == 'dev'", specifier = ">=6.1.0" },
     { name = "flask", specifier = ">=3.0.0" },
     { name = "flask-cors", specifier = ">=4.0.0" },
@@ -1360,7 +1387,6 @@ requires-dist = [
     { name = "pytest-cov", marker = "extra == 'dev'", specifier = ">=4.1.0" },
     { name = "python-dotenv", specifier = ">=1.0.0" },
     { name = "sqlalchemy", specifier = ">=2.0.0" },
-    { name = "trading-calendars", specifier = ">=2.1.1" },
     { name = "yfinance", specifier = ">=0.2.0" },
 ]
 provides-extras = ["dev"]
@@ -2049,6 +2075,15 @@ wheels = [
 ]
 
 [[package]]
+name = "pyluach"
+version = "2.3.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/11/11/42568c1568a75f8803c59f26d29af01a0890352b7a8e03d41ecda8bfb5dd/pyluach-2.3.0.tar.gz", hash = "sha256:ec6e30669d1df50c9ca160486da44a8195bb4c7a5d3d533990d0c5b03accd281", size = 26910, upload-time = "2025-09-09T20:24:39.651Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/8a/c8/f96208ade3ca4c23b372497d0788bcf0f2e0ff4310e5ee693366bc33fdf0/pyluach-2.3.0-py3-none-any.whl", hash = "sha256:4497b731aef59508b079dbf5f00bc5bf4329ac45090a6cd37b5a83756f0e69ab", size = 25914, upload-time = "2025-09-09T20:24:37.831Z" },
+]
+
+[[package]]
 name = "pytest"
 version = "8.4.2"
 source = { registry = "https://pypi.org/simple" }
@@ -2593,20 +2628,6 @@ sdist = { url = "https://files.pythonhosted.org/packages/a8/4b/29b4ef32e036bb34e
 wheels = [
     { url = "https://files.pythonhosted.org/packages/d0/30/dc54f88dd4a2b5dc8a0279bdd7270e735851848b762aeb1c1184ed1f6b14/tqdm-4.67.1-py3-none-any.whl", hash = "sha256:26445eca388f82e72884e0d580d5464cd801a3ea01e63e5601bdff9ba6a48de2", size = 78540, upload-time = "2024-11-24T20:12:19.698Z" },
 ]
-
-[[package]]
-name = "trading-calendars"
-version = "2.1.1"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "numpy" },
-    { name = "pandas" },
-    { name = "python-dateutil" },
-    { name = "pytz" },
-    { name = "six" },
-    { name = "toolz" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/1e/6e/613df8268dea3aac81d3b9d9872d4e48526f8650e970ca1d14911f02dad0/trading_calendars-2.1.1.tar.gz", hash = "sha256:639357b802942986e14c0e1fdc47b0ff145f31ce7e7754a11f6a329f36705fc4", size = 108745, upload-time = "2021-01-05T01:45:52.525Z" }
 
 [[package]]
 name = "traitlets"
