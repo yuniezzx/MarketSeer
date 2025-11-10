@@ -21,6 +21,9 @@ dependencies = [
     "numpy>=2.3.4",
     "python-dotenv>=1.0.0",
     "exchange-calendars>=4.0.0",
+
+    # scheduler
+    "apscheduler>=3.10.0",
 ]
 
 [project.optional-dependencies]
