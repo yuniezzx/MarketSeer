@@ -2,7 +2,9 @@
 
 - [x] 开发确认当天是否是交易日
 
-- [ ] 完成 Windows 和 Linux 定时模块。每天晚上 7:30 自动执行
+- [x] 完成 Windows 和 Linux 定时模块。每天晚上 7:30 自动执行
+
+- [ ] 写一个 sercices 的 base 类，用于复用 stock_service 中的 \_fetch_from_akshare 和 \_fetch_from_efinance 等等
 
 - [ ] 设计龙虎榜的数据字段
 
