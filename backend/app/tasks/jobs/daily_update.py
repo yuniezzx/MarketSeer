@@ -3,9 +3,9 @@
 """
 
 from app.utils.logger import get_logger
-from app.services.stock_service import StockInfoService
 from app.utils.trading_calendar import is_trading_day
 from app.utils.time_helper import get_current_time
+from app.services.daily_update_service import DailyUpdateService
 
 logger = get_logger(__name__)
 
@@ -26,10 +26,11 @@ def daily_update_stock_data(app):
         logger.info('今天是交易日，开始更新股票数据...')
 
         try:
-            # TODO: 这里添加实际的数据更新逻辑
-            # stock_service = StockInfoService()
-            # result = stock_service.update_all_stocks()
-            logger.info('股票数据更新完成')
+            # 执行每日数据更新
+            update_service = DailyUpdateService()
+            result = update_service.execute_daily_updates()
+            logger.info(f'股票数据更新结果: {result}')
+
         except Exception as e:
             logger.error(f'股票数据更新失败: {str(e)}', exc_info=True)
 
