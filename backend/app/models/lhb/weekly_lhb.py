@@ -13,13 +13,24 @@ class WeeklyLHB(BaseModel):
 
     __tablename__ = 'weekly_lhb'
 
+    # 基本信息
     code = db.Column(db.String(20), nullable=False, index=True, comment='股票代码')
     name = db.Column(db.String(100), nullable=False, comment='股票名称')
     listed_date = db.Column(db.String(20), comment='上市日期')
     analysis = db.Column(db.Text, comment='分析')
+    
+    # 股票数据
     close_price = db.Column(db.Float, comment='收盘价')
     change_percent = db.Column(db.Float, comment='涨跌幅(%)')
     turnover_rate = db.Column(db.Float, comment='换手率(%)')
+    circulating_market_cap = db.Column(db.Float, comment='流通市值(亿元)')
+
+    # 上榜情况
+    reasons = db.Column(db.Text, comment='上榜原因')
+    return_1d = db.Column(db.Float, comment='上榜后1日涨跌幅(%)')
+    return_5d = db.Column(db.Float, comment='上榜后5日涨跌幅(%)')
+    return_10d = db.Column(db.Float, comment='上榜后10日涨跌幅(%)')
+    
 
     __table_args__ = (
         db.Index('idx_code', 'code'),
