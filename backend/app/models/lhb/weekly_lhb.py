@@ -16,20 +16,29 @@ class WeeklyLHB(BaseModel):
     # 基本信息
     code = db.Column(db.String(20), nullable=False, index=True, comment='股票代码')
     name = db.Column(db.String(100), nullable=False, comment='股票名称')
-    listed_date = db.Column(db.String(20), comment='上市日期')
-    analysis = db.Column(db.Text, comment='分析')
-    
+    listed_date = db.Column(db.String(20), comment='上榜日期')
+
     # 股票数据
     close_price = db.Column(db.Float, comment='收盘价')
     change_percent = db.Column(db.Float, comment='涨跌幅(%)')
     turnover_rate = db.Column(db.Float, comment='换手率(%)')
     circulating_market_cap = db.Column(db.Float, comment='流通市值(亿元)')
 
+    # 龙虎数据
+    lhb_buy_amount = db.Column(db.Float, comment='龙虎榜买入额')
+    lhb_sell_amount = db.Column(db.Float, comment='龙虎榜卖出额')
+    lhb_net_amount = db.Column(db.Float, comment='龙虎榜净买额')
+    lhb_trade_amount = db.Column(db.Float, comment='龙虎榜成交额')
+    market_total_amount = db.Column(db.Float, comment='市场总成交额')
+
+    # 龙虎榜占比数据
+    lhb_net_ratio = db.Column(db.Float, comment='龙虎榜净买额占总成交比(%)')
+    lhb_trade_ratio = db.Column(db.Float, comment='龙虎榜成交额占总成交比(%)')
+
     # 上榜情况
+    analysis = db.Column(db.Text, comment='解读')
     reasons = db.Column(db.Text, comment='上榜原因')
-    return_1d = db.Column(db.Float, comment='上榜后1日涨跌幅(%)')
-    return_5d = db.Column(db.Float, comment='上榜后5日涨跌幅(%)')
-    return_10d = db.Column(db.Float, comment='上榜后10日涨跌幅(%)')
+
     
 
     __table_args__ = (
@@ -45,10 +54,19 @@ class WeeklyLHB(BaseModel):
             'code': self.code,
             'name': self.name,
             'listed_date': self.listed_date,
-            'analysis': self.analysis,
             'close_price': self.close_price,
             'change_percent': self.change_percent,
             'turnover_rate': self.turnover_rate,
+            'circulating_market_cap': self.circulating_market_cap,
+            'lhb_buy_amount': self.lhb_buy_amount,
+            'lhb_sell_amount': self.lhb_sell_amount,
+            'lhb_net_amount': self.lhb_net_amount,
+            'lhb_trade_amount': self.lhb_trade_amount,
+            'market_total_amount': self.market_total_amount,
+            'lhb_net_ratio': self.lhb_net_ratio,
+            'lhb_trade_ratio': self.lhb_trade_ratio,
+            'analysis': self.analysis,
+            'reasons': self.reasons,
             'created_at': self.created_at.isoformat() if self.created_at else None,
             'updated_at': self.updated_at.isoformat() if self.updated_at else None,
         }
@@ -59,8 +77,17 @@ class WeeklyLHB(BaseModel):
             code=data.get('code'),
             name=data.get('name'),
             listed_date=data.get('listed_date'),
-            analysis=data.get('analysis'),
             close_price=data.get('close_price'),
             change_percent=data.get('change_percent'),
             turnover_rate=data.get('turnover_rate'),
+            circulating_market_cap=data.get('circulating_market_cap'),
+            lhb_buy_amount=data.get('lhb_buy_amount'),
+            lhb_sell_amount=data.get('lhb_sell_amount'),
+            lhb_net_amount=data.get('lhb_net_amount'),
+            lhb_trade_amount=data.get('lhb_trade_amount'),
+            market_total_amount=data.get('market_total_amount'),
+            lhb_net_ratio=data.get('lhb_net_ratio'),
+            lhb_trade_ratio=data.get('lhb_trade_ratio'),
+            analysis=data.get('analysis'),
+            reasons=data.get('reasons'),
         )

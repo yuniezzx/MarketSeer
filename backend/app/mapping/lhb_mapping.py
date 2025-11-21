@@ -1,54 +1,57 @@
 """
-龙虎榜（LHB）数据映射配置
-定义从 akshare 接口到 WeeklyLHB 模型的字段映射关系
+龙虎榜数据映射配置
+定义从akshare数据源到 WeeklyLHB 模型的字段映射关系
 """
 
-# akshare 接口返回的字段映射
+# akshare龙虎榜数据源映射
+# stock_lhb_detail_em 接口返回的字段映射
 LHB_FIELD_MAPPING = {
-    "code": "代码",
-    "name": "名称",
-    "listed_date": "上榜日",
-    "analysis": "解读",
-    "close_price": "收盘价",
-    "change_percent": "涨跌幅",
-    "turnover_rate": "换手率",
-    "circulating_market_cap": "流通市值",
-    "reasons": "上榜原因",
-    "return_1d": "上榜后1日",
-    "return_5d": "上榜后5日",
-    "return_10d": "上榜后10日",
+    'code': '代码',  # WeeklyLHB.code <- lhb_data['代码']
+    'name': '名称',  # WeeklyLHB.name <- lhb_data['名称']
+    'listed_date': '上榜日',  # WeeklyLHB.listed_date <- lhb_data['上榜日']
+    'close_price': '收盘价',  # WeeklyLHB.close_price <- lhb_data['收盘价']
+    'change_percent': '涨跌幅',  # WeeklyLHB.change_percent <- lhb_data['涨跌幅']
+    'turnover_rate': '换手率',  # WeeklyLHB.turnover_rate <- lhb_data['换手率']
+    'circulating_market_cap': '流通市值',  # WeeklyLHB.circulating_market_cap <- lhb_data['流通市值']
+    'lhb_buy_amount': '龙虎榜买入额',  # WeeklyLHB.lhb_buy_amount <- lhb_data['龙虎榜买入额']
+    'lhb_sell_amount': '龙虎榜卖出额',  # WeeklyLHB.lhb_sell_amount <- lhb_data['龙虎榜卖出额']
+    'lhb_net_amount': '龙虎榜净买额',  # WeeklyLHB.lhb_net_amount <- lhb_data['龙虎榜净买额']
+    'lhb_trade_amount': '龙虎榜成交额',  # WeeklyLHB.lhb_trade_amount <- lhb_data['龙虎榜成交额']
+    'market_total_amount': '市场总成交额',  # WeeklyLHB.market_total_amount <- lhb_data['市场总成交额']
+    'lhb_net_ratio': '净买额占总成交比',  # WeeklyLHB.lhb_net_ratio <- lhb_data['净买额占总成交比']
+    'lhb_trade_ratio': '成交额占总成交比',  # WeeklyLHB.lhb_trade_ratio <- lhb_data['成交额占总成交比']
+    'analysis': '解读',  # WeeklyLHB.analysis <- lhb_data['解读']
+    'reasons': '上榜原因',  # WeeklyLHB.reasons <- lhb_data['上榜原因']
+    # 如需添加新字段,在这里添加:
+    # 'new_field': 'source_field_name',  # 注释说明映射关系
 }
 
-def weekly_lhb_mapper(raw_source):
+def weekly_lhb_mapper(item: dict) -> dict:
     """
-    将 akshare 龙虎榜原始数据映射为 WeeklyLHB 所需格式
+    将akshare的龙虎榜数据映射为 WeeklyLHB 所需格式
 
     Args:
-        raw_source: dict 或 list，akshare 返回的单条或多条龙虎榜数据
+        item: 来自akshare的数据字典
 
     Returns:
-        dict 或 list: 映射后的数据（dict 或 dict 列表）
+        dict: 映射后的龙虎榜信息字典
     """
-    def try_float(val):
-        try:
-            return float(val)
-        except Exception:
-            return None
+    mapped_data = {}
 
-    def map_one(item):
-        mapped = {}
-        for model_field, source_field in LHB_FIELD_MAPPING.items():
-            value = item.get(source_field)
-            # 类型转换
-            if model_field in ["close_price", "change_percent", "turnover_rate", "circulating_market_cap", "return_1d", "return_5d", "return_10d"]:
-                mapped[model_field] = try_float(value)
+    # 映射akshare龙虎榜数据
+    for model_field, source_field in LHB_FIELD_MAPPING.items():
+        if source_field in item:
+            value = item[source_field]
+            
+            # 根据字段类型进行数据转换
+            if model_field in ['code', 'name', 'analysis', 'reasons']:
+                # 字符串类型字段
+                mapped_data[model_field] = str(value) if value is not None else ''
+            elif model_field == 'listed_date':
+                # 日期类型字段,保持原样
+                mapped_data[model_field] = value
             else:
-                mapped[model_field] = value
-        return mapped
+                # 数值类型字段(Float)
+                mapped_data[model_field] = float(value) if value is not None else 0.0
 
-    if isinstance(raw_source, list):
-        return [map_one(item) for item in raw_source]
-    elif isinstance(raw_source, dict):
-        return map_one(raw_source)
-    else:
-        return None
+    return mapped_data
