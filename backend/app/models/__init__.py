@@ -11,7 +11,7 @@ from .base import db, init_db, BaseModel
 
 # 导入股票相关模型
 from .stock import StockInfo
-from .lhb import WeeklyLHB
+from .lhb import DailyLHB
 
 # 导入市场相关模型（暂时注释，等文件创建后再启用）
 # from .market import IndexInfo, SectorInfo
@@ -24,5 +24,5 @@ __all__ = [
     'BaseModel',
     # 股票模型
     'StockInfo',
-    'WeeklyLHB',
+    'DailyLHB',
 ]

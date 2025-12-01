@@ -1,5 +1,6 @@
 // 统一导出所有 API 服务
 export { stocksAPI, healthCheck } from './stocks';
+export { lhbAPI } from './lhb';
 
 // 可以在这里添加其他资源的 API
 // export { authAPI } from './auth';

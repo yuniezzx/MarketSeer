@@ -1,0 +1,28 @@
+/**
+ * 换手率颜色分级样式
+ * 可在全局或组件中引入使用
+ */
+
+// 换手率颜色分级 (20-50%+)
+.turnover-20 {
+  color: #faad14; // 橙色 - 20-30%
+  font-weight: 500;
+}
+
+.turnover-30 {
+  color: #fa8c16; // 深橙色 - 30-40%
+  font-weight: 600;
+}
+
+.turnover-40 {
+  color: #f5222d; // 红色 - 40-50%
+  font-weight: 600;
+}
+
+.turnover-50 {
+  color: #cf1322; // 深红色 - 50%+
+  font-weight: 700;
+  background-color: #fff1f0;
+  padding: 2px 8px;
+  border-radius: 4px;
+}

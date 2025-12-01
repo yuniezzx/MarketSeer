@@ -2,8 +2,8 @@
 龙虎榜相关模型模块
 """
 
-from .weekly_lhb import WeeklyLHB
+from .daily_lhb import DailyLHB
 
 __all__ = [
-    "WeeklyLHB",
+    "DailyLHB",
 ]

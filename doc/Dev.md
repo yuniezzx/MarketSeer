@@ -12,11 +12,11 @@
 
 - [x] 设计龙虎榜的数据字段
 
-- [x] 对 weekly_lhb 做设计，定时任务开始后，更新从龙虎榜获得的数据
+- [x] 对 daily_lhb 做设计，定时任务开始后，更新从龙虎榜获得的数据
 
 2025/11/21
 
-- [ ] 对 weekly_lhb 分析，将结果添加到 analyze_service 中
+- [ ] 对 daily_lhb 分析，将结果添加到 analyze_service 中
 
 - [ ] 对 analyze_service 中的 stock ，开始追踪，观察
 

@@ -28,7 +28,7 @@ def daily_update_stock_data(app):
         try:
             # 执行每日数据更新
             update_service = DailyUpdateService()
-            result = update_service.update_weekly_lhb()
+            result = update_service.update_daily_lhb()
             logger.info(f'股票数据更新结果: {result}')
 
         except Exception as e:

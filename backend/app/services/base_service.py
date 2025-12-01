@@ -9,6 +9,7 @@ from app.models import db
 from app.config import Config
 from app.utils.logger import get_logger
 
+
 class BaseService(ABC):
     """
     所有业务服务的抽象基类
@@ -98,7 +99,7 @@ class BaseService(ABC):
         通用的数据库保存方法（批量保存或更新）
 
         Args:
-            model_class: 模型类（如 StockInfo, WeeklyLHB）
+            model_class: 模型类（如 StockInfo, DailyLHB）
             data_list (list): 要保存的数据列表
             unique_field (str): 用于判断记录是否存在的唯一字段，默认为 'code'
 
@@ -115,9 +116,7 @@ class BaseService(ABC):
                     continue
 
                 # 查询是否已存在
-                existing_record = model_class.query.filter_by(
-                    **{unique_field: unique_value}
-                ).first()
+                existing_record = model_class.query.filter_by(**{unique_field: unique_value}).first()
 
                 if existing_record:
                     # 更新现有记录

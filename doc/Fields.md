@@ -1,6 +1,6 @@
-# WeeklyLHB 字段说明文档
+# DailyLHB 字段说明文档
 
-本文档说明 `WeeklyLHB` 模型的所有字段及其含义,以及从 akshare 数据源的映射关系。
+本文档说明 `DailyLHB` 模型的所有字段及其含义,以及从 akshare 数据源的映射关系。
 
 ## 数据源
 

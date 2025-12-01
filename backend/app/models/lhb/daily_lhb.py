@@ -4,14 +4,15 @@
 
 from ..base import BaseModel, db
 
-class WeeklyLHB(BaseModel):
+
+class DailyLHB(BaseModel):
     """
     龙虎榜周数据表
 
     存储每周龙虎榜相关信息
     """
 
-    __tablename__ = 'weekly_lhb'
+    __tablename__ = 'daily_lhb'
 
     # 基本信息
     code = db.Column(db.String(20), nullable=False, index=True, comment='股票代码')
@@ -39,14 +40,10 @@ class WeeklyLHB(BaseModel):
     analysis = db.Column(db.Text, comment='解读')
     reasons = db.Column(db.Text, comment='上榜原因')
 
-    
-
-    __table_args__ = (
-        db.Index('idx_code', 'code'),
-    )
+    __table_args__ = (db.Index('idx_code', 'code'),)
 
     def __repr__(self):
-        return f'<WeeklyLHB {self.code} - {self.name}>'
+        return f'<DailyLHB {self.code} - {self.name}>'
 
     def to_dict(self):
         return {
@@ -73,7 +70,7 @@ class WeeklyLHB(BaseModel):
 
     @staticmethod
     def from_dict(data):
-        return WeeklyLHB(
+        return DailyLHB(
             code=data.get('code'),
             name=data.get('name'),
             listed_date=data.get('listed_date'),

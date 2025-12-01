@@ -12,7 +12,7 @@ function StockListPage() {
   const [stocks, setStocks] = useState([]);
   const [pagination, setPagination] = useState({
     current: 1,
-    pageSize: 50,
+    pageSize: 100,
     total: 0,
   });
   const [searchKeyword, setSearchKeyword] = useState('');
