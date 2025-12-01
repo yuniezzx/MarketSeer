@@ -5,6 +5,7 @@ import zhCN from 'antd/locale/zh_CN';
 import Layout from './components/Layout';
 import HomePage from './pages/home/HomePage';
 import StockListPage from './pages/stocklist/StockListPage';
+import LhbPage from './pages/lhb/LhbPage';
 import StockDetailPage from './pages/stockdetail/StockDetailPage';
 import './App.scss';
 
@@ -16,6 +17,7 @@ function App() {
           <Routes>
             <Route path='/' element={<HomePage />} />
             <Route path='/stocks' element={<StockListPage />} />
+            <Route path='/lhb' element={<LhbPage />} />
             <Route path='/stocks/:code' element={<StockDetailPage />} />
           </Routes>
         </Layout>

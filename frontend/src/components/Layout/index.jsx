@@ -21,6 +21,11 @@ function Layout({ children }) {
       icon: <StockOutlined />,
       label: '股票列表',
     },
+    {
+      key: '/lhb',
+      icon: <StockOutlined />,
+      label: '龙虎榜',
+    },
   ];
 
   const handleMenuClick = ({ key }) => {
