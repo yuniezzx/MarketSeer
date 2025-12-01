@@ -186,7 +186,6 @@ const LhbPage = () => {
           ...prev,
           total: response.data.length,
         }));
-        message.success('数据加载成功');
       }
     } catch (error) {
       message.error('获取龙虎榜数据失败');
@@ -215,7 +214,7 @@ const LhbPage = () => {
   return (
     <div className='lhb-page'>
       <div className='page-header'>
-        <h2>龙虎榜页面</h2>
+        <h2>龙虎榜</h2>
         <Space>
           <DatePicker placeholder='开始日期' value={startDate} minDate={dayjs('2025-12-01')} maxDate={endDate} onChange={setStartDate} style={{ width: 200 }} />
           <DatePicker placeholder='结束日期' value={endDate} maxDate={dayjs().subtract(1, 'day')} onChange={setEndDate} style={{ width: 200 }} />

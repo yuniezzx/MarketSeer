@@ -1,4 +1,4 @@
-@import './styles/turnoverRate.scss';
+@use './styles/turnoverRate.scss' as *;
 
 .app {
   min-height: 100vh;
