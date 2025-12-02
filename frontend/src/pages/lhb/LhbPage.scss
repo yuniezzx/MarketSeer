@@ -14,6 +14,22 @@
     }
   }
 
+  .filter-section {
+    background: #fafafa;
+    padding: 16px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    border: 1px solid #e8e8e8;
+
+    .ant-space-item {
+      span {
+        font-weight: 500;
+        color: #333;
+        white-space: nowrap;
+      }
+    }
+  }
+
   .ant-table {
     background: #fff;
     border-radius: 4px;
@@ -22,6 +38,7 @@
       background-color: #fafafa;
       font-weight: 600;
       color: #333;
+      white-space: nowrap;
     }
 
     .ant-table-tbody > tr:hover > td {
