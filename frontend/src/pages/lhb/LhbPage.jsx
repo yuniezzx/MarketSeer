@@ -6,182 +6,6 @@ import { lhbAPI } from '../../services';
 import { getTurnoverRateClass } from '../../utils/turnoverRateHelper';
 import './LhbPage.scss';
 
-const columns = [
-  {
-    title: '上榜日期',
-    dataIndex: 'listed_date',
-    key: 'listed_date',
-    width: 110,
-    sorter: (a, b) => dayjs(a.listed_date).unix() - dayjs(b.listed_date).unix(),
-    defaultSortOrder: 'descend',
-  },
-  {
-    title: '股票代码',
-    dataIndex: 'code',
-    key: 'code',
-    width: 100,
-  },
-  {
-    title: '股票名称',
-    dataIndex: 'name',
-    key: 'name',
-    width: 120,
-  },
-  {
-    title: '收盘价',
-    dataIndex: 'close_price',
-    key: 'close_price',
-    width: 100,
-    align: 'center',
-    sorter: (a, b) => Number(a.close_price || 0) - Number(b.close_price || 0),
-    render: val => (val ? `¥${Number(val).toFixed(2)}` : '-'),
-  },
-  {
-    title: '涨跌幅(%)',
-    dataIndex: 'change_percent',
-    key: 'change_percent',
-    width: 110,
-    align: 'center',
-    sorter: (a, b) => Number(a.change_percent || 0) - Number(b.change_percent || 0),
-    render: val => {
-      if (!val) return '-';
-      const num = Number(val);
-      const color = num > 0 ? 'red' : num < 0 ? 'green' : 'inherit';
-      return (
-        <span style={{ color }}>
-          {num > 0 ? '+' : ''}
-          {num.toFixed(2)}%
-        </span>
-      );
-    },
-  },
-  {
-    title: '换手率(%)',
-    dataIndex: 'turnover_rate',
-    key: 'turnover_rate',
-    width: 110,
-    align: 'center',
-    sorter: (a, b) => Number(a.turnover_rate || 0) - Number(b.turnover_rate || 0),
-    render: val => {
-      if (!val) return '-';
-      const rate = Number(val);
-      const className = getTurnoverRateClass(rate);
-      return <span className={className}>{rate.toFixed(2)}%</span>;
-    },
-  },
-  {
-    title: '龙虎榜买入额',
-    dataIndex: 'lhb_buy_amount',
-    key: 'lhb_buy_amount',
-    width: 140,
-    align: 'center',
-    sorter: (a, b) => Number(a.lhb_buy_amount || 0) - Number(b.lhb_buy_amount || 0),
-    render: val => {
-      if (!val) return '-';
-      const amount = Number(val);
-      if (amount >= 100000000) {
-        return `¥${(amount / 100000000).toFixed(2)}亿`;
-      } else if (amount >= 10000) {
-        return `¥${(amount / 10000).toFixed(2)}万`;
-      }
-      return `¥${amount.toFixed(2)}`;
-    },
-  },
-  {
-    title: '龙虎榜卖出额',
-    dataIndex: 'lhb_sell_amount',
-    key: 'lhb_sell_amount',
-    width: 140,
-    align: 'center',
-    sorter: (a, b) => Number(a.lhb_sell_amount || 0) - Number(b.lhb_sell_amount || 0),
-    render: val => {
-      if (!val) return '-';
-      const amount = Number(val);
-      if (amount >= 100000000) {
-        return `¥${(amount / 100000000).toFixed(2)}亿`;
-      } else if (amount >= 10000) {
-        return `¥${(amount / 10000).toFixed(2)}万`;
-      }
-      return `¥${amount.toFixed(2)}`;
-    },
-  },
-  {
-    title: '龙虎榜净买额',
-    dataIndex: 'lhb_net_amount',
-    key: 'lhb_net_amount',
-    width: 140,
-    align: 'center',
-    sorter: (a, b) => Number(a.lhb_net_amount || 0) - Number(b.lhb_net_amount || 0),
-    render: val => {
-      if (!val && val !== 0) return '-';
-      const amount = Number(val);
-      const color = amount > 0 ? 'red' : amount < 0 ? 'green' : 'inherit';
-      let displayAmount;
-      const absAmount = Math.abs(amount);
-      if (absAmount >= 100000000) {
-        displayAmount = `${(absAmount / 100000000).toFixed(2)}亿`;
-      } else if (absAmount >= 10000) {
-        displayAmount = `${(absAmount / 10000).toFixed(2)}万`;
-      } else {
-        displayAmount = absAmount.toFixed(2);
-      }
-      return (
-        <span style={{ color }}>
-          {amount > 0 ? '+' : amount < 0 ? '-' : ''}¥{displayAmount}
-        </span>
-      );
-    },
-  },
-  {
-    title: '龙虎榜成交额',
-    dataIndex: 'lhb_trade_amount',
-    key: 'lhb_trade_amount',
-    width: 140,
-    align: 'center',
-    sorter: (a, b) => Number(a.lhb_trade_amount || 0) - Number(b.lhb_trade_amount || 0),
-    render: val => {
-      if (!val) return '-';
-      const amount = Number(val);
-      if (amount >= 100000000) {
-        return `¥${(amount / 100000000).toFixed(2)}亿`;
-      } else if (amount >= 10000) {
-        return `¥${(amount / 10000).toFixed(2)}万`;
-      }
-      return `¥${amount.toFixed(2)}`;
-    },
-  },
-  {
-    title: '市场总成交额',
-    dataIndex: 'market_total_amount',
-    key: 'market_total_amount',
-    width: 140,
-    align: 'center',
-    sorter: (a, b) => Number(a.market_total_amount || 0) - Number(b.market_total_amount || 0),
-    render: val => {
-      if (!val) return '-';
-      const amount = Number(val);
-      if (amount >= 100000000) {
-        return `¥${(amount / 100000000).toFixed(2)}亿`;
-      } else if (amount >= 10000) {
-        return `¥${(amount / 10000).toFixed(2)}万`;
-      }
-      return `¥${amount.toFixed(2)}`;
-    },
-  },
-  {
-    title: '上榜原因',
-    dataIndex: 'reasons',
-    key: 'reasons',
-    width: 200,
-  },
-  {
-    title: '解读',
-    dataIndex: 'analysis',
-    key: 'analysis',
-    width: 250,
-  },
-];
-
 const LhbPage = () => {
   const [startDate, setStartDate] = useState(dayjs().subtract(14, 'day') > dayjs('2025-12-01') ? dayjs().subtract(14, 'day') : dayjs('2025-12-01'));
   const [endDate, setEndDate] = useState(dayjs());
@@ -200,6 +24,205 @@ const LhbPage = () => {
   const [closePriceMax, setClosePriceMax] = useState(null);
   const [turnoverRateMin, setTurnoverRateMin] = useState(null);
   const [turnoverRateMax, setTurnoverRateMax] = useState(null);
+
+  // Calculate stock listing count
+  const stockCountMap = useMemo(() => {
+    const countMap = {};
+    lhbData.forEach(item => {
+      if (item.code) {
+        countMap[item.code] = (countMap[item.code] || 0) + 1;
+      }
+    });
+    return countMap;
+  }, [lhbData]);
+
+  const columns = useMemo(
+    () => [
+      {
+        title: '上榜日期',
+        dataIndex: 'listed_date',
+        key: 'listed_date',
+        width: 110,
+        sorter: (a, b) => dayjs(a.listed_date).unix() - dayjs(b.listed_date).unix(),
+        defaultSortOrder: 'descend',
+      },
+      {
+        title: '上榜次数',
+        dataIndex: 'listing_count',
+        key: 'listing_count',
+        width: 100,
+        align: 'center',
+        sorter: (a, b) => (stockCountMap[a.code] || 0) - (stockCountMap[b.code] || 0),
+        render: (_, record) => stockCountMap[record.code] || 0,
+      },
+      {
+        title: '股票代码',
+        dataIndex: 'code',
+        key: 'code',
+        width: 100,
+      },
+      {
+        title: '股票名称',
+        dataIndex: 'name',
+        key: 'name',
+        width: 120,
+      },
+      {
+        title: '收盘价',
+        dataIndex: 'close_price',
+        key: 'close_price',
+        width: 100,
+        align: 'center',
+        sorter: (a, b) => Number(a.close_price || 0) - Number(b.close_price || 0),
+        render: val => (val ? `¥${Number(val).toFixed(2)}` : '-'),
+      },
+      {
+        title: '涨跌幅(%)',
+        dataIndex: 'change_percent',
+        key: 'change_percent',
+        width: 110,
+        align: 'center',
+        sorter: (a, b) => Number(a.change_percent || 0) - Number(b.change_percent || 0),
+        render: val => {
+          if (!val) return '-';
+          const num = Number(val);
+          const color = num > 0 ? 'red' : num < 0 ? 'green' : 'inherit';
+          return (
+            <span style={{ color }}>
+              {num > 0 ? '+' : ''}
+              {num.toFixed(2)}%
+            </span>
+          );
+        },
+      },
+      {
+        title: '换手率(%)',
+        dataIndex: 'turnover_rate',
+        key: 'turnover_rate',
+        width: 110,
+        align: 'center',
+        sorter: (a, b) => Number(a.turnover_rate || 0) - Number(b.turnover_rate || 0),
+        render: val => {
+          if (!val) return '-';
+          const rate = Number(val);
+          const className = getTurnoverRateClass(rate);
+          return <span className={className}>{rate.toFixed(2)}%</span>;
+        },
+      },
+      {
+        title: '龙虎榜买入额',
+        dataIndex: 'lhb_buy_amount',
+        key: 'lhb_buy_amount',
+        width: 140,
+        align: 'center',
+        sorter: (a, b) => Number(a.lhb_buy_amount || 0) - Number(b.lhb_buy_amount || 0),
+        render: val => {
+          if (!val) return '-';
+          const amount = Number(val);
+          if (amount >= 100000000) {
+            return `¥${(amount / 100000000).toFixed(2)}亿`;
+          } else if (amount >= 10000) {
+            return `¥${(amount / 10000).toFixed(2)}万`;
+          }
+          return `¥${amount.toFixed(2)}`;
+        },
+      },
+      {
+        title: '龙虎榜卖出额',
+        dataIndex: 'lhb_sell_amount',
+        key: 'lhb_sell_amount',
+        width: 140,
+        align: 'center',
+        sorter: (a, b) => Number(a.lhb_sell_amount || 0) - Number(b.lhb_sell_amount || 0),
+        render: val => {
+          if (!val) return '-';
+          const amount = Number(val);
+          if (amount >= 100000000) {
+            return `¥${(amount / 100000000).toFixed(2)}亿`;
+          } else if (amount >= 10000) {
+            return `¥${(amount / 10000).toFixed(2)}万`;
+          }
+          return `¥${amount.toFixed(2)}`;
+        },
+      },
+      {
+        title: '龙虎榜净买额',
+        dataIndex: 'lhb_net_amount',
+        key: 'lhb_net_amount',
+        width: 140,
+        align: 'center',
+        sorter: (a, b) => Number(a.lhb_net_amount || 0) - Number(b.lhb_net_amount || 0),
+        render: val => {
+          if (!val && val !== 0) return '-';
+          const amount = Number(val);
+          const color = amount > 0 ? 'red' : amount < 0 ? 'green' : 'inherit';
+          let displayAmount;
+          const absAmount = Math.abs(amount);
+          if (absAmount >= 100000000) {
+            displayAmount = `${(absAmount / 100000000).toFixed(2)}亿`;
+          } else if (absAmount >= 10000) {
+            displayAmount = `${(absAmount / 10000).toFixed(2)}万`;
+          } else {
+            displayAmount = absAmount.toFixed(2);
+          }
+          return (
+            <span style={{ color }}>
+              {amount > 0 ? '+' : amount < 0 ? '-' : ''}¥{displayAmount}
+            </span>
+          );
+        },
+      },
+      {
+        title: '龙虎榜成交额',
+        dataIndex: 'lhb_trade_amount',
+        key: 'lhb_trade_amount',
+        width: 140,
+        align: 'center',
+        sorter: (a, b) => Number(a.lhb_trade_amount || 0) - Number(b.lhb_trade_amount || 0),
+        render: val => {
+          if (!val) return '-';
+          const amount = Number(val);
+          if (amount >= 100000000) {
+            return `¥${(amount / 100000000).toFixed(2)}亿`;
+          } else if (amount >= 10000) {
+            return `¥${(amount / 10000).toFixed(2)}万`;
+          }
+          return `¥${amount.toFixed(2)}`;
+        },
+      },
+      {
+        title: '市场总成交额',
+        dataIndex: 'market_total_amount',
+        key: 'market_total_amount',
+        width: 140,
+        align: 'center',
+        sorter: (a, b) => Number(a.market_total_amount || 0) - Number(b.market_total_amount || 0),
+        render: val => {
+          if (!val) return '-';
+          const amount = Number(val);
+          if (amount >= 100000000) {
+            return `¥${(amount / 100000000).toFixed(2)}亿`;
+          } else if (amount >= 10000) {
+            return `¥${(amount / 10000).toFixed(2)}万`;
+          }
+          return `¥${amount.toFixed(2)}`;
+        },
+      },
+      {
+        title: '上榜原因',
+        dataIndex: 'reasons',
+        key: 'reasons',
+        width: 200,
+      },
+      {
+        title: '解读',
+        dataIndex: 'analysis',
+        key: 'analysis',
+        width: 250,
+      },
+    ],
+    [stockCountMap]
+  );
 
   const fetchLhbData = async () => {
     setLoading(true);
