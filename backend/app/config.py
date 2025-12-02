@@ -23,7 +23,10 @@ class Config:
     DEBUG = os.environ.get('FLASK_DEBUG', 'True').lower() == 'true'
 
     # 数据库配置
-    SQLALCHEMY_DATABASE_URI = f'sqlite:///{DATA_DIR / "marketseer.db"}'
+    SQLALCHEMY_DATABASE_URI = os.environ.get(
+        'SQLALCHEMY_DATABASE_URI',
+        f'sqlite:///{DATA_DIR / "marketseer.db"}'
+    )
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     # API 配置
