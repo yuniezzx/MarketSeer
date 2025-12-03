@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import dayjs from 'dayjs';
-import { DatePicker, Button, Space, Table, message, InputNumber } from 'antd';
+import { DatePicker, Button, Space, Table, message, InputNumber, Input } from 'antd';
 import { ReloadOutlined } from '@ant-design/icons';
 import { lhbAPI } from '../../services';
 import { getTurnoverRateClass } from '../../utils/turnoverRateHelper';
@@ -18,6 +18,8 @@ const LhbPage = () => {
   });
 
   // Filter states
+  const [filterStockCode, setFilterStockCode] = useState('');
+  const [filterStockName, setFilterStockName] = useState('');
   const [filterStartDate, setFilterStartDate] = useState(null);
   const [filterEndDate, setFilterEndDate] = useState(null);
   const [closePriceMin, setClosePriceMin] = useState(null);
@@ -257,6 +259,8 @@ const LhbPage = () => {
   };
 
   const handleResetFilters = () => {
+    setFilterStockCode('');
+    setFilterStockName('');
     setFilterStartDate(null);
     setFilterEndDate(null);
     setClosePriceMin(null);
@@ -265,9 +269,19 @@ const LhbPage = () => {
     setTurnoverRateMax(null);
   };
 
-  // Filter data based on date, price and turnover rate
+  // Filter data based on stock code, stock name, date, price and turnover rate
   const filteredData = useMemo(() => {
     return lhbData.filter(item => {
+      // Filter by stock code
+      if (filterStockCode && item.code) {
+        if (!item.code.toLowerCase().includes(filterStockCode.toLowerCase())) return false;
+      }
+
+      // Filter by stock name
+      if (filterStockName && item.name) {
+        if (!item.name.toLowerCase().includes(filterStockName.toLowerCase())) return false;
+      }
+
       // Filter by listing date range
       if (filterStartDate) {
         const itemDate = dayjs(item.listed_date);
@@ -300,7 +314,7 @@ const LhbPage = () => {
 
       return true;
     });
-  }, [lhbData, filterStartDate, filterEndDate, closePriceMin, closePriceMax, turnoverRateMin, turnoverRateMax]);
+  }, [lhbData, filterStockCode, filterStockName, filterStartDate, filterEndDate, closePriceMin, closePriceMax, turnoverRateMin, turnoverRateMax]);
 
   useEffect(() => {
     fetchLhbData();
@@ -320,33 +334,47 @@ const LhbPage = () => {
       </div>
 
       <div className='filter-section'>
-        <Space size='large' wrap>
-          <Space>
-            <span>上榜日期:</span>
-            <DatePicker size='small' placeholder='开始日期' value={filterStartDate} minDate={startDate} maxDate={endDate} onChange={setFilterStartDate} style={{ width: 120 }} />
-            <span>-</span>
-            <DatePicker size='small' placeholder='结束日期' value={filterEndDate} minDate={startDate} maxDate={endDate} onChange={setFilterEndDate} style={{ width: 120 }} />
+        <Space direction='vertical' size='middle' style={{ width: '100%' }}>
+          <Space size='large' wrap>
+            <Space>
+              <span>股票代码:</span>
+              <Input size='small' placeholder='输入代码' value={filterStockCode} onChange={e => setFilterStockCode(e.target.value)} style={{ width: 120 }} allowClear />
+            </Space>
+
+            <Space>
+              <span>股票名称:</span>
+              <Input size='small' placeholder='输入名称' value={filterStockName} onChange={e => setFilterStockName(e.target.value)} style={{ width: 120 }} allowClear />
+            </Space>
           </Space>
 
-          <Space>
-            <span>收盘价:</span>
-            <InputNumber size='small' placeholder='最小值' value={closePriceMin} onChange={setClosePriceMin} min={0} precision={2} style={{ width: 120 }} />
-            <span>-</span>
-            <InputNumber size='small' placeholder='最大值' value={closePriceMax} onChange={setClosePriceMax} min={0} precision={2} style={{ width: 120 }} />
+          <Space size='large' wrap>
+            <Space>
+              <span>上榜日期:</span>
+              <DatePicker size='small' placeholder='开始日期' value={filterStartDate} minDate={startDate} maxDate={endDate} onChange={setFilterStartDate} style={{ width: 120 }} />
+              <span>-</span>
+              <DatePicker size='small' placeholder='结束日期' value={filterEndDate} minDate={startDate} maxDate={endDate} onChange={setFilterEndDate} style={{ width: 120 }} />
+            </Space>
+
+            <Space>
+              <span>收盘价:</span>
+              <InputNumber size='small' placeholder='最小值' value={closePriceMin} onChange={setClosePriceMin} min={0} precision={2} style={{ width: 120 }} />
+              <span>-</span>
+              <InputNumber size='small' placeholder='最大值' value={closePriceMax} onChange={setClosePriceMax} min={0} precision={2} style={{ width: 120 }} />
+            </Space>
+
+            <Space>
+              <span>换手率(%):</span>
+              <InputNumber size='small' placeholder='最小值' value={turnoverRateMin} onChange={setTurnoverRateMin} min={0} precision={2} style={{ width: 120 }} />
+              <span>-</span>
+              <InputNumber size='small' placeholder='最大值' value={turnoverRateMax} onChange={setTurnoverRateMax} min={0} precision={2} style={{ width: 120 }} />
+            </Space>
+
+            <Button onClick={handleResetFilters}>重置筛选</Button>
+
+            <span style={{ color: '#666' }}>
+              显示: {filteredData.length} / {lhbData.length} 条数据
+            </span>
           </Space>
-
-          <Space>
-            <span>换手率(%):</span>
-            <InputNumber size='small' placeholder='最小值' value={turnoverRateMin} onChange={setTurnoverRateMin} min={0} precision={2} style={{ width: 120 }} />
-            <span>-</span>
-            <InputNumber size='small' placeholder='最大值' value={turnoverRateMax} onChange={setTurnoverRateMax} min={0} precision={2} style={{ width: 120 }} />
-          </Space>
-
-          <Button onClick={handleResetFilters}>重置筛选</Button>
-
-          <span style={{ color: '#666' }}>
-            显示: {filteredData.length} / {lhbData.length} 条数据
-          </span>
         </Space>
       </div>
 
