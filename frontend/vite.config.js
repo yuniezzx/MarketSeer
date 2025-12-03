@@ -5,7 +5,7 @@ import react from '@vitejs/plugin-react';
 export default defineConfig({
   plugins: [react()],
   server: {
-    port: 5000,
+    port: 5173,
     host: true, // 允许外部访问
     open: true, // 自动打开浏览器
     hmr: {
@@ -13,7 +13,7 @@ export default defineConfig({
     },
           proxy: {
             '/api': {
-              target: 'http://localhost:5001',
+              target: 'http://localhost:5000',
               changeOrigin: true,
             },
           },
