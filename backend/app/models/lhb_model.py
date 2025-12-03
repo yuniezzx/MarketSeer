@@ -1,8 +1,4 @@
-"""
-龙虎榜周数据模型
-"""
-
-from ..base import BaseModel, db
+from .base import BaseModel, db
 
 
 class DailyLHB(BaseModel):

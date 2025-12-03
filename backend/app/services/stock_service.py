@@ -5,8 +5,9 @@
 
 from app.models import StockInfo, db
 from app.mapping import stock_info_mapper
-from app.utils.stock_helper import get_market_from_code, format_stock_code
-from app.services.base_service import BaseService
+from app.utils import get_market_from_code, format_stock_code
+from .base_service import BaseService
+
 
 class StockInfoService(BaseService):
     """股票数据服务类，继承 BaseService"""

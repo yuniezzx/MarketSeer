@@ -3,9 +3,10 @@
 """
 
 from flask import jsonify, request
+from logger import logger
 from app.routes import api_bp
-from app.models import StockInfo, db
-from app.services.stock_service import StockInfoService
+from app.models import StockInfo
+from app.services import StockInfoService
 
 
 @api_bp.route('/stocks', methods=['GET'])
@@ -50,6 +51,7 @@ def get_stocks():
         )
 
     except Exception as e:
+        logger.error(f"获取股票列表失败: {str(e)}")
         return jsonify({'status': 'error', 'message': str(e)}), 500
 
 

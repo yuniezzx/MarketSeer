@@ -2,12 +2,10 @@
 股票数据日常更新任务
 """
 
-from app.utils.logger import get_logger
-from app.utils.trading_calendar import is_trading_day
+from logger import logger
+from app.utils import is_trading_day
 from app.utils.time_helper import get_current_time
 from app.services.daily_update_service import DailyUpdateService
-
-logger = get_logger(__name__)
 
 
 def daily_update_stock_data(app):
@@ -32,6 +30,6 @@ def daily_update_stock_data(app):
             logger.info(f'股票数据更新结果: {result}')
 
         except Exception as e:
-            logger.error(f'股票数据更新失败: {str(e)}', exc_info=True)
+            logger.error(f'股票数据更新失败: {str(e)}')
 
         logger.info('=' * 50)

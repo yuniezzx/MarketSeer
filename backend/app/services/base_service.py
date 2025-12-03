@@ -6,8 +6,8 @@
 from abc import ABC
 from datetime import datetime
 from app.models import db
-from app.config import Config
-from app.utils.logger import get_logger
+from config import Config
+from logger import logger
 
 
 class BaseService(ABC):
@@ -24,7 +24,7 @@ class BaseService(ABC):
     def __init__(self):
         """初始化基础服务"""
         self.config = Config()
-        self.logger = get_logger(self.__class__.__name__)
+        self.logger = logger.bind(name=self.__class__.__name__)
 
     # ============ 数据源采集方法 ============
 

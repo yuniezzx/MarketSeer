@@ -4,7 +4,7 @@ MarketSeer Flask Application Factory
 
 from flask import Flask
 from flask_cors import CORS
-from app.config import Config
+from config import Config
 
 
 def create_app(config_class=Config):
@@ -32,15 +32,12 @@ def create_app(config_class=Config):
 
     # 初始化定时任务调度器
     import os
-    from app.tasks.scheduler import scheduler, start_scheduler
-    from app.utils.logger import get_logger
-
-    logger = get_logger(__name__)
+    from app.tasks.scheduler import scheduler
+    from logger import logger
 
     # 只在主进程或非 debug 模式下启动 scheduler（避免 Flask reloader 重复启动）
     if os.environ.get('WERKZEUG_RUN_MAIN') == 'true' or not app.debug:
         scheduler.configure(timezone=app.config.get("SCHEDULER_TIMEZONE", "Asia/Shanghai"))
-        start_scheduler()
 
         from app.tasks.jobs.daily_update import daily_update_stock_data
 

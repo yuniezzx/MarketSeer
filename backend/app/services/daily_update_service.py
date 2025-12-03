@@ -3,10 +3,10 @@
 负责定时采集和更新龙虎榜等数据
 """
 
-from app.models.lhb.daily_lhb import DailyLHB
-from app.services.base_service import BaseService
-from app.mapping.lhb_mapping import weekly_lhb_mapper
-from app.utils.time_helper import get_current_time
+from app.models import DailyLHB
+from .base_service import BaseService
+from app.mapping import weekly_lhb_mapper
+from app.utils import get_current_time
 
 
 class DailyUpdateService(BaseService):

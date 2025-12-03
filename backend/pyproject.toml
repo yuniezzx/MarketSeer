@@ -28,6 +28,9 @@ dependencies = [
 
     # scheduler
     "apscheduler>=3.10.0",
+
+    # logger
+    "loguru>=0.7.2",
 ]
 
 [project.optional-dependencies]

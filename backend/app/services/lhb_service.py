@@ -5,8 +5,8 @@
 
 from datetime import datetime
 from app.models import DailyLHB, db
-from app.mapping.lhb_mapping import weekly_lhb_mapper
-from app.services.base_service import BaseService
+from app.mapping import weekly_lhb_mapper
+from .base_service import BaseService
 
 
 class LhbService(BaseService):
