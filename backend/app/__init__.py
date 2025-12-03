@@ -17,8 +17,10 @@ def create_app(config_class=Config):
 
     # 初始化数据库
     from app.models import db, init_db
+    from flask_migrate import Migrate
 
     db.init_app(app)
+    migrate = Migrate(app, db)
 
     with app.app_context():
         init_db()

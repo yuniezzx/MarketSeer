@@ -36,6 +36,7 @@ class StockInfo(BaseModel):
 
     # 状态信息
     status = db.Column(db.String(20), default='上市', comment='状态（上市/退市/停牌）')
+    tracking = db.Column(db.Boolean, default=False, index=True, comment='是否追踪分时数据')
 
     # 创建复合索引
     __table_args__ = (
@@ -64,6 +65,7 @@ class StockInfo(BaseModel):
             'main_operation_business': self.main_operation_business,
             'operating_scope': self.operating_scope,
             'status': self.status,
+            'tracking': self.tracking,
             'created_at': self.created_at.isoformat() if self.created_at else None,
             'updated_at': self.updated_at.isoformat() if self.updated_at else None,
         }
@@ -108,4 +110,5 @@ class StockInfo(BaseModel):
             main_operation_business=data.get('main_operation_business'),
             operating_scope=data.get('operating_scope'),
             status=data.get('status', '上市'),
+            tracking=data.get('tracking', False),
         )
