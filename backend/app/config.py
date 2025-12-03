@@ -52,7 +52,7 @@ class Config:
     LOG_FILE = BASE_DIR / 'logs' / 'marketseer.log'
 
     # CORS 配置
-    CORS_ORIGINS = ['http://localhost:3000', 'http://localhost:5173']
+    CORS_ORIGINS = ['http://localhost:3000', 'http://localhost:5173', 'http://localhost:5000']
 
 
 class DevelopmentConfig(Config):
