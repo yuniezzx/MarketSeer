@@ -21,7 +21,7 @@ class DailyUpdateService(BaseService):
 
         # 从 AkShare 获取龙虎榜数据，传入日期参数
         lhb_data = self._fetch_from_akshare(
-            'stock_lhb_detail_em', api_params={'start_date': '20251203', 'end_date': '20251203'}
+            'stock_lhb_detail_em', api_params={'start_date': current_date, 'end_date': current_date}
         )
         if not lhb_data:
             self.logger.warning("未获取到龙虎榜数据")
@@ -32,9 +32,7 @@ class DailyUpdateService(BaseService):
 
         # 保存到数据库，使用四字段复合唯一键
         updated_count = self._save_to_db(
-            DailyLHB, 
-            mapped_data, 
-            unique_fields=['code', 'listed_date', 'reasons', 'analysis']
+            DailyLHB, mapped_data, unique_fields=['code', 'listed_date', 'reasons', 'analysis']
         )
         self.logger.info(f"龙虎榜数据更新完成，更新记录数: {updated_count}")
         return updated_count
