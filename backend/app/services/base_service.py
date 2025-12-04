@@ -94,29 +94,35 @@ class BaseService(ABC):
 
     # ============ 数据库操作方法 ============
 
-    def _save_to_db(self, model_class, data_list: list, unique_field: str = 'code') -> int:
+    def _save_to_db(self, model_class, data_list: list, unique_fields: list = None) -> int:
         """
         通用的数据库保存方法（批量保存或更新）
 
         Args:
             model_class: 模型类（如 StockInfo, DailyLHB）
             data_list (list): 要保存的数据列表
-            unique_field (str): 用于判断记录是否存在的唯一字段，默认为 'code'
+            unique_fields (list): 用于判断记录是否存在的唯一字段列表，默认为 ['code']
 
         Returns:
             int: 更新的记录数
         """
+        if unique_fields is None:
+            unique_fields = ['code']
+        
         updated_count = 0
 
         for data in data_list:
             try:
-                unique_value = data.get(unique_field)
-                if not unique_value:
-                    self.logger.warning(f"数据缺少唯一字段 {unique_field}，跳过")
+                # 构建过滤条件
+                filter_conditions = {field: data.get(field) for field in unique_fields}
+                
+                # 检查是否所有唯一字段都有值
+                if not all(filter_conditions.values()):
+                    self.logger.warning(f"数据缺少必需的唯一字段，跳过: {filter_conditions}")
                     continue
 
                 # 查询是否已存在
-                existing_record = model_class.query.filter_by(**{unique_field: unique_value}).first()
+                existing_record = model_class.query.filter_by(**filter_conditions).first()
 
                 if existing_record:
                     # 更新现有记录
@@ -136,7 +142,7 @@ class BaseService(ABC):
                 updated_count += 1
 
             except Exception as e:
-                self.logger.error(f"保存数据 {data.get(unique_field)} 失败: {str(e)}")
+                self.logger.error(f"保存数据失败: {str(e)}")
                 continue
 
         # 提交事务

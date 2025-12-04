@@ -36,7 +36,11 @@ class DailyLHB(BaseModel):
     analysis = db.Column(db.Text, comment='解读')
     reasons = db.Column(db.Text, comment='上榜原因')
 
-    __table_args__ = (db.Index('idx_code', 'code'),)
+    __table_args__ = (
+        db.Index('idx_code', 'code'),
+        db.UniqueConstraint('code', 'listed_date', 'reasons', 'analysis', 
+                        name='uq_lhb_composite'),  # 复合唯一约束
+        )
 
     def __repr__(self):
         return f'<DailyLHB {self.code} - {self.name}>'
