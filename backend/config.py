@@ -11,7 +11,7 @@ load_dotenv()
 
 
 # 基础路径
-BASE_DIR = Path(__file__).parent.parent
+BASE_DIR = Path(__file__).parent
 DATA_DIR = BASE_DIR / 'data'
 
 
@@ -25,7 +25,7 @@ class Config:
     # 数据库配置
     SQLALCHEMY_DATABASE_URI = os.environ.get(
         'SQLALCHEMY_DATABASE_URI',
-        f'sqlite:///{DATA_DIR / "marketseer.db"}'
+        f'sqlite:///{BASE_DIR / "data" / "marketseer.db"}'
     )
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
