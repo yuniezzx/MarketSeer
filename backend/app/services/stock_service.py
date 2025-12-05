@@ -74,3 +74,24 @@ class StockInfoService(BaseService):
         # 保存到数据库
         self._save_to_db(StockInfo, [mapping_data], unique_fields=['code'])
         return self.get_stock_by_code(code)
+
+    def update_stock_tracking(self, code, tracking):
+        """
+        更新股票的追踪状态
+        
+        Args:
+            code: 股票代码
+            tracking: 是否追踪 (bool)
+        
+        Returns:
+            StockInfo: 更新后的股票对象,如果不存在返回 None
+        """
+        stock = self.get_stock_by_code(code)
+        if not stock:
+            return None
+        
+        stock.tracking = tracking
+        db.session.commit()
+        
+        self.logger.info(f"更新股票 {code} 的追踪状态为: {tracking}")
+        return stock

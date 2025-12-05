@@ -95,3 +95,37 @@ def add_stock():
 
     except Exception as e:
         return jsonify({'status': 'error', 'message': str(e)}), 500
+
+@api_bp.route('/stocks/<string:code>/tracking', methods=['PATCH'])
+def update_stock_tracking(code):
+    """
+    更新指定股票的追踪状态
+    """
+    try:
+        # 获取请求数据
+        data = request.get_json()
+        tracking = data.get('tracking')
+        
+        # 验证参数
+        if tracking is None:
+            return jsonify({'status': 'error', 'message': 'tracking 参数不能为空'}), 400
+        
+        if not isinstance(tracking, bool):
+            return jsonify({'status': 'error', 'message': 'tracking 参数必须是布尔类型'}), 400
+        
+        # 使用 service 更新
+        stock_service = StockInfoService()
+        stock = stock_service.update_stock_tracking(code, tracking)
+        
+        if not stock:
+            return jsonify({'status': 'error', 'message': f'未找到股票代码 {code}'}), 404
+        
+        return jsonify({
+            'status': 'success',
+            'message': f'成功更新股票 {code} 的追踪状态',
+            'data': stock.to_dict()
+        }), 200
+        
+    except Exception as e:
+        logger.error(f"更新股票追踪状态失败: {str(e)}")
+        return jsonify({'status': 'error', 'message': str(e)}), 500
