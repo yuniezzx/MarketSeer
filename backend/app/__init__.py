@@ -58,7 +58,8 @@ def create_app(config_class=Config):
         # 立即执行一次任务用于测试
         logger.info("立即执行一次定时任务进行测试...")
         try:
-            daily_update_stock_data(app)
+            # daily_update_stock_data(app)
+            pass
         except Exception as e:
             logger.error(f"测试任务执行失败: {str(e)}", exc_info=True)
     else:

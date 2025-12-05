@@ -68,7 +68,9 @@ class StockInfoService(BaseService):
         mapping_data = stock_info_mapper(em_source=em_info_data, xq_source=xq_info_data)
         market = get_market_from_code(code)
         mapping_data['market'] = market
-
+        
+        self.logger.info(f"添加新股票，代码: {code}, 映射数据: {mapping_data}")
+        
         # 保存到数据库
-        self._save_to_db(StockInfo, [mapping_data], unique_field='code')
+        self._save_to_db(StockInfo, [mapping_data], unique_fields=['code'])
         return self.get_stock_by_code(code)

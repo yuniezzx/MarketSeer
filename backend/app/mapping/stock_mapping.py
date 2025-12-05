@@ -2,6 +2,7 @@
 股票数据映射配置
 定义从不同数据源到 StockInfo 模型的字段映射关系
 """
+from datetime import datetime
 
 # 东方财富(EM)数据源映射
 # stock_individual_info_em 接口返回的字段映射
@@ -61,9 +62,22 @@ def stock_info_mapper(em_source, xq_source):
     if xq_dict:
         for model_field, source_field in XQ_FIELD_MAPPING.items():
             if model_field == 'industry_code':
-                mapped_data[model_field] = xq_dict['affiliate_industry']['ind_code']
+                if 'affiliate_industry' in xq_dict and isinstance(xq_dict['affiliate_industry'], dict):
+                    mapped_data[model_field] = xq_dict['affiliate_industry'].get('ind_code')
             elif model_field == 'industry':
-                mapped_data[model_field] = xq_dict['affiliate_industry']['ind_name']
+                if 'affiliate_industry' in xq_dict and isinstance(xq_dict['affiliate_industry'], dict):
+                    mapped_data[model_field] = xq_dict['affiliate_industry'].get('ind_name')
+            elif model_field in ['establish_date', 'list_date']:
+                # 处理日期字段:将时间戳转换为日期字符串
+                if source_field in xq_dict and xq_dict[source_field]:
+                    timestamp = xq_dict[source_field]
+                    if isinstance(timestamp, (int, float)):
+                        # 毫秒时间戳转换为日期字符串
+                        dt = datetime.fromtimestamp(timestamp / 1000)
+                        mapped_data[model_field] = dt.strftime('%Y-%m-%d')
+                    elif isinstance(timestamp, str):
+                        # 如果已经是字符串,直接使用
+                        mapped_data[model_field] = timestamp
             else:
                 if source_field in xq_dict:
                     mapped_data[model_field] = xq_dict[source_field]

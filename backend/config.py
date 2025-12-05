@@ -51,6 +51,10 @@ class Config:
     LOG_LEVEL = 'INFO'
     LOG_FILE = BASE_DIR / 'logs' / 'marketseer.log'
 
+    # AkShare 数据保存配置
+    SAVE_AKSHARE_RAW_DATA = os.getenv('SAVE_AKSHARE_RAW_DATA', 'true').lower() == 'true'
+    AKSHARE_RAW_DATA_DIR = DATA_DIR / 'akshare_raw'
+
     # CORS 配置
     CORS_ORIGINS = ['http://localhost:3000', 'http://localhost:5173', 'http://localhost:5000']
 

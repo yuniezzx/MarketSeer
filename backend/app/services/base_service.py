@@ -5,6 +5,8 @@
 
 from abc import ABC
 from datetime import datetime
+import json
+from pathlib import Path
 from app.models import db
 from config import Config
 from logger import logger
@@ -55,16 +57,68 @@ class BaseService(ABC):
             else:
                 df = api_func()
 
-            # 转换为 dict list
+            # 转换为统一的 list 格式
             if hasattr(df, 'to_dict'):
-                return df.to_dict(orient='records')
+                # DataFrame 格式
+                data_list = df.to_dict(orient='records')
+            elif isinstance(df, list):
+                # 已经是列表格式
+                data_list = df
+            elif isinstance(df, dict):
+                # 字典格式,包装成列表
+                data_list = [df]
             else:
-                self.logger.error("AkShare 返回结果无法转换为 dict list")
-                return []
+                # 其他格式,尝试直接使用
+                self.logger.warning(f"AkShare 返回了未知格式的数据: {type(df)}")
+                data_list = df
+            
+            # 保存原始数据到 JSON 文件（如果配置启用）
+            if self.config.SAVE_AKSHARE_RAW_DATA:
+                self._save_akshare_raw_data(api_name, api_params, data_list)
+            
+            return data_list
 
         except Exception as e:
             self.logger.error(f"AkShare 数据获取失败: {str(e)}")
             return []
+
+    def _save_akshare_raw_data(self, api_name: str, api_params: dict, data: list):
+        """
+        保存 AkShare 原始数据到 JSON 文件
+
+        Args:
+            api_name (str): API 接口名称
+            api_params (dict): API 参数
+            data (list): 获取到的数据
+        """
+        try:
+            # 创建保存目录
+            save_dir = Path(self.config.AKSHARE_RAW_DATA_DIR)
+            save_dir.mkdir(parents=True, exist_ok=True)
+
+            # 生成文件名：{api_name}_{symbol}_{timestamp}.json
+            timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+            symbol = api_params.get('symbol', 'unknown') if api_params else 'no_params'
+            filename = f"{api_name}_{symbol}_{timestamp}.json"
+            filepath = save_dir / filename
+
+            # 构建保存的数据结构
+            raw_data = {
+                'api_name': api_name,
+                'api_params': api_params,
+                'fetch_time': datetime.now().isoformat(),
+                'data_count': len(data),
+                'data': data
+            }
+
+            # 保存到 JSON 文件
+            with open(filepath, 'w', encoding='utf-8') as f:
+                json.dump(raw_data, f, ensure_ascii=False, indent=2)
+
+            self.logger.info(f"AkShare 原始数据已保存到: {filepath}")
+
+        except Exception as e:
+            self.logger.error(f"保存 AkShare 原始数据失败: {str(e)}")
 
     def _fetch_from_efinance(self, api_name: str = None, api_params: dict = None) -> list:
         """
@@ -111,6 +165,8 @@ class BaseService(ABC):
         
         updated_count = 0
 
+        self.logger.info(f"开始保存数据到数据库，模型: {model_class.__name__}, 记录数: {len(data_list)}")
+        
         for data in data_list:
             try:
                 # 构建过滤条件
