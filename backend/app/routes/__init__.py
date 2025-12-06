@@ -1,4 +1,6 @@
 """
+路由模块
+
 路由规范(RESTful 标准)
 =======================
 1. 使用名词而非动词来表示资源。例如，使用 /users 而不是 /getUsers。
@@ -17,4 +19,4 @@
 在此文件中导入并注册所有路由蓝图。
 """
 
-from .stock import stock_bp
+from .stocks import stocks_bp

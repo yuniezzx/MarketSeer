@@ -23,8 +23,8 @@ def create_app():
         init_db()
 
     # 注册蓝图
-    from app.routes import stock_bp
+    from app.routes import stocks_bp
 
-    app.register_blueprint(stock_bp)
+    app.register_blueprint(stocks_bp)
 
     return app

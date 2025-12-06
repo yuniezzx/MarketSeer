@@ -1,3 +1,7 @@
+"""
+数据库模型模块
+"""
+
 from .base import db, init_db
 from .stocks.info import StockInfo
 
