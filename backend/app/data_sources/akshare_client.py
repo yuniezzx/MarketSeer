@@ -7,7 +7,6 @@ class AkshareClient(BaseClient):
         super().__init__()
 
     def fetch(self, api_name: str, params: dict = None):
-        """"""
         try:
             if not hasattr(ak, api_name):
                 error_msg = f"Akshare does not have API named '{api_name}'"

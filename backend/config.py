@@ -44,8 +44,8 @@ class Config:
     LOG_FILE = BASE_DIR / 'logs' / 'marketseer.log'
 
     # AkShare 数据保存配置
-    SAVE_AKSHARE_RAW_DATA = os.getenv('SAVE_AKSHARE_RAW_DATA', 'true').lower() == 'true'
-    SAVE_AKSHARE_RAW_DATA_DAYS = int(os.getenv('SAVE_AKSHARE_RAW_DATA_DAYS', 30))
+    SAVE_RAW_DATA = os.getenv('SAVE_RAW_DATA', 'true').lower() == 'true'
+    SAVE_RAW_DATA_DAYS = int(os.getenv('SAVE_RAW_DATA_DAYS', 30))
     AKSHARE_RAW_DATA_DIR = DATA_DIR / 'akshare_raw'
 
     # CORS 配置
