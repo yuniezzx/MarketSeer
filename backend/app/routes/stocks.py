@@ -26,7 +26,8 @@ def add_stock():
         if not symbol:
             return {"error": "symbol is required"}, 400
 
-        result = StocksService.add_stock(symbol)
+        service = StocksService()
+        result = service.add_stock(symbol)
 
         return (
             jsonify({'status': 'success', 'message': 'Stock added successfully', 'data': result}),
