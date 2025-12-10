@@ -129,9 +129,6 @@ API_CONFIGS = {
     client_manager = ClientManager()
     mapper = StockInfoMapper(client_manager)
     
-    # 映射单个字段
-    full_name = mapper.map_field('full_name', {'symbol': '600000'})
-    
     # 映射所有字段
     all_fields = mapper.map_all_fields({'symbol': '600000'})
 """

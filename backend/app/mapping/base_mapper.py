@@ -35,78 +35,6 @@ class BaseMapper:
         self.api_configs = api_configs
         self.logger = logger
 
-    def map_field(self, model_field: str, params: Dict[str, Any]) -> Optional[Any]:
-        """
-        映射单个字段,按照降级链逐个尝试数据源
-
-        Args:
-            model_field: 模型字段名
-            params: 查询参数(如 symbol)
-
-        Returns:
-            字段值,如果所有数据源都失败则返回 None
-        """
-        if model_field not in self.field_mapping:
-            self.logger.warning(f"Field '{model_field}' not found in mapping configuration")
-            return None
-
-        fallback_chain = self.field_mapping[model_field]
-
-        for fallback_config in fallback_chain:
-            api_name = fallback_config['api']
-            source_field = fallback_config['field']
-            transform_func = fallback_config.get('transform')
-
-            try:
-                # 获取API配置
-                if api_name not in self.api_configs:
-                    self.logger.error(f"API '{api_name}' not found in API configs")
-                    continue
-
-                api_config = self.api_configs[api_name]
-                data_source = api_config['data_source']
-                param_mapping = api_config.get('param_mapping', {})
-
-                # 映射参数
-                mapped_params = {}
-                for api_param, input_param in param_mapping.items():
-                    if input_param in params:
-                        mapped_params[api_param] = params[input_param]
-                    else:
-                        self.logger.warning(f"Required parameter '{input_param}' not found in input params")
-                        raise ValueError(f"Missing required parameter: {input_param}")
-
-                # 获取客户端
-                client = self.client_manager.get_client(data_source)
-
-                # 调用API
-                self.logger.debug(f"Trying to fetch field '{model_field}' from {data_source}.{api_name}")
-                raw_data = client.fetch(api_name, mapped_params)
-
-                # 提取字段值
-                value = self._extract_value(raw_data, source_field)
-
-                # 应用转换函数
-                if value is not None and transform_func is not None:
-                    value = transform_func(value)
-
-                # 如果成功获取到值,返回
-                if value is not None:
-                    self.logger.info(
-                        f"Successfully fetched field '{model_field}' from {data_source}.{api_name}"
-                    )
-                    return value
-                else:
-                    self.logger.warning(
-                        f"Field '{source_field}' is None in response from {data_source}.{api_name}"
-                    )
-
-            except Exception as e:
-                self.logger.error(f"Error fetching field '{model_field}' from {api_name}: {str(e)}")
-                continue
-
-        self.logger.error(f"All fallback options failed for field '{model_field}'")
-        return None
 
     def _extract_value(self, raw_data: Any, field_path: str) -> Optional[Any]:
         """
@@ -155,9 +83,64 @@ class BaseMapper:
             self.logger.error(f"Error extracting field '{field_path}': {str(e)}")
             return None
 
+    def _fetch_api(self, api_name: str, params: Dict[str, Any]) -> Optional[Any]:
+        """
+        调用单个 API 获取原始数据
+
+        Args:
+            api_name: API 名称
+            params: 查询参数
+
+        Returns:
+            API 返回的原始数据,失败返回 None
+        """
+        try:
+            # 获取API配置
+            if api_name not in self.api_configs:
+                self.logger.error(f"API '{api_name}' not found in API configs")
+                return None
+
+            api_config = self.api_configs[api_name]
+            data_source = api_config['data_source']
+            param_mapping = api_config.get('param_mapping', {})
+
+            # 映射参数
+            mapped_params = {}
+            for api_param, input_param in param_mapping.items():
+                if input_param in params:
+                    mapped_params[api_param] = params[input_param]
+                else:
+                    self.logger.warning(f"Required parameter '{input_param}' not found in input params")
+                    raise ValueError(f"Missing required parameter: {input_param}")
+
+            # 获取客户端
+            client = self.client_manager.get_client(data_source)
+
+            # 调用API
+            self.logger.debug(f"Fetching data from {data_source}.{api_name} with params {mapped_params}")
+            raw_data = client.fetch(api_name, mapped_params)
+            
+            if raw_data is not None:
+                self.logger.info(f"Successfully fetched data from {data_source}.{api_name}")
+            else:
+                self.logger.warning(f"No data returned from {data_source}.{api_name}")
+            
+            return raw_data
+
+        except Exception as e:
+            self.logger.error(f"Error fetching from API '{api_name}': {str(e)}")
+            return None
+
     def map_all_fields(self, params: Dict[str, Any]) -> Dict[str, Any]:
         """
-        映射所有配置的字段
+        映射所有配置的字段,优化后按 API 分组调用,避免重复请求
+
+        实现逻辑:
+        1. 按优先级遍历(第一优先级、第二优先级...)
+        2. 对于每个优先级,收集所有需要调用的 API(去重)
+        3. 批量调用这些 API 并缓存结果
+        4. 从缓存结果中提取所有可以提取的字段
+        5. 对于仍缺失的字段,进入下一优先级
 
         Args:
             params: 查询参数
@@ -166,8 +149,93 @@ class BaseMapper:
             映射后的字段字典
         """
         result = {}
-        for model_field in self.field_mapping.keys():
-            value = self.map_field(model_field, params)
-            if value is not None:
-                result[model_field] = value
+        # 记录还需要获取的字段
+        pending_fields = set(self.field_mapping.keys())
+        
+        # 计算最大优先级深度
+        max_depth = max(len(chain) for chain in self.field_mapping.values())
+        
+        # 按优先级逐层处理
+        for priority_index in range(max_depth):
+            if not pending_fields:
+                # 所有字段都已获取
+                break
+            
+            # API 调用缓存: {api_name: raw_data}
+            api_cache = {}
+            
+            # 收集当前优先级需要调用的 API
+            apis_to_fetch = set()
+            for field in pending_fields:
+                fallback_chain = self.field_mapping[field]
+                if priority_index < len(fallback_chain):
+                    api_name = fallback_chain[priority_index]['api']
+                    apis_to_fetch.add(api_name)
+            
+            # 批量调用所有需要的 API
+            self.logger.debug(
+                f"Priority {priority_index + 1}: Fetching {len(apis_to_fetch)} unique APIs for {len(pending_fields)} pending fields"
+            )
+            for api_name in apis_to_fetch:
+                raw_data = self._fetch_api(api_name, params)
+                if raw_data is not None:
+                    api_cache[api_name] = raw_data
+            
+            # 从缓存中提取所有可以提取的字段
+            successfully_fetched = []
+            for field in list(pending_fields):
+                fallback_chain = self.field_mapping[field]
+                if priority_index >= len(fallback_chain):
+                    # 该字段的降级链已用尽
+                    continue
+                
+                fallback_config = fallback_chain[priority_index]
+                api_name = fallback_config['api']
+                source_field = fallback_config['field']
+                transform_func = fallback_config.get('transform')
+                
+                # 检查缓存中是否有该 API 的数据
+                if api_name in api_cache:
+                    raw_data = api_cache[api_name]
+                    
+                    # 提取字段值
+                    value = self._extract_value(raw_data, source_field)
+                    
+                    # 应用转换函数
+                    if value is not None and transform_func is not None:
+                        try:
+                            value = transform_func(value)
+                        except Exception as e:
+                            self.logger.error(
+                                f"Error applying transform for field '{field}': {str(e)}"
+                            )
+                            value = None
+                    
+                    # 如果成功获取到值,记录并标记为已完成
+                    if value is not None:
+                        result[field] = value
+                        successfully_fetched.append(field)
+                        self.logger.debug(
+                            f"Field '{field}' successfully fetched from API '{api_name}' at priority {priority_index + 1}"
+                        )
+                    else:
+                        self.logger.debug(
+                            f"Field '{source_field}' is None in response from API '{api_name}'"
+                        )
+            
+            # 从待处理集合中移除已成功获取的字段
+            for field in successfully_fetched:
+                pending_fields.remove(field)
+            
+            self.logger.info(
+                f"Priority {priority_index + 1}: Successfully fetched {len(successfully_fetched)} fields, "
+                f"{len(pending_fields)} fields still pending"
+            )
+        
+        # 记录最终未能获取的字段
+        if pending_fields:
+            self.logger.warning(
+                f"Failed to fetch {len(pending_fields)} fields after trying all priorities: {pending_fields}"
+            )
+        
         return result
