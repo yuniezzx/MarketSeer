@@ -1,10 +1,11 @@
 """
 Base Mapper
 
-实现字段级别的多源降级机制,负责数据源到模型字段的映射
+实现 API 级别的降级机制,负责数据源到模型字段的映射
 """
 
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any, List, Optional, Callable
+import pandas as pd
 from logger import logger
 from ..data_sources import ClientManager
 
@@ -13,229 +14,243 @@ class BaseMapper:
     """
     基础映射器
 
-    负责根据配置将多个数据源的数据映射到模型字段,实现字段级别的降级机制
+    实现 API 级降级机制:
+    1. 按优先级链依次尝试每个 API
+    2. 每个 API 最多只调用一次
+    3. 提取所有可映射的字段
+    4. 检查是否还有字段缺失
+    5. 有缺失且还有下一个 API 时继续尝试
+    6. 增量合并结果,不覆盖已获取的字段
     """
 
     def __init__(
         self,
         client_manager: ClientManager,
-        field_mapping: Dict[str, List[Dict[str, Any]]],
+        api_priority_chain: List[str],
         api_configs: Dict[str, Dict[str, Any]],
+        api_field_mapping: Dict[str, Dict[str, str]],
+        all_fields: List[str],
     ):
         """
         初始化映射器
 
         Args:
             client_manager: 数据源客户端管理器
-            field_mapping: 字段映射配置,格式为 {model_field: [fallback_chain]}
-            api_configs: API配置,包含每个API的数据源和参数映射
+            api_priority_chain: API 优先级链,如 ['api1', 'api2', 'api3']
+            api_configs: API 配置,包含 data_source, param_mapping, param_transformer
+            api_field_mapping: API 字段映射,定义每个 API 返回数据到模型字段的映射
+            all_fields: 所有支持的字段列表
         """
         self.client_manager = client_manager
-        self.field_mapping = field_mapping
+        self.api_priority_chain = api_priority_chain
         self.api_configs = api_configs
+        self.api_field_mapping = api_field_mapping
+        self.all_fields = all_fields
         self.logger = logger
 
-
-    def _extract_value(self, raw_data: Any, field_path: str) -> Optional[Any]:
+    def map_all_fields(self, params: Dict[str, Any]) -> Dict[str, Any]:
         """
-        从原始数据中提取字段值
-
-        支持点号分隔的路径,如 'data.name' 或简单字段名 'name'
+        映射所有字段,使用 API 级降级机制
 
         Args:
-            raw_data: 原始数据(可能是dict, DataFrame等)
-            field_path: 字段路径
+            params: 调用参数,如 {'symbol': '002156'}
 
         Returns:
-            字段值,如果找不到返回 None
+            映射结果字典,包含所有成功获取的字段
+
+        工作流程:
+            1. 按优先级链依次尝试每个 API
+            2. 调用 API 并提取所有可映射字段
+            3. 增量合并到结果中(不覆盖已有字段)
+            4. 检查是否还有缺失字段
+            5. 无缺失或无更多 API 时停止
+        """
+        result = {}
+        missing_fields = set(self.all_fields)
+
+        for api_name in self.api_priority_chain:
+            if not missing_fields:
+                # 所有字段都已获取,无需继续
+                self.logger.info(f"所有字段已完整,停止降级。当前API: {api_name}")
+                break
+
+            self.logger.info(
+                f"尝试 API: {api_name}, "
+                f"缺失字段数: {len(missing_fields)}, "
+                f"缺失字段: {missing_fields}"
+            )
+
+            # 调用 API
+            data = self._call_api(api_name, params)
+            if data is None:
+                self.logger.warning(f"API {api_name} 调用失败,尝试下一个")
+                continue
+
+            # 提取该 API 可映射的字段
+            extracted = self._extract_fields(api_name, data, missing_fields)
+            
+            if extracted:
+                # 增量合并结果(不覆盖已有字段)
+                for field, value in extracted.items():
+                    if field not in result:  # 只添加新字段
+                        result[field] = value
+                        missing_fields.discard(field)
+                
+                self.logger.info(
+                    f"API {api_name} 成功提取 {len(extracted)} 个字段: {list(extracted.keys())}"
+                )
+            else:
+                self.logger.warning(f"API {api_name} 未提取到任何字段")
+
+        # 记录最终结果
+        if missing_fields:
+            self.logger.warning(
+                f"降级完成,仍有 {len(missing_fields)} 个字段缺失: {missing_fields}"
+            )
+        else:
+            self.logger.info("降级完成,所有字段均已获取")
+
+        return result
+
+    def _call_api(self, api_name: str, params: Dict[str, Any]) -> Optional[Any]:
+        """
+        调用 API 并进行参数转换
+
+        Args:
+            api_name: API 名称
+            params: 原始参数
+
+        Returns:
+            API 返回的数据,失败时返回 None
+
+        处理流程:
+            1. 获取 API 配置
+            2. 转换参数格式(如添加市场前缀)
+            3. 映射参数名(如 symbol -> stock_code)
+            4. 调用对应的数据源客户端
         """
         try:
-            # 处理 pandas DataFrame
-            if hasattr(raw_data, 'iloc'):
-                # DataFrame: 获取第一行数据
-                if len(raw_data) == 0:
-                    return None
-                if field_path in raw_data.columns:
-                    value = raw_data.iloc[0][field_path]
-                    # 处理 pandas 的 NaN/NaT
-                    import pandas as pd
+            config = self.api_configs.get(api_name)
+            if not config:
+                self.logger.error(f"API {api_name} 配置不存在")
+                return None
 
+            data_source = config['data_source']
+            param_mapping = config.get('param_mapping', {})
+            param_transformer: Callable[[str], str] = config.get('param_transformer')
+
+            # 转换参数
+            transformed_params = {}
+            for input_key, api_key in param_mapping.items():
+                if input_key in params:
+                    value = params[input_key]
+                    # 如果有参数转换器,进行转换
+                    if param_transformer and isinstance(value, str):
+                        value = param_transformer(value)
+                    transformed_params[api_key] = value
+
+            self.logger.debug(
+                f"调用 API: {api_name}, "
+                f"数据源: {data_source}, "
+                f"原始参数: {params}, "
+                f"转换后参数: {transformed_params}"
+            )
+
+            # 调用数据源客户端
+            client = self.client_manager.get_client(data_source)
+            data = client.fetch_data(api_name, **transformed_params)
+
+            return data
+
+        except Exception as e:
+            self.logger.error(f"调用 API {api_name} 时出错: {e}", exc_info=True)
+            return None
+
+    def _extract_fields(
+        self, 
+        api_name: str, 
+        data: Any, 
+        fields: set
+    ) -> Dict[str, Any]:
+        """
+        从 API 数据中提取指定字段
+
+        Args:
+            api_name: API 名称
+            data: API 返回的数据
+            fields: 需要提取的字段集合
+
+        Returns:
+            提取的字段字典
+
+        处理流程:
+            1. 获取该 API 的字段映射配置
+            2. 遍历需要提取的字段
+            3. 根据映射路径从数据中获取值
+            4. 返回成功提取的字段
+        """
+        field_mapping = self.api_field_mapping.get(api_name)
+        if not field_mapping:
+            self.logger.warning(f"API {api_name} 没有字段映射配置")
+            return {}
+
+        result = {}
+        for field in fields:
+            if field not in field_mapping:
+                continue
+
+            field_path = field_mapping[field]
+            value = self._get_field_value(data, field_path)
+
+            if value is not None:
+                result[field] = value
+
+        return result
+
+    def _get_field_value(self, data: Any, field_path: str) -> Optional[Any]:
+        """
+        从数据中获取字段值,支持 DataFrame 和 dict
+
+        Args:
+            data: 数据对象(DataFrame 或 dict)
+            field_path: 字段路径,支持嵌套如 'data.stock_code'
+
+        Returns:
+            字段值,不存在或为空时返回 None
+
+        处理逻辑:
+            - DataFrame: 取第一行对应列的值
+            - dict: 支持嵌套路径访问
+        """
+        try:
+            if isinstance(data, pd.DataFrame):
+                # DataFrame: 取第一行
+                if data.empty:
+                    return None
+                
+                if field_path in data.columns:
+                    value = data.iloc[0][field_path]
+                    # 处理 pandas 的 NaN/None
                     if pd.isna(value):
                         return None
                     return value
                 return None
 
-            # 处理 dict
-            if isinstance(raw_data, dict):
-                # 支持点号分隔的路径
+            elif isinstance(data, dict):
+                # dict: 支持嵌套路径
                 keys = field_path.split('.')
-                current = raw_data
+                current = data
                 for key in keys:
                     if isinstance(current, dict) and key in current:
                         current = current[key]
                     else:
                         return None
-                return current
+                return current if current else None
 
-            return None
-
-        except Exception as e:
-            self.logger.error(f"Error extracting field '{field_path}': {str(e)}")
-            return None
-
-    def _fetch_api(self, api_name: str, params: Dict[str, Any]) -> Optional[Any]:
-        """
-        调用单个 API 获取原始数据
-
-        Args:
-            api_name: API 名称
-            params: 查询参数
-
-        Returns:
-            API 返回的原始数据,失败返回 None
-        """
-        try:
-            # 获取API配置
-            if api_name not in self.api_configs:
-                self.logger.error(f"API '{api_name}' not found in API configs")
+            else:
+                self.logger.warning(f"不支持的数据类型: {type(data)}")
                 return None
 
-            api_config = self.api_configs[api_name]
-            data_source = api_config['data_source']
-            param_mapping = api_config.get('param_mapping', {})
-
-            # 映射参数
-            mapped_params = {}
-            for api_param, input_param in param_mapping.items():
-                if input_param in params:
-                    mapped_params[api_param] = params[input_param]
-                else:
-                    self.logger.warning(f"Required parameter '{input_param}' not found in input params")
-                    raise ValueError(f"Missing required parameter: {input_param}")
-
-            # 获取客户端
-            client = self.client_manager.get_client(data_source)
-
-            # 调用API
-            self.logger.debug(f"Fetching data from {data_source}.{api_name} with params {mapped_params}")
-            raw_data = client.fetch(api_name, mapped_params)
-            
-            if raw_data is not None:
-                self.logger.info(f"Successfully fetched data from {data_source}.{api_name}")
-            else:
-                self.logger.warning(f"No data returned from {data_source}.{api_name}")
-            
-            return raw_data
-
         except Exception as e:
-            self.logger.error(f"Error fetching from API '{api_name}': {str(e)}")
+            self.logger.error(f"获取字段 {field_path} 时出错: {e}")
             return None
-
-    def map_all_fields(self, params: Dict[str, Any]) -> Dict[str, Any]:
-        """
-        映射所有配置的字段,优化后按 API 分组调用,避免重复请求
-
-        实现逻辑:
-        1. 按优先级遍历(第一优先级、第二优先级...)
-        2. 对于每个优先级,收集所有需要调用的 API(去重)
-        3. 批量调用这些 API 并缓存结果
-        4. 从缓存结果中提取所有可以提取的字段
-        5. 对于仍缺失的字段,进入下一优先级
-
-        Args:
-            params: 查询参数
-
-        Returns:
-            映射后的字段字典
-        """
-        result = {}
-        # 记录还需要获取的字段
-        pending_fields = set(self.field_mapping.keys())
-        
-        # 计算最大优先级深度
-        max_depth = max(len(chain) for chain in self.field_mapping.values())
-        
-        # 按优先级逐层处理
-        for priority_index in range(max_depth):
-            if not pending_fields:
-                # 所有字段都已获取
-                break
-            
-            # API 调用缓存: {api_name: raw_data}
-            api_cache = {}
-            
-            # 收集当前优先级需要调用的 API
-            apis_to_fetch = set()
-            for field in pending_fields:
-                fallback_chain = self.field_mapping[field]
-                if priority_index < len(fallback_chain):
-                    api_name = fallback_chain[priority_index]['api']
-                    apis_to_fetch.add(api_name)
-            
-            # 批量调用所有需要的 API
-            self.logger.debug(
-                f"Priority {priority_index + 1}: Fetching {len(apis_to_fetch)} unique APIs for {len(pending_fields)} pending fields"
-            )
-            for api_name in apis_to_fetch:
-                raw_data = self._fetch_api(api_name, params)
-                if raw_data is not None:
-                    api_cache[api_name] = raw_data
-            
-            # 从缓存中提取所有可以提取的字段
-            successfully_fetched = []
-            for field in list(pending_fields):
-                fallback_chain = self.field_mapping[field]
-                if priority_index >= len(fallback_chain):
-                    # 该字段的降级链已用尽
-                    continue
-                
-                fallback_config = fallback_chain[priority_index]
-                api_name = fallback_config['api']
-                source_field = fallback_config['field']
-                transform_func = fallback_config.get('transform')
-                
-                # 检查缓存中是否有该 API 的数据
-                if api_name in api_cache:
-                    raw_data = api_cache[api_name]
-                    
-                    # 提取字段值
-                    value = self._extract_value(raw_data, source_field)
-                    
-                    # 应用转换函数
-                    if value is not None and transform_func is not None:
-                        try:
-                            value = transform_func(value)
-                        except Exception as e:
-                            self.logger.error(
-                                f"Error applying transform for field '{field}': {str(e)}"
-                            )
-                            value = None
-                    
-                    # 如果成功获取到值,记录并标记为已完成
-                    if value is not None:
-                        result[field] = value
-                        successfully_fetched.append(field)
-                        self.logger.debug(
-                            f"Field '{field}' successfully fetched from API '{api_name}' at priority {priority_index + 1}"
-                        )
-                    else:
-                        self.logger.debug(
-                            f"Field '{source_field}' is None in response from API '{api_name}'"
-                        )
-            
-            # 从待处理集合中移除已成功获取的字段
-            for field in successfully_fetched:
-                pending_fields.remove(field)
-            
-            self.logger.info(
-                f"Priority {priority_index + 1}: Successfully fetched {len(successfully_fetched)} fields, "
-                f"{len(pending_fields)} fields still pending"
-            )
-        
-        # 记录最终未能获取的字段
-        if pending_fields:
-            self.logger.warning(
-                f"Failed to fetch {len(pending_fields)} fields after trying all priorities: {pending_fields}"
-            )
-        
-        return result
