@@ -75,9 +75,7 @@ class BaseMapper:
                 break
 
             self.logger.info(
-                f"尝试 API: {api_name}, "
-                f"缺失字段数: {len(missing_fields)}, "
-                f"缺失字段: {missing_fields}"
+                f"尝试 API: {api_name}, " f"缺失字段数: {len(missing_fields)}, " f"缺失字段: {missing_fields}"
             )
 
             # 调用 API
@@ -88,25 +86,21 @@ class BaseMapper:
 
             # 提取该 API 可映射的字段
             extracted = self._extract_fields(api_name, data, missing_fields)
-            
+
             if extracted:
                 # 增量合并结果(不覆盖已有字段)
                 for field, value in extracted.items():
                     if field not in result:  # 只添加新字段
                         result[field] = value
                         missing_fields.discard(field)
-                
-                self.logger.info(
-                    f"API {api_name} 成功提取 {len(extracted)} 个字段: {list(extracted.keys())}"
-                )
+
+                self.logger.info(f"API {api_name} 成功提取 {len(extracted)} 个字段: {list(extracted.keys())}")
             else:
                 self.logger.warning(f"API {api_name} 未提取到任何字段")
 
         # 记录最终结果
         if missing_fields:
-            self.logger.warning(
-                f"降级完成,仍有 {len(missing_fields)} 个字段缺失: {missing_fields}"
-            )
+            self.logger.warning(f"降级完成,仍有 {len(missing_fields)} 个字段缺失: {missing_fields}")
         else:
             self.logger.info("降级完成,所有字段均已获取")
 
@@ -158,7 +152,7 @@ class BaseMapper:
 
             # 调用数据源客户端
             client = self.client_manager.get_client(data_source)
-            data = client.fetch_data(api_name, **transformed_params)
+            data = client.fetch(api_name, transformed_params)
 
             return data
 
@@ -166,12 +160,7 @@ class BaseMapper:
             self.logger.error(f"调用 API {api_name} 时出错: {e}", exc_info=True)
             return None
 
-    def _extract_fields(
-        self, 
-        api_name: str, 
-        data: Any, 
-        fields: set
-    ) -> Dict[str, Any]:
+    def _extract_fields(self, api_name: str, data: Any, fields: set) -> Dict[str, Any]:
         """
         从 API 数据中提取指定字段
 
@@ -227,7 +216,7 @@ class BaseMapper:
                 # DataFrame: 取第一行
                 if data.empty:
                     return None
-                
+
                 if field_path in data.columns:
                     value = data.iloc[0][field_path]
                     # 处理 pandas 的 NaN/None

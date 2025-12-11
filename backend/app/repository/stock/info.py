@@ -1,5 +1,5 @@
 from app.models.stocks.info import StockInfo
-from .base import BaseRepository
+from ..base import BaseRepository
 
 
 class StockInfoRepository(BaseRepository[StockInfo]):

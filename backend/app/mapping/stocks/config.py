@@ -5,41 +5,18 @@
 """
 
 from typing import Callable
-
+from app.utils import add_market_prefix
 
 # ============ 参数转换函数 ============
-
-def add_market_prefix(code: str) -> str:
-    """
-    为股票代码添加市场前缀 (用于雪球API)
-    
-    Args:
-        code: 股票代码,如 "002156"
-        
-    Returns:
-        带市场前缀的代码,如 "SZ002156"
-        
-    规则:
-        - 0, 3 开头 -> 深圳 (SZ)
-        - 6 开头 -> 上海 (SH)
-        - 8, 4 开头 -> 北京 (BJ)
-    """
-    if code.startswith(('0', '3')):
-        return f"SZ{code}"
-    elif code.startswith('6'):
-        return f"SH{code}"
-    elif code.startswith('8') or code.startswith('4'):
-        return f"BJ{code}"
-    return code
 
 
 def no_transform(code: str) -> str:
     """
     不转换,直接返回原值
-    
+
     Args:
         code: 股票代码
-        
+
     Returns:
         原始股票代码
     """
@@ -49,9 +26,9 @@ def no_transform(code: str) -> str:
 # ============ API 优先级链 ============
 
 API_PRIORITY_CHAIN = [
-    'stock_individual_info_em',          # 优先级1: 东方财富 (字段最全)
-    'stock_individual_basic_info_xq',    # 优先级2: 雪球 (补充缺失字段)
-    'stock_individual_info'              # 优先级3: efinance (兜底)
+    'stock_individual_info_em',  # 优先级1: 东方财富 (字段最全)
+    'stock_individual_basic_info_xq',  # 优先级2: 雪球 (补充缺失字段)
+    'stock_individual_info',  # 优先级3: efinance (兜底)
 ]
 
 
@@ -60,25 +37,19 @@ API_PRIORITY_CHAIN = [
 API_CONFIGS = {
     'stock_individual_info_em': {
         'data_source': 'akshare',
-        'param_mapping': {
-            'symbol': 'symbol'  # StockInfoMapper传入参数 -> API实际参数
-        },
-        'param_transformer': no_transform  # 参数格式: 002156
+        'param_mapping': {'symbol': 'symbol'},  # StockInfoMapper传入参数 -> API实际参数
+        'param_transformer': no_transform,  # 参数格式: 002156
     },
     'stock_individual_basic_info_xq': {
         'data_source': 'akshare',
-        'param_mapping': {
-            'symbol': 'symbol'
-        },
-        'param_transformer': add_market_prefix  # 参数格式: SZ002156
+        'param_mapping': {'symbol': 'symbol'},
+        'param_transformer': add_market_prefix,  # 参数格式: SZ002156
     },
     'stock_individual_info': {
         'data_source': 'efinance',
-        'param_mapping': {
-            'symbol': 'stock_code'  # efinance 使用 stock_code 参数名
-        },
-        'param_transformer': no_transform  # 参数格式: 002156
-    }
+        'param_mapping': {'symbol': 'stock_code'},  # efinance 使用 stock_code 参数名
+        'param_transformer': no_transform,  # 参数格式: 002156
+    },
 }
 
 
@@ -97,9 +68,8 @@ API_FIELD_MAPPING = {
         'list_date': '上市日期',
         'main_operation_business': '主营业务',
         'operating_scope': '经营范围',
-        'status': '上市状态'
+        'status': '上市状态',
     },
-    
     # 雪球 API 字段映射
     'stock_individual_basic_info_xq': {
         'code': 'stock_code',
@@ -112,9 +82,8 @@ API_FIELD_MAPPING = {
         'list_date': 'list_date',
         'main_operation_business': 'main_operation_business',
         'operating_scope': 'operating_scope',
-        'status': 'status'
+        'status': 'status',
     },
-    
     # efinance API 字段映射
     'stock_individual_info': {
         'code': '股票代码',
@@ -123,25 +92,25 @@ API_FIELD_MAPPING = {
         'market': '市场',
         'industry': '行业',
         'list_date': '上市日期',
-        'status': '上市状态'
-    }
+        'status': '上市状态',
+    },
 }
 
 
 # ============ 所有支持的字段列表 ============
 
 ALL_FIELDS = [
-    'code',                      # 股票代码
-    'name',                      # 股票简称
-    'full_name',                 # 股票全称
-    'market',                    # 市场类型
-    'industry_code',             # 行业代码
-    'industry',                  # 行业名称
-    'establish_date',            # 成立日期
-    'list_date',                 # 上市日期
-    'main_operation_business',   # 主营业务
-    'operating_scope',           # 经营范围
-    'status'                     # 上市状态
+    'code',  # 股票代码
+    'name',  # 股票简称
+    'full_name',  # 股票全称
+    'market',  # 市场类型
+    'industry_code',  # 行业代码
+    'industry',  # 行业名称
+    'establish_date',  # 成立日期
+    'list_date',  # 上市日期
+    'main_operation_business',  # 主营业务
+    'operating_scope',  # 经营范围
+    'status',  # 上市状态
 ]
 
 
