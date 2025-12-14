@@ -2,6 +2,6 @@
 DB 交互模块
 """
 
-from .stock.info import StockInfoRepository
+from .stocks.info import StockInfoRepository
 
 __all__ = ['StockInfoRepository']

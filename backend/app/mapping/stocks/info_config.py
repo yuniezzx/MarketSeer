@@ -12,11 +12,8 @@ from app.data_sources import ClientManager
 
 # ============ API特定函数 ============
 
-def _fetch_from_em(
-    symbol: str,
-    client_manager: ClientManager,
-    needed_fields: Set[str]
-) -> Dict[str, Any]:
+
+def _fetch_from_em(symbol: str, client_manager: ClientManager, needed_fields: Set[str]) -> Dict[str, Any]:
     """
     从东方财富获取数据
 
@@ -36,7 +33,7 @@ def _fetch_from_em(
     try:
         # 1. 调用API
         client = client_manager.get_client('akshare')
-        data = client.fetch('stock_individual_info_em', symbol=symbol)
+        data = client.fetch('stock_individual_info_em', {'symbol': symbol})
 
         if data is None or (isinstance(data, pd.DataFrame) and len(data) == 0):
             return {}
@@ -65,6 +62,7 @@ def _fetch_from_em(
                 if value is not None and value != '':
                     result[model_field] = value
 
+        print('result:', result)
         return result
 
     except Exception as e:
@@ -72,11 +70,7 @@ def _fetch_from_em(
         return {}
 
 
-def _fetch_from_xq(
-    symbol: str,
-    client_manager: ClientManager,
-    needed_fields: Set[str]
-) -> Dict[str, Any]:
+def _fetch_from_xq(symbol: str, client_manager: ClientManager, needed_fields: Set[str]) -> Dict[str, Any]:
     """
     从雪球获取数据
 
@@ -135,9 +129,7 @@ def _fetch_from_xq(
 
 
 def _fetch_from_efinance(
-    symbol: str,
-    client_manager: ClientManager,
-    needed_fields: Set[str]
+    symbol: str, client_manager: ClientManager, needed_fields: Set[str]
 ) -> Dict[str, Any]:
     """
     从 efinance 获取数据
@@ -192,6 +184,7 @@ def _fetch_from_efinance(
 
 # ============ 辅助函数 ============
 
+
 def _get_value(data: Any, field: str) -> Optional[Any]:
     """
     从DataFrame或dict中提取值
@@ -203,9 +196,18 @@ def _get_value(data: Any, field: str) -> Optional[Any]:
     Returns:
         提取到的值,失败返回 None
     """
+    print(type(data), data)
+    print('field:', field)
     try:
         if isinstance(data, pd.DataFrame):
-            if field in data.columns:
+            if 'item' in data.columns and 'value' in data.columns:
+                matched_rows = data[data['item'] == field]
+                if not matched_rows.empty:
+                    value = matched_rows.iloc[0]['value']
+                    if pd.isna(value):
+                        return None
+                    return value
+            elif field in data.columns:
                 value = data.iloc[0][field]
                 if pd.isna(value):
                     return None
