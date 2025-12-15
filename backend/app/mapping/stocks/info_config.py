@@ -205,8 +205,6 @@ def _get_value(data: Any, field: str) -> Optional[Any]:
     Returns:
         提取到的值,失败返回 None
     """
-    print(type(data), data)
-    print('field:', field)
     try:
         if isinstance(data, pd.DataFrame):
             if 'item' in data.columns and 'value' in data.columns:
