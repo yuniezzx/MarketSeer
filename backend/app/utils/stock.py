@@ -20,3 +20,14 @@ def add_market_prefix(code: str) -> str:
     elif code.startswith('8') or code.startswith('4'):
         return f"BJ{code}"
     return code
+
+
+def get_market_code(code: str) -> str:
+    """获取市场代码（不含股票代码）"""
+    if code.startswith(('0', '3')):
+        return 'SZ'
+    elif code.startswith('6'):
+        return 'SH'
+    elif code.startswith(('8', '4')):
+        return 'BJ'
+    return 'SZ'

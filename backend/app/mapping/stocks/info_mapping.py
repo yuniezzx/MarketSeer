@@ -9,7 +9,7 @@ from typing import Dict, Any, Set
 from logger import logger
 from app.data_sources import ClientManager
 from .info_config import API_PRIORITY_CONFIG, ALL_FIELDS
-from app.utils import add_market_prefix
+from app.utils import get_market_code, convert_to_date
 
 
 def map_stock_info(symbol: str, client_manager: ClientManager) -> Dict[str, Any]:
@@ -71,6 +71,9 @@ def map_stock_info(symbol: str, client_manager: ClientManager) -> Dict[str, Any]
     else:
         logger.info(f"[{symbol}] 映射完成,所有字段完整")
 
+    # ✨统一转换和校验日期字段
+    result = _convert_date_fields(result)
+
     return result
 
 
@@ -93,7 +96,7 @@ def _add_computed_fields(result: Dict[str, Any], symbol: str) -> Dict[str, Any]:
     """添加计算和默认字段"""
     # 1. 从代码计算 market
     if 'market' not in result:
-        result['market'] = add_market_prefix(symbol)
+        result['market'] = get_market_code(symbol)
 
     # 2. 设置默认 status
     if 'status' not in result:
@@ -102,5 +105,23 @@ def _add_computed_fields(result: Dict[str, Any], symbol: str) -> Dict[str, Any]:
     # 3. 设置默认 tracking
     if 'tracking' not in result:
         result['tracking'] = False
+
+    return result
+
+
+def _convert_date_fields(result: Dict[str, Any]) -> Dict[str, Any]:
+    """转换和校验日期字段"""
+    date_fields = ['establish_date', 'list_date']
+
+    for field in date_fields:
+        if field in result:
+            value = result[field]
+            converted = convert_to_date(value)
+            if converted:
+                result[field] = converted
+            else:
+                # 转换失败，移除该字段
+                logger.warning(f"日期字段 {field} 转换失败: {value}")
+                result.pop(field, None)
 
     return result
