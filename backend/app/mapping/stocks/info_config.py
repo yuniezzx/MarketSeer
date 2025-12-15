@@ -77,6 +77,7 @@ def _fetch_from_xq(symbol: str, client_manager: ClientManager, needed_fields: Se
     特点:
     - 参数格式: SZ002156 (需要添加市场前缀)
     - 补充东财缺失的字段
+    - 返回格式: item-value DataFrame (和东方财富一样)
 
     Args:
         symbol: 股票代码 (如 '002156')
@@ -92,24 +93,19 @@ def _fetch_from_xq(symbol: str, client_manager: ClientManager, needed_fields: Se
 
         # 2. 调用API
         client = client_manager.get_client('akshare')
-        data = client.fetch('stock_individual_basic_info_xq', symbol=xq_symbol)
+        data = client.fetch('stock_individual_basic_info_xq', {'symbol': xq_symbol})
 
         if data is None or (isinstance(data, pd.DataFrame) and len(data) == 0):
             return {}
 
-        # 3. 字段映射
+        # 3. 字段映射 (雪球API的实际字段名)
         field_mapping = {
-            'code': 'stock_code',
-            'name': 'stock_name',
-            'full_name': 'name',
-            'market': 'exchange',
-            'industry_code': 'industry_code',
-            'industry': 'industry_name',
-            'establish_date': 'establish_date',
-            'list_date': 'list_date',
-            'main_operation_business': 'main_operation_business',
-            'operating_scope': 'operating_scope',
-            'status': 'status',
+            'name': 'org_short_name_cn',  # 股票简称
+            'full_name': 'org_name_cn',  # 公司全称
+            'establish_date': 'established_date',  # 成立日期 (时间戳)
+            'list_date': 'listed_date',  # 上市日期 (时间戳)
+            'main_operation_business': 'main_operation_business',  # 主营业务
+            'operating_scope': 'operating_scope',  # 经营范围
         }
 
         # 4. 提取需要的字段
@@ -120,6 +116,19 @@ def _fetch_from_xq(symbol: str, client_manager: ClientManager, needed_fields: Se
                 value = _get_value(data, api_field)
                 if value is not None and value != '':
                     result[model_field] = value
+
+        # 5. 特殊处理: 行业信息 (嵌套在 affiliate_industry 中)
+        if 'industry' in needed_fields or 'industry_code' in needed_fields:
+            industry_data = _get_value(data, 'affiliate_industry')
+            if industry_data and isinstance(industry_data, dict):
+                if 'industry' in needed_fields:
+                    ind_name = industry_data.get('ind_name')
+                    if ind_name:
+                        result['industry'] = ind_name
+                if 'industry_code' in needed_fields:
+                    ind_code = industry_data.get('ind_code')
+                    if ind_code:
+                        result['industry_code'] = ind_code
 
         return result
 
@@ -150,7 +159,7 @@ def _fetch_from_efinance(
     try:
         # 1. 调用API
         client = client_manager.get_client('efinance')
-        data = client.fetch('stock_individual_info', stock_code=symbol)
+        data = client.fetch('stock_individual_info', {'stock_code': symbol})
 
         if data is None or (isinstance(data, pd.DataFrame) and len(data) == 0):
             return {}
@@ -233,14 +242,15 @@ ALL_FIELDS = [
     'code',  # 股票代码
     'name',  # 股票简称
     'full_name',  # 股票全称
-    'market',  # 市场类型
+    # 'market',  # 市场类型
     'industry_code',  # 行业代码
     'industry',  # 行业名称
     'establish_date',  # 成立日期
     'list_date',  # 上市日期
     'main_operation_business',  # 主营业务
     'operating_scope',  # 经营范围
-    'status',  # 上市状态
+    # 'status',  # 上市状态
+    # 'tracking', # 是否跟踪
 ]
 
 # ============ 配置说明 ============

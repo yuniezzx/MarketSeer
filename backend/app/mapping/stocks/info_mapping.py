@@ -9,6 +9,7 @@ from typing import Dict, Any, Set
 from logger import logger
 from app.data_sources import ClientManager
 from .info_config import API_PRIORITY_CONFIG, ALL_FIELDS
+from app.utils import add_market_prefix
 
 
 def map_stock_info(symbol: str, client_manager: ClientManager) -> Dict[str, Any]:
@@ -31,6 +32,8 @@ def map_stock_info(symbol: str, client_manager: ClientManager) -> Dict[str, Any]
     result = {}
     missing_fields = set(ALL_FIELDS)
 
+    result = _add_computed_fields(result, symbol)
+
     # 按优先级遍历 API 配置
     for api_config in API_PRIORITY_CONFIG:
         # 检查是否所有字段已完整
@@ -40,7 +43,7 @@ def map_stock_info(symbol: str, client_manager: ClientManager) -> Dict[str, Any]
 
         api_name = api_config['name']
         fetch_func = api_config['fetch_func']
-        
+
         logger.info(
             f"[{symbol}] 尝试 API: {api_name} "
             f"(优先级 {api_config['priority']}), "
@@ -50,37 +53,28 @@ def map_stock_info(symbol: str, client_manager: ClientManager) -> Dict[str, Any]
         # 调用 API 特定函数
         try:
             extracted = fetch_func(symbol, client_manager, missing_fields)
-            
+
             if extracted:
                 # 增量合并结果
                 _merge_fields(result, extracted, missing_fields)
-                logger.info(
-                    f"[{symbol}] API {api_name} 成功提取 {len(extracted)} 个字段"
-                )
+                logger.info(f"[{symbol}] API {api_name} 成功提取 {len(extracted)} 个字段")
             else:
                 logger.warning(f"[{symbol}] API {api_name} 未提取到任何字段")
-                
+
         except Exception as e:
             logger.error(f"[{symbol}] API {api_name} 执行失败: {e}")
             continue
 
     # 最终结果检查
     if missing_fields:
-        logger.warning(
-            f"[{symbol}] 映射完成,仍有 {len(missing_fields)} 个字段缺失: "
-            f"{missing_fields}"
-        )
+        logger.warning(f"[{symbol}] 映射完成,仍有 {len(missing_fields)} 个字段缺失: " f"{missing_fields}")
     else:
         logger.info(f"[{symbol}] 映射完成,所有字段完整")
 
     return result
 
 
-def _merge_fields(
-    result: Dict[str, Any],
-    new_fields: Dict[str, Any],
-    missing_fields: Set[str]
-) -> None:
+def _merge_fields(result: Dict[str, Any], new_fields: Dict[str, Any], missing_fields: Set[str]) -> None:
     """
     增量合并字段(不覆盖已有值)
 
@@ -93,3 +87,20 @@ def _merge_fields(
         if field not in result:
             result[field] = value
             missing_fields.discard(field)
+
+
+def _add_computed_fields(result: Dict[str, Any], symbol: str) -> Dict[str, Any]:
+    """添加计算和默认字段"""
+    # 1. 从代码计算 market
+    if 'market' not in result:
+        result['market'] = add_market_prefix(symbol)
+
+    # 2. 设置默认 status
+    if 'status' not in result:
+        result['status'] = '上市'
+
+    # 3. 设置默认 tracking
+    if 'tracking' not in result:
+        result['tracking'] = False
+
+    return result
