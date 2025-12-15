@@ -159,7 +159,7 @@ def _fetch_from_efinance(
     try:
         # 1. 调用API
         client = client_manager.get_client('efinance')
-        data = client.fetch('stock_individual_info', {'stock_code': symbol})
+        data = client.fetch('stock_individual_info', {'stock_codes': symbol})
 
         if data is None or (isinstance(data, pd.DataFrame) and len(data) == 0):
             return {}
