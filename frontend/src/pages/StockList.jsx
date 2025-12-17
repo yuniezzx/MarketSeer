@@ -1,3 +1,5 @@
+import { getStocks } from '../api/stocks';
+
 function StockList() {
   return (
     <div className='p-6'>
