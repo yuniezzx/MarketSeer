@@ -156,6 +156,14 @@
 
 /* 股票市场专用工具类 */
 @layer utilities {
+  /* 背景颜色透明度类 */
+  .bg-muted-50 {
+    background-color: oklch(0.96 0.005 264 / 0.5);
+  }
+  .dark .bg-muted-50 {
+    background-color: oklch(0.28 0.025 264 / 0.5);
+  }
+
   /* 涨跌颜色类 */
   .text-bull {
     color: var(--bull);
