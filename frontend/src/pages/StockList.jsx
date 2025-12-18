@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import dayjs from 'dayjs';
 import { getStocks, addStock } from '../api/stocks';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -92,30 +93,32 @@ function StockList() {
           <Table>
             <TableHeader>
               <TableRow>
+                <TableHead>跟踪</TableHead>
                 <TableHead>股票代码</TableHead>
                 <TableHead>股票名称</TableHead>
                 <TableHead>市场</TableHead>
                 <TableHead>行业</TableHead>
                 <TableHead>状态</TableHead>
-                <TableHead>跟踪</TableHead>
+                <TableHead>成立日期</TableHead>
+                <TableHead>上市日期</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {stocks.map(stock => (
                 <TableRow key={stock.code}>
+                  <TableCell>{stock.tracking ? <span className='text-green-600 dark:text-green-400'>✓</span> : <span className='text-gray-400'>-</span>}</TableCell>
                   <TableCell className='font-medium'>{stock.code}</TableCell>
                   <TableCell>{stock.name}</TableCell>
                   <TableCell>{stock.market}</TableCell>
                   <TableCell>{stock.industry || '-'}</TableCell>
                   <TableCell>
                     <span
-                      className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
-                        stock.status === 'active' ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200' : 'bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200'
-                      }`}>
+                      className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${stock.status === 'active' ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200' : 'bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200'}`}>
                       {stock.status}
                     </span>
                   </TableCell>
-                  <TableCell>{stock.tracking ? <span className='text-green-600 dark:text-green-400'>✓</span> : <span className='text-gray-400'>-</span>}</TableCell>
+                  <TableCell>{stock.establish_date ? dayjs(stock.establish_date).format('YYYY-MM-DD') : '-'}</TableCell>
+                  <TableCell>{stock.list_date ? dayjs(stock.list_date).format('YYYY-MM-DD') : '-'}</TableCell>
                 </TableRow>
               ))}
             </TableBody>

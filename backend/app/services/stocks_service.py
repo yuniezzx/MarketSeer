@@ -35,7 +35,6 @@ class StocksService(BaseService):
     ):
         """获取所有股票列表,支持分页和排序"""
         stocks = self.stock_repo.get_all(offset=offset, limit=limit, order_by=order_by, desc=desc)
-        print(stocks)
         return [
             {
                 'code': stock.code,
