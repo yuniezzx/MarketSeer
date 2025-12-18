@@ -1,3 +1,4 @@
+from typing import Optional
 from .base_service import BaseService
 from app.repository import StockInfoRepository
 from app.mapping import map_stock_info
@@ -28,3 +29,18 @@ class StocksService(BaseService):
                 'industry': stock.industry,
                 'status': stock.status,
             }
+
+    def list_stocks(self, offset: int = 0, limit: Optional[int] = None, order_by: Optional[str] = None, desc: bool = False):
+        """获取所有股票列表,支持分页和排序"""
+        stocks = self.stock_repo.get_all(offset=offset, limit=limit, order_by=order_by, desc=desc)
+        return [
+            {
+                'code': stock.code,
+                'name': stock.name,
+                'market': stock.market,
+                'industry': stock.industry,
+                'status': stock.status,
+                'tracking': stock.tracking,
+            }
+            for stock in stocks
+        ]
