@@ -4,6 +4,7 @@ import { getStocks, addStock } from '../api/stocks';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from '@/components/ui/tooltip';
 
 function StockList() {
   const [stocks, setStocks] = useState([]);
@@ -60,74 +61,98 @@ function StockList() {
   };
 
   return (
-    <div className='p-6'>
-      {/* 操作按钮区域 */}
-      <div className='flex items-center justify-end gap-3 mb-6'>
-        <Input
-          size='sm'
-          placeholder='输入股票代码 (如: 600000)'
-          value={symbol}
-          onChange={e => setSymbol(e.target.value)}
-          onKeyDown={e => e.key === 'Enter' && handleAddStock()}
-          className='max-w-xs'
-          disabled={loading}
-        />
-        <Button onClick={handleAddStock} disabled={loading} variant='outline' size='sm'>
-          添加股票
-        </Button>
-      </div>
-
-      {/* 错误提示 */}
-      {error && (
-        <div className='bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-800 dark:text-red-200 px-4 py-3 rounded mb-4 flex items-center justify-between'>
-          <span>{error}</span>
-          <Button onClick={handleGetStocks} disabled={loading} variant='outline' size='sm'>
-            {loading ? '加载中...' : '获取所有股票'}
+    <TooltipProvider>
+      <div className='p-6'>
+        {/* 操作按钮区域 */}
+        <div className='flex items-center justify-end gap-3 mb-6'>
+          <Input
+            size='sm'
+            placeholder='输入股票代码 (如: 600000)'
+            value={symbol}
+            onChange={e => setSymbol(e.target.value)}
+            onKeyDown={e => e.key === 'Enter' && handleAddStock()}
+            className='max-w-xs'
+            disabled={loading}
+          />
+          <Button onClick={handleAddStock} disabled={loading} variant='outline' size='sm'>
+            添加股票
           </Button>
         </div>
-      )}
 
-      {/* 股票列表表格 */}
-      {stocks.length > 0 ? (
-        <div className='border rounded-lg'>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>跟踪</TableHead>
-                <TableHead>股票代码</TableHead>
-                <TableHead>股票名称</TableHead>
-                <TableHead>市场</TableHead>
-                <TableHead>行业</TableHead>
-                <TableHead>状态</TableHead>
-                <TableHead>成立日期</TableHead>
-                <TableHead>上市日期</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {stocks.map(stock => (
-                <TableRow key={stock.code}>
-                  <TableCell>{stock.tracking ? <span className='text-green-600 dark:text-green-400'>✓</span> : <span className='text-gray-400'>-</span>}</TableCell>
-                  <TableCell className='font-medium'>{stock.code}</TableCell>
-                  <TableCell>{stock.name}</TableCell>
-                  <TableCell>{stock.market}</TableCell>
-                  <TableCell>{stock.industry || '-'}</TableCell>
-                  <TableCell>
-                    <span
-                      className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${stock.status === 'active' ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200' : 'bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200'}`}>
-                      {stock.status}
-                    </span>
-                  </TableCell>
-                  <TableCell>{stock.establish_date ? dayjs(stock.establish_date).format('YYYY-MM-DD') : '-'}</TableCell>
-                  <TableCell>{stock.list_date ? dayjs(stock.list_date).format('YYYY-MM-DD') : '-'}</TableCell>
+        {/* 错误提示 */}
+        {error && (
+          <div className='bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-800 dark:text-red-200 px-4 py-3 rounded mb-4 flex items-center justify-between'>
+            <span>{error}</span>
+            <Button onClick={handleGetStocks} disabled={loading} variant='outline' size='sm'>
+              {loading ? '加载中...' : '获取所有股票'}
+            </Button>
+          </div>
+        )}
+
+        {/* 股票列表表格 */}
+        {stocks.length > 0 ? (
+          <div className='border rounded-lg'>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>跟踪</TableHead>
+                  <TableHead>股票代码</TableHead>
+                  <TableHead>股票名称</TableHead>
+                  <TableHead>市场</TableHead>
+                  <TableHead>行业</TableHead>
+                  <TableHead>状态</TableHead>
+                  <TableHead>成立日期</TableHead>
+                  <TableHead>上市日期</TableHead>
+                  <TableHead>主营业务</TableHead>
+                  <TableHead>经营范围</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </div>
-      ) : (
-        <div className='text-center py-12 text-gray-500 dark:text-gray-400'>{loading ? '加载中...' : '暂无股票数据'}</div>
-      )}
-    </div>
+              </TableHeader>
+              <TableBody>
+                {stocks.map(stock => (
+                  <TableRow key={stock.code}>
+                    <TableCell>{stock.tracking ? <span className='text-green-600 dark:text-green-400'>✓</span> : <span className='text-gray-400'>-</span>}</TableCell>
+                    <TableCell className='font-medium'>{stock.code}</TableCell>
+                    <TableCell>{stock.name}</TableCell>
+                    <TableCell>{stock.market}</TableCell>
+                    <TableCell>{stock.industry || '-'}</TableCell>
+                    <TableCell>
+                      <span
+                        className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${stock.status === 'active' ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200' : 'bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200'}`}>
+                        {stock.status}
+                      </span>
+                    </TableCell>
+                    <TableCell>{stock.establish_date ? dayjs(stock.establish_date).format('YYYY-MM-DD') : '-'}</TableCell>
+                    <TableCell>{stock.list_date ? dayjs(stock.list_date).format('YYYY-MM-DD') : '-'}</TableCell>
+                    <TableCell className="max-w-32">
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <div className="truncate cursor-help">{stock.main_operation_business?.trim() || '-'}</div>
+                        </TooltipTrigger>
+                        <TooltipContent className="max-w-md">
+                          <p className="whitespace-pre-wrap">{stock.main_operation_business?.trim() || '-'}</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TableCell>
+                    <TableCell className="max-w-32">
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <div className="truncate cursor-help">{stock.operating_scope?.trim() || '-'}</div>
+                        </TooltipTrigger>
+                        <TooltipContent className="max-w-md">
+                          <p className="whitespace-pre-wrap">{stock.operating_scope?.trim() || '-'}</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+        ) : (
+          <div className='text-center py-12 text-gray-500 dark:text-gray-400'>{loading ? '加载中...' : '暂无股票数据'}</div>
+        )}
+      </div>
+    </TooltipProvider>
   );
 }
 
