@@ -1,2 +1,0 @@
-2025-12-20 23:38:33 | ERROR    | 35548:26580 | app.data_sources.akshare_client:fetch:32 - Error fetching data from Akshare API 'stock_lhb_detail_em': 'NoneType' object is not subscriptable
-2025-12-20 23:38:33 | ERROR    | 35548:26580 | app.mapping.dragon_tiger.daily_config:_fetch_from_akshare:82 - _fetch_from_akshare 失败: Error fetching data from Akshare API 'stock_lhb_detail_em': 'NoneType' object is not subscriptable

@@ -37,7 +37,9 @@ function DragonTiger() {
     try {
       const response = await getDailyDragonTiger(daysBack);
       if (response.status === "success") {
-        setDragonTigerData(response.data);
+        // 将数据按日期分组
+        const groupedData = groupDataByDate(response.data);
+        setDragonTigerData(groupedData);
       } else {
         setError(response.message || "查询失败");
       }
@@ -46,6 +48,26 @@ function DragonTiger() {
     } finally {
       setLoading(false);
     }
+  };
+
+  // 将数据按日期分组的函数
+  const groupDataByDate = data => {
+    const grouped = {};
+
+    data.forEach(item => {
+      const date = item.listed_date;
+      if (!grouped[date]) {
+        grouped[date] = [];
+      }
+      grouped[date].push(item);
+    });
+
+    // 转换为数组格式，每个元素是 {日期: 数据列表}
+    return Object.keys(grouped)
+      .sort((a, b) => b.localeCompare(a)) // 按日期降序排列
+      .map(date => ({
+        [date]: grouped[date],
+      }));
   };
 
   return (
@@ -66,6 +88,9 @@ function DragonTiger() {
         <TabsContent value="daily" className="mt-4">
           <div className="p-6 border rounded-lg">
             <div className="flex items-center justify-end gap-2 mb-4">
+              <span className="text-xs text-gray-500 dark:text-gray-400 mr-2">
+                今天: {dayjs().format("YYYY-MM-DD")}
+              </span>
               <Input
                 type="number"
                 value={daysBack}
@@ -109,105 +134,123 @@ function DragonTiger() {
               )}
 
               {!loading && dragonTigerData.length > 0 && (
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <p className="text-sm text-gray-600 dark:text-gray-400">
-                      共查询到 {dragonTigerData.length} 条记录
-                    </p>
-                  </div>
+                <div className="space-y-6">
+                  {dragonTigerData.map((dateGroup, groupIndex) => {
+                    const date = Object.keys(dateGroup)[0];
+                    const records = dateGroup[date];
+                    const totalRecords = dragonTigerData.reduce(
+                      (sum, group) => sum + Object.values(group)[0].length,
+                      0
+                    );
 
-                  <div className="border rounded-lg overflow-hidden">
-                    <div className="overflow-x-auto">
-                      <Table>
-                        <TableHeader>
-                          <TableRow>
-                            <TableHead className="w-24">股票代码</TableHead>
-                            <TableHead className="w-28">股票名称</TableHead>
-                            <TableHead className="w-28">上榜日期</TableHead>
-                            <TableHead className="text-right w-24">
-                              收盘价
-                            </TableHead>
-                            <TableHead className="text-right w-24">
-                              涨跌幅(%)
-                            </TableHead>
-                            <TableHead className="text-right w-24">
-                              换手率(%)
-                            </TableHead>
-                            <TableHead className="text-right w-32">
-                              龙虎榜净买额(万)
-                            </TableHead>
-                            <TableHead className="text-right w-32">
-                              龙虎榜成交额(万)
-                            </TableHead>
-                            <TableHead className="min-w-48">上榜原因</TableHead>
-                          </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                          {dragonTigerData.map((item, index) => (
-                            <TableRow key={index}>
-                              <TableCell className="font-mono">
-                                {item.code}
-                              </TableCell>
-                              <TableCell>{item.name}</TableCell>
-                              <TableCell>
-                                {item.listed_date
-                                  ? `${item.listed_date.slice(
-                                      0,
-                                      4
-                                    )}-${item.listed_date.slice(
-                                      4,
-                                      6
-                                    )}-${item.listed_date.slice(6, 8)}`
-                                  : "-"}
-                              </TableCell>
-                              <TableCell className="text-right">
-                                {item.close_price?.toFixed(2) || "-"}
-                              </TableCell>
-                              <TableCell
-                                className={`text-right font-medium ${
-                                  item.change_percent > 0
-                                    ? "text-red-600 dark:text-red-400"
-                                    : item.change_percent < 0
-                                    ? "text-green-600 dark:text-green-400"
-                                    : ""
-                                }`}
-                              >
-                                {item.change_percent
-                                  ? `${
-                                      item.change_percent > 0 ? "+" : ""
-                                    }${item.change_percent.toFixed(2)}`
-                                  : "-"}
-                              </TableCell>
-                              <TableCell className="text-right">
-                                {item.turnover_rate?.toFixed(2) || "-"}
-                              </TableCell>
-                              <TableCell
-                                className={`text-right font-medium ${
-                                  item.lhb_net_amount > 0
-                                    ? "text-red-600 dark:text-red-400"
-                                    : item.lhb_net_amount < 0
-                                    ? "text-green-600 dark:text-green-400"
-                                    : ""
-                                }`}
-                              >
-                                {item.lhb_net_amount
-                                  ? (item.lhb_net_amount / 10000).toFixed(2)
-                                  : "-"}
-                              </TableCell>
-                              <TableCell className="text-right">
-                                {item.lhb_trade_amount
-                                  ? (item.lhb_trade_amount / 10000).toFixed(2)
-                                  : "-"}
-                              </TableCell>
-                              <TableCell className="text-sm">
-                                {item.reasons || "-"}
-                              </TableCell>
-                            </TableRow>
-                          ))}
-                        </TableBody>
-                      </Table>
-                    </div>
-                  </div>
+                    return (
+                      <div key={groupIndex} className="space-y-2">
+                        <div className="flex items-center justify-between">
+                          <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                            {date} ({records.length}条记录)
+                          </h3>
+                          {groupIndex === 0 && (
+                            <p className="text-sm text-gray-600 dark:text-gray-400">
+                              共查询到 {totalRecords} 条记录
+                            </p>
+                          )}
+                        </div>
+
+                        <div className="border rounded-lg overflow-hidden">
+                          <div className="overflow-x-auto">
+                            <Table>
+                              <TableHeader>
+                                <TableRow>
+                                  <TableHead className="w-24 text-center">
+                                    股票代码
+                                  </TableHead>
+                                  <TableHead className="w-28 text-center">
+                                    股票名称
+                                  </TableHead>
+                                  <TableHead className="text-center w-24">
+                                    收盘价
+                                  </TableHead>
+                                  <TableHead className="text-center w-24">
+                                    涨跌幅(%)
+                                  </TableHead>
+                                  <TableHead className="text-center w-24">
+                                    换手率(%)
+                                  </TableHead>
+                                  <TableHead className="text-center w-32">
+                                    龙虎榜净买额(万)
+                                  </TableHead>
+                                  <TableHead className="text-center w-32">
+                                    龙虎榜成交额(万)
+                                  </TableHead>
+                                  <TableHead className="text-center min-w-48">
+                                    上榜原因
+                                  </TableHead>
+                                </TableRow>
+                              </TableHeader>
+                              <TableBody>
+                                {records.map((item, index) => (
+                                  <TableRow key={index}>
+                                    <TableCell className="font-mono text-center">
+                                      {item.code}
+                                    </TableCell>
+                                    <TableCell className="text-center">
+                                      {item.name}
+                                    </TableCell>
+                                    <TableCell className="text-center">
+                                      {item.close_price?.toFixed(2) || "-"}
+                                    </TableCell>
+                                    <TableCell
+                                      className={`text-center font-medium ${
+                                        item.change_percent > 0
+                                          ? "text-red-600 dark:text-red-400"
+                                          : item.change_percent < 0
+                                          ? "text-green-600 dark:text-green-400"
+                                          : ""
+                                      }`}
+                                    >
+                                      {item.change_percent
+                                        ? `${
+                                            item.change_percent > 0 ? "+" : ""
+                                          }${item.change_percent.toFixed(2)}`
+                                        : "-"}
+                                    </TableCell>
+                                    <TableCell className="text-center">
+                                      {item.turnover_rate?.toFixed(2) || "-"}
+                                    </TableCell>
+                                    <TableCell
+                                      className={`text-center font-medium ${
+                                        item.lhb_net_amount > 0
+                                          ? "text-red-600 dark:text-red-400"
+                                          : item.lhb_net_amount < 0
+                                          ? "text-green-600 dark:text-green-400"
+                                          : ""
+                                      }`}
+                                    >
+                                      {item.lhb_net_amount
+                                        ? (item.lhb_net_amount / 10000).toFixed(
+                                            2
+                                          )
+                                        : "-"}
+                                    </TableCell>
+                                    <TableCell className="text-center">
+                                      {item.lhb_trade_amount
+                                        ? (
+                                            item.lhb_trade_amount / 10000
+                                          ).toFixed(2)
+                                        : "-"}
+                                    </TableCell>
+                                    <TableCell className="text-sm text-center">
+                                      {item.reasons || "-"}
+                                    </TableCell>
+                                  </TableRow>
+                                ))}
+                              </TableBody>
+                            </Table>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
               )}
             </div>
