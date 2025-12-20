@@ -27,4 +27,13 @@ def create_app():
 
     app.register_blueprint(stocks_bp)
 
+    # 初始化调度器（仅在主进程中初始化，避免 debug 模式重复执行）
+    import os
+
+    if os.environ.get("WERKZEUG_RUN_MAIN") == "true" or not app.config.get("FLASK_DEBUG"):
+        from app.scheduler import init_scheduler
+
+        init_scheduler(app)
+        logger.info("定时任务调度器已集成到 Flask 应用")
+
     return app
