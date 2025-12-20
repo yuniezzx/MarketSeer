@@ -1,0 +1,263 @@
+2025-12-20 20:02:52 | INFO     | 32680:30952 | app.models.base:init_db:28 - 数据库表初始化完成
+2025-12-20 20:02:52 | INFO     | 32680:30952 | __main__:main:154 - ============================================================
+2025-12-20 20:02:52 | INFO     | 32680:30952 | __main__:main:155 - 开始批量导入龙虎榜数据
+2025-12-20 20:02:52 | INFO     | 32680:30952 | __main__:main:156 - 日期数量: 1
+2025-12-20 20:02:52 | INFO     | 32680:30952 | __main__:main:157 - ============================================================
+2025-12-20 20:02:52 | INFO     | 32680:30952 | __main__:import_single_date:79 - ============================================================
+2025-12-20 20:02:52 | INFO     | 32680:30952 | __main__:import_single_date:80 - 导入日期: 20251219
+2025-12-20 20:02:52 | INFO     | 32680:30952 | __main__:import_single_date:81 - ============================================================
+2025-12-20 20:02:52 | INFO     | 32680:30952 | app.services.dragon_tiger_service:import_by_date:38 - 开始导入龙虎榜数据: 20251219
+2025-12-20 20:02:52 | INFO     | 32680:30952 | app.mapping.dragon_tiger.daily_mapping:map_daily_dragon_tiger:29 - 开始获取龙虎榜数据: 20251219 - 20251219
+2025-12-20 20:02:52 | INFO     | 32680:30952 | app.mapping.dragon_tiger.daily_mapping:map_daily_dragon_tiger:38 - 尝试 API: akshare (优先级 1)
+2025-12-20 20:02:52 | DEBUG    | 32680:30952 | app.data_sources.akshare_client:fetch:16 - Calling Akshare API: stock_lhb_detail_em with params: {'start_date': '20251219', 'end_date': '20251219'}
+2025-12-20 20:02:56 | DEBUG    | 32680:30952 | app.data_sources.akshare_client:fetch:24 - Received data from Akshare API 'stock_lhb_detail_em':     序号      代码    名称         上榜日                   解读    收盘价      涨跌幅  ...      换手率          流通市值   ...
+2025-12-20 20:02:56 | INFO     | 32680:30952 | app.mapping.dragon_tiger.daily_config:_fetch_from_akshare:78 - 成功获取龙虎榜数据: 68 条记录
+2025-12-20 20:02:56 | INFO     | 32680:30952 | app.mapping.dragon_tiger.daily_mapping:map_daily_dragon_tiger:46 - API akshare 成功获取 68 条龙虎榜记录
+2025-12-20 20:02:56 | INFO     | 32680:30952 | app.mapping.dragon_tiger.daily_mapping:map_daily_dragon_tiger:60 - 龙虎榜数据映射完成: 共 68 条记录
+2025-12-20 20:02:56 | INFO     | 32680:30952 | app.repository.dragon_tiger.daily_dragon_tiger:bulk_upsert:72 - 龙虎榜数据批量操作完成: 创建 55 条, 更新 13 条
+2025-12-20 20:02:56 | INFO     | 32680:30952 | app.services.dragon_tiger_service:import_by_date:52 - 龙虎榜数据导入完成: 20251219 - 创建 55 条, 更新 13 条
+2025-12-20 20:02:56 | INFO     | 32680:30952 | __main__:import_single_date:86 - ✓ 龙虎榜数据导入完成: 20251219 - 创建 55 条, 更新 13 条
+2025-12-20 20:02:56 | INFO     | 32680:30952 | app.services.dragon_tiger_service:import_by_date:38 - 开始导入龙虎榜数据: 20251219
+2025-12-20 20:02:56 | INFO     | 32680:30952 | app.mapping.dragon_tiger.daily_mapping:map_daily_dragon_tiger:29 - 开始获取龙虎榜数据: 20251219 - 20251219
+2025-12-20 20:02:56 | INFO     | 32680:30952 | app.mapping.dragon_tiger.daily_mapping:map_daily_dragon_tiger:38 - 尝试 API: akshare (优先级 1)
+2025-12-20 20:02:56 | DEBUG    | 32680:30952 | app.data_sources.akshare_client:fetch:16 - Calling Akshare API: stock_lhb_detail_em with params: {'start_date': '20251219', 'end_date': '20251219'}
+2025-12-20 20:03:00 | DEBUG    | 32680:30952 | app.data_sources.akshare_client:fetch:24 - Received data from Akshare API 'stock_lhb_detail_em':     序号      代码    名称         上榜日                   解读    收盘价      涨跌幅  ...      换手率          流通市值   ...
+2025-12-20 20:03:00 | INFO     | 32680:30952 | app.mapping.dragon_tiger.daily_config:_fetch_from_akshare:78 - 成功获取龙虎榜数据: 68 条记录
+2025-12-20 20:03:00 | INFO     | 32680:30952 | app.mapping.dragon_tiger.daily_mapping:map_daily_dragon_tiger:46 - API akshare 成功获取 68 条龙虎榜记录
+2025-12-20 20:03:00 | INFO     | 32680:30952 | app.mapping.dragon_tiger.daily_mapping:map_daily_dragon_tiger:60 - 龙虎榜数据映射完成: 共 68 条记录
+2025-12-20 20:03:00 | INFO     | 32680:30952 | app.repository.dragon_tiger.daily_dragon_tiger:bulk_upsert:72 - 龙虎榜数据批量操作完成: 创建 0 条, 更新 68 条
+2025-12-20 20:03:00 | INFO     | 32680:30952 | app.services.dragon_tiger_service:import_by_date:52 - 龙虎榜数据导入完成: 20251219 - 创建 0 条, 更新 68 条
+2025-12-20 20:03:00 | INFO     | 32680:30952 | __main__:main:173 - ============================================================
+2025-12-20 20:03:00 | INFO     | 32680:30952 | __main__:main:174 - 导入完成
+2025-12-20 20:03:00 | INFO     | 32680:30952 | __main__:main:175 - 成功: 1 天
+2025-12-20 20:03:00 | INFO     | 32680:30952 | __main__:main:176 - 失败: 0 天
+2025-12-20 20:03:00 | INFO     | 32680:30952 | __main__:main:177 - 总计创建: 0 条
+2025-12-20 20:03:00 | INFO     | 32680:30952 | __main__:main:178 - 总计更新: 68 条
+2025-12-20 20:03:00 | INFO     | 32680:30952 | __main__:main:179 - ============================================================
+2025-12-20 20:03:13 | INFO     | 4876:31652 | app.models.base:init_db:28 - 数据库表初始化完成
+2025-12-20 20:07:19 | INFO     | 33520:35924 | app.models.base:init_db:28 - 数据库表初始化完成
+2025-12-20 20:07:31 | INFO     | 11832:24572 | app.models.base:init_db:28 - 数据库表初始化完成
+2025-12-20 20:07:31 | INFO     | 11832:24572 | __main__:main:154 - ============================================================
+2025-12-20 20:07:31 | INFO     | 11832:24572 | __main__:main:155 - 开始批量导入龙虎榜数据
+2025-12-20 20:07:31 | INFO     | 11832:24572 | __main__:main:156 - 日期数量: 1
+2025-12-20 20:07:31 | INFO     | 11832:24572 | __main__:main:157 - ============================================================
+2025-12-20 20:07:31 | INFO     | 11832:24572 | __main__:import_single_date:79 - ============================================================
+2025-12-20 20:07:31 | INFO     | 11832:24572 | __main__:import_single_date:80 - 导入日期: 20251219
+2025-12-20 20:07:31 | INFO     | 11832:24572 | __main__:import_single_date:81 - ============================================================
+2025-12-20 20:07:31 | INFO     | 11832:24572 | app.services.dragon_tiger_service:import_by_date:38 - 开始导入龙虎榜数据: 20251219
+2025-12-20 20:07:31 | INFO     | 11832:24572 | app.mapping.dragon_tiger.daily_mapping:map_daily_dragon_tiger:29 - 开始获取龙虎榜数据: 20251219 - 20251219
+2025-12-20 20:07:31 | INFO     | 11832:24572 | app.mapping.dragon_tiger.daily_mapping:map_daily_dragon_tiger:38 - 尝试 API: akshare (优先级 1)
+2025-12-20 20:07:31 | DEBUG    | 11832:24572 | app.data_sources.akshare_client:fetch:16 - Calling Akshare API: stock_lhb_detail_em with params: {'start_date': '20251219', 'end_date': '20251219'}
+2025-12-20 20:07:35 | DEBUG    | 11832:24572 | app.data_sources.akshare_client:fetch:24 - Received data from Akshare API 'stock_lhb_detail_em':     序号      代码    名称         上榜日                   解读    收盘价      涨跌幅  ...      换手率          流通市值   ...
+2025-12-20 20:07:35 | INFO     | 11832:24572 | app.mapping.dragon_tiger.daily_config:_fetch_from_akshare:78 - 成功获取龙虎榜数据: 68 条记录
+2025-12-20 20:07:35 | INFO     | 11832:24572 | app.mapping.dragon_tiger.daily_mapping:map_daily_dragon_tiger:46 - API akshare 成功获取 68 条龙虎榜记录
+2025-12-20 20:07:35 | INFO     | 11832:24572 | app.mapping.dragon_tiger.daily_mapping:map_daily_dragon_tiger:60 - 龙虎榜数据映射完成: 共 68 条记录
+2025-12-20 20:07:35 | INFO     | 11832:24572 | app.repository.dragon_tiger.daily_dragon_tiger:bulk_upsert:88 - 龙虎榜数据批量操作完成: 创建 13 条, 更新 55 条
+2025-12-20 20:07:35 | INFO     | 11832:24572 | app.services.dragon_tiger_service:import_by_date:52 - 龙虎榜数据导入完成: 20251219 - 创建 13 条, 更新 55 条
+2025-12-20 20:07:35 | INFO     | 11832:24572 | __main__:import_single_date:86 - ✓ 龙虎榜数据导入完成: 20251219 - 创建 13 条, 更新 55 条
+2025-12-20 20:07:35 | INFO     | 11832:24572 | app.services.dragon_tiger_service:import_by_date:38 - 开始导入龙虎榜数据: 20251219
+2025-12-20 20:07:35 | INFO     | 11832:24572 | app.mapping.dragon_tiger.daily_mapping:map_daily_dragon_tiger:29 - 开始获取龙虎榜数据: 20251219 - 20251219
+2025-12-20 20:07:35 | INFO     | 11832:24572 | app.mapping.dragon_tiger.daily_mapping:map_daily_dragon_tiger:38 - 尝试 API: akshare (优先级 1)
+2025-12-20 20:07:35 | DEBUG    | 11832:24572 | app.data_sources.akshare_client:fetch:16 - Calling Akshare API: stock_lhb_detail_em with params: {'start_date': '20251219', 'end_date': '20251219'}
+2025-12-20 20:07:39 | DEBUG    | 11832:24572 | app.data_sources.akshare_client:fetch:24 - Received data from Akshare API 'stock_lhb_detail_em':     序号      代码    名称         上榜日                   解读    收盘价      涨跌幅  ...      换手率          流通市值   ...
+2025-12-20 20:07:39 | INFO     | 11832:24572 | app.mapping.dragon_tiger.daily_config:_fetch_from_akshare:78 - 成功获取龙虎榜数据: 68 条记录
+2025-12-20 20:07:39 | INFO     | 11832:24572 | app.mapping.dragon_tiger.daily_mapping:map_daily_dragon_tiger:46 - API akshare 成功获取 68 条龙虎榜记录
+2025-12-20 20:07:39 | INFO     | 11832:24572 | app.mapping.dragon_tiger.daily_mapping:map_daily_dragon_tiger:60 - 龙虎榜数据映射完成: 共 68 条记录
+2025-12-20 20:07:39 | INFO     | 11832:24572 | app.repository.dragon_tiger.daily_dragon_tiger:bulk_upsert:88 - 龙虎榜数据批量操作完成: 创建 0 条, 更新 68 条
+2025-12-20 20:07:39 | INFO     | 11832:24572 | app.services.dragon_tiger_service:import_by_date:52 - 龙虎榜数据导入完成: 20251219 - 创建 0 条, 更新 68 条
+2025-12-20 20:07:39 | INFO     | 11832:24572 | __main__:main:173 - ============================================================
+2025-12-20 20:07:39 | INFO     | 11832:24572 | __main__:main:174 - 导入完成
+2025-12-20 20:07:39 | INFO     | 11832:24572 | __main__:main:175 - 成功: 1 天
+2025-12-20 20:07:39 | INFO     | 11832:24572 | __main__:main:176 - 失败: 0 天
+2025-12-20 20:07:39 | INFO     | 11832:24572 | __main__:main:177 - 总计创建: 0 条
+2025-12-20 20:07:39 | INFO     | 11832:24572 | __main__:main:178 - 总计更新: 68 条
+2025-12-20 20:07:39 | INFO     | 11832:24572 | __main__:main:179 - ============================================================
+2025-12-20 20:07:56 | INFO     | 35552:34828 | app.models.base:init_db:28 - 数据库表初始化完成
+2025-12-20 20:13:30 | INFO     | 34616:35108 | app.models.base:init_db:28 - 数据库表初始化完成
+2025-12-20 20:13:30 | INFO     | 34616:35108 | __main__:main:154 - ============================================================
+2025-12-20 20:13:30 | INFO     | 34616:35108 | __main__:main:155 - 开始批量导入龙虎榜数据
+2025-12-20 20:13:30 | INFO     | 34616:35108 | __main__:main:156 - 日期数量: 18
+2025-12-20 20:13:30 | INFO     | 34616:35108 | __main__:main:157 - ============================================================
+2025-12-20 20:13:30 | INFO     | 34616:35108 | app.services.dragon_tiger_service:import_by_date:38 - 开始导入龙虎榜数据: 20251201
+2025-12-20 20:13:30 | INFO     | 34616:35108 | app.mapping.dragon_tiger.daily_mapping:map_daily_dragon_tiger:29 - 开始获取龙虎榜数据: 20251201 - 20251201
+2025-12-20 20:13:30 | INFO     | 34616:35108 | app.mapping.dragon_tiger.daily_mapping:map_daily_dragon_tiger:38 - 尝试 API: akshare (优先级 1)
+2025-12-20 20:13:30 | DEBUG    | 34616:35108 | app.data_sources.akshare_client:fetch:16 - Calling Akshare API: stock_lhb_detail_em with params: {'start_date': '20251201', 'end_date': '20251201'}
+2025-12-20 20:13:36 | DEBUG    | 34616:35108 | app.data_sources.akshare_client:fetch:24 - Received data from Akshare API 'stock_lhb_detail_em':     序号      代码     名称         上榜日                   解读  ...                                      上榜原...
+2025-12-20 20:13:36 | INFO     | 34616:35108 | app.mapping.dragon_tiger.daily_config:_fetch_from_akshare:78 - 成功获取龙虎榜数据: 65 条记录
+2025-12-20 20:13:36 | INFO     | 34616:35108 | app.mapping.dragon_tiger.daily_mapping:map_daily_dragon_tiger:46 - API akshare 成功获取 65 条龙虎榜记录
+2025-12-20 20:13:36 | INFO     | 34616:35108 | app.mapping.dragon_tiger.daily_mapping:map_daily_dragon_tiger:60 - 龙虎榜数据映射完成: 共 65 条记录
+2025-12-20 20:13:36 | INFO     | 34616:35108 | app.repository.dragon_tiger.daily_dragon_tiger:bulk_upsert:88 - 龙虎榜数据批量操作完成: 创建 65 条, 更新 0 条
+2025-12-20 20:13:36 | INFO     | 34616:35108 | app.services.dragon_tiger_service:import_by_date:52 - 龙虎榜数据导入完成: 20251201 - 创建 65 条, 更新 0 条
+2025-12-20 20:13:36 | INFO     | 34616:35108 | app.services.dragon_tiger_service:import_by_date:38 - 开始导入龙虎榜数据: 20251202
+2025-12-20 20:13:36 | INFO     | 34616:35108 | app.mapping.dragon_tiger.daily_mapping:map_daily_dragon_tiger:29 - 开始获取龙虎榜数据: 20251202 - 20251202
+2025-12-20 20:13:36 | INFO     | 34616:35108 | app.mapping.dragon_tiger.daily_mapping:map_daily_dragon_tiger:38 - 尝试 API: akshare (优先级 1)
+2025-12-20 20:13:36 | DEBUG    | 34616:35108 | app.data_sources.akshare_client:fetch:16 - Calling Akshare API: stock_lhb_detail_em with params: {'start_date': '20251202', 'end_date': '20251202'}
+2025-12-20 20:13:40 | DEBUG    | 34616:35108 | app.data_sources.akshare_client:fetch:24 - Received data from Akshare API 'stock_lhb_detail_em':     序号      代码    名称         上榜日                   解读    收盘价  ...          流通市值                     ...
+2025-12-20 20:13:40 | INFO     | 34616:35108 | app.mapping.dragon_tiger.daily_config:_fetch_from_akshare:78 - 成功获取龙虎榜数据: 73 条记录
+2025-12-20 20:13:40 | INFO     | 34616:35108 | app.mapping.dragon_tiger.daily_mapping:map_daily_dragon_tiger:46 - API akshare 成功获取 73 条龙虎榜记录
+2025-12-20 20:13:40 | INFO     | 34616:35108 | app.mapping.dragon_tiger.daily_mapping:map_daily_dragon_tiger:60 - 龙虎榜数据映射完成: 共 73 条记录
+2025-12-20 20:13:40 | INFO     | 34616:35108 | app.repository.dragon_tiger.daily_dragon_tiger:bulk_upsert:88 - 龙虎榜数据批量操作完成: 创建 73 条, 更新 0 条
+2025-12-20 20:13:40 | INFO     | 34616:35108 | app.services.dragon_tiger_service:import_by_date:52 - 龙虎榜数据导入完成: 20251202 - 创建 73 条, 更新 0 条
+2025-12-20 20:13:40 | INFO     | 34616:35108 | app.services.dragon_tiger_service:import_by_date:38 - 开始导入龙虎榜数据: 20251203
+2025-12-20 20:13:40 | INFO     | 34616:35108 | app.mapping.dragon_tiger.daily_mapping:map_daily_dragon_tiger:29 - 开始获取龙虎榜数据: 20251203 - 20251203
+2025-12-20 20:13:40 | INFO     | 34616:35108 | app.mapping.dragon_tiger.daily_mapping:map_daily_dragon_tiger:38 - 尝试 API: akshare (优先级 1)
+2025-12-20 20:13:40 | DEBUG    | 34616:35108 | app.data_sources.akshare_client:fetch:16 - Calling Akshare API: stock_lhb_detail_em with params: {'start_date': '20251203', 'end_date': '20251203'}
+2025-12-20 20:13:45 | DEBUG    | 34616:35108 | app.data_sources.akshare_client:fetch:24 - Received data from Akshare API 'stock_lhb_detail_em':     序号      代码    名称         上榜日                   解读    收盘价       涨跌幅  ...      换手率          流通市值  ...
+2025-12-20 20:13:45 | INFO     | 34616:35108 | app.mapping.dragon_tiger.daily_config:_fetch_from_akshare:78 - 成功获取龙虎榜数据: 69 条记录
+2025-12-20 20:13:45 | INFO     | 34616:35108 | app.mapping.dragon_tiger.daily_mapping:map_daily_dragon_tiger:46 - API akshare 成功获取 69 条龙虎榜记录
+2025-12-20 20:13:45 | INFO     | 34616:35108 | app.mapping.dragon_tiger.daily_mapping:map_daily_dragon_tiger:60 - 龙虎榜数据映射完成: 共 69 条记录
+2025-12-20 20:13:45 | INFO     | 34616:35108 | app.repository.dragon_tiger.daily_dragon_tiger:bulk_upsert:88 - 龙虎榜数据批量操作完成: 创建 69 条, 更新 0 条
+2025-12-20 20:13:45 | INFO     | 34616:35108 | app.services.dragon_tiger_service:import_by_date:52 - 龙虎榜数据导入完成: 20251203 - 创建 69 条, 更新 0 条
+2025-12-20 20:13:45 | INFO     | 34616:35108 | app.services.dragon_tiger_service:import_by_date:38 - 开始导入龙虎榜数据: 20251204
+2025-12-20 20:13:45 | INFO     | 34616:35108 | app.mapping.dragon_tiger.daily_mapping:map_daily_dragon_tiger:29 - 开始获取龙虎榜数据: 20251204 - 20251204
+2025-12-20 20:13:45 | INFO     | 34616:35108 | app.mapping.dragon_tiger.daily_mapping:map_daily_dragon_tiger:38 - 尝试 API: akshare (优先级 1)
+2025-12-20 20:13:45 | DEBUG    | 34616:35108 | app.data_sources.akshare_client:fetch:16 - Calling Akshare API: stock_lhb_detail_em with params: {'start_date': '20251204', 'end_date': '20251204'}
+2025-12-20 20:13:49 | DEBUG    | 34616:35108 | app.data_sources.akshare_client:fetch:24 - Received data from Akshare API 'stock_lhb_detail_em':     序号      代码    名称         上榜日                解读    收盘价  ...          流通市值                      上榜...
+2025-12-20 20:13:49 | INFO     | 34616:35108 | app.mapping.dragon_tiger.daily_config:_fetch_from_akshare:78 - 成功获取龙虎榜数据: 71 条记录
+2025-12-20 20:13:49 | INFO     | 34616:35108 | app.mapping.dragon_tiger.daily_mapping:map_daily_dragon_tiger:46 - API akshare 成功获取 71 条龙虎榜记录
+2025-12-20 20:13:49 | INFO     | 34616:35108 | app.mapping.dragon_tiger.daily_mapping:map_daily_dragon_tiger:60 - 龙虎榜数据映射完成: 共 71 条记录
+2025-12-20 20:13:49 | INFO     | 34616:35108 | app.repository.dragon_tiger.daily_dragon_tiger:bulk_upsert:88 - 龙虎榜数据批量操作完成: 创建 71 条, 更新 0 条
+2025-12-20 20:13:49 | INFO     | 34616:35108 | app.services.dragon_tiger_service:import_by_date:52 - 龙虎榜数据导入完成: 20251204 - 创建 71 条, 更新 0 条
+2025-12-20 20:13:49 | INFO     | 34616:35108 | app.services.dragon_tiger_service:import_by_date:38 - 开始导入龙虎榜数据: 20251205
+2025-12-20 20:13:49 | INFO     | 34616:35108 | app.mapping.dragon_tiger.daily_mapping:map_daily_dragon_tiger:29 - 开始获取龙虎榜数据: 20251205 - 20251205
+2025-12-20 20:13:49 | INFO     | 34616:35108 | app.mapping.dragon_tiger.daily_mapping:map_daily_dragon_tiger:38 - 尝试 API: akshare (优先级 1)
+2025-12-20 20:13:49 | DEBUG    | 34616:35108 | app.data_sources.akshare_client:fetch:16 - Calling Akshare API: stock_lhb_detail_em with params: {'start_date': '20251205', 'end_date': '20251205'}
+2025-12-20 20:13:53 | DEBUG    | 34616:35108 | app.data_sources.akshare_client:fetch:24 - Received data from Akshare API 'stock_lhb_detail_em':     序号      代码    名称         上榜日                解读    收盘价  ...          流通市值                        ...
+2025-12-20 20:13:53 | INFO     | 34616:35108 | app.mapping.dragon_tiger.daily_config:_fetch_from_akshare:78 - 成功获取龙虎榜数据: 64 条记录
+2025-12-20 20:13:53 | INFO     | 34616:35108 | app.mapping.dragon_tiger.daily_mapping:map_daily_dragon_tiger:46 - API akshare 成功获取 64 条龙虎榜记录
+2025-12-20 20:13:53 | INFO     | 34616:35108 | app.mapping.dragon_tiger.daily_mapping:map_daily_dragon_tiger:60 - 龙虎榜数据映射完成: 共 64 条记录
+2025-12-20 20:13:53 | INFO     | 34616:35108 | app.repository.dragon_tiger.daily_dragon_tiger:bulk_upsert:88 - 龙虎榜数据批量操作完成: 创建 64 条, 更新 0 条
+2025-12-20 20:13:53 | INFO     | 34616:35108 | app.services.dragon_tiger_service:import_by_date:52 - 龙虎榜数据导入完成: 20251205 - 创建 64 条, 更新 0 条
+2025-12-20 20:13:53 | INFO     | 34616:35108 | app.services.dragon_tiger_service:import_by_date:38 - 开始导入龙虎榜数据: 20251206
+2025-12-20 20:13:53 | INFO     | 34616:35108 | app.mapping.dragon_tiger.daily_mapping:map_daily_dragon_tiger:29 - 开始获取龙虎榜数据: 20251206 - 20251206
+2025-12-20 20:13:53 | INFO     | 34616:35108 | app.mapping.dragon_tiger.daily_mapping:map_daily_dragon_tiger:38 - 尝试 API: akshare (优先级 1)
+2025-12-20 20:13:53 | DEBUG    | 34616:35108 | app.data_sources.akshare_client:fetch:16 - Calling Akshare API: stock_lhb_detail_em with params: {'start_date': '20251206', 'end_date': '20251206'}
+2025-12-20 20:13:54 | ERROR    | 34616:35108 | app.data_sources.akshare_client:fetch:32 - Error fetching data from Akshare API 'stock_lhb_detail_em': 'NoneType' object is not subscriptable
+2025-12-20 20:13:54 | ERROR    | 34616:35108 | app.mapping.dragon_tiger.daily_config:_fetch_from_akshare:82 - _fetch_from_akshare 失败: Error fetching data from Akshare API 'stock_lhb_detail_em': 'NoneType' object is not subscriptable
+2025-12-20 20:13:54 | WARNING  | 34616:35108 | app.mapping.dragon_tiger.daily_mapping:map_daily_dragon_tiger:50 - API akshare 未获取到数据
+2025-12-20 20:13:54 | WARNING  | 34616:35108 | app.mapping.dragon_tiger.daily_mapping:map_daily_dragon_tiger:58 - 未能获取到龙虎榜数据: 20251206 - 20251206
+2025-12-20 20:13:54 | WARNING  | 34616:35108 | app.services.dragon_tiger_service:import_by_date:45 - 未获取到龙虎榜数据: 20251206
+2025-12-20 20:13:54 | INFO     | 34616:35108 | app.services.dragon_tiger_service:import_by_date:38 - 开始导入龙虎榜数据: 20251207
+2025-12-20 20:13:54 | INFO     | 34616:35108 | app.mapping.dragon_tiger.daily_mapping:map_daily_dragon_tiger:29 - 开始获取龙虎榜数据: 20251207 - 20251207
+2025-12-20 20:13:54 | INFO     | 34616:35108 | app.mapping.dragon_tiger.daily_mapping:map_daily_dragon_tiger:38 - 尝试 API: akshare (优先级 1)
+2025-12-20 20:13:54 | DEBUG    | 34616:35108 | app.data_sources.akshare_client:fetch:16 - Calling Akshare API: stock_lhb_detail_em with params: {'start_date': '20251207', 'end_date': '20251207'}
+2025-12-20 20:13:55 | ERROR    | 34616:35108 | app.data_sources.akshare_client:fetch:32 - Error fetching data from Akshare API 'stock_lhb_detail_em': 'NoneType' object is not subscriptable
+2025-12-20 20:13:55 | ERROR    | 34616:35108 | app.mapping.dragon_tiger.daily_config:_fetch_from_akshare:82 - _fetch_from_akshare 失败: Error fetching data from Akshare API 'stock_lhb_detail_em': 'NoneType' object is not subscriptable
+2025-12-20 20:13:55 | WARNING  | 34616:35108 | app.mapping.dragon_tiger.daily_mapping:map_daily_dragon_tiger:50 - API akshare 未获取到数据
+2025-12-20 20:13:55 | WARNING  | 34616:35108 | app.mapping.dragon_tiger.daily_mapping:map_daily_dragon_tiger:58 - 未能获取到龙虎榜数据: 20251207 - 20251207
+2025-12-20 20:13:55 | WARNING  | 34616:35108 | app.services.dragon_tiger_service:import_by_date:45 - 未获取到龙虎榜数据: 20251207
+2025-12-20 20:13:55 | INFO     | 34616:35108 | app.services.dragon_tiger_service:import_by_date:38 - 开始导入龙虎榜数据: 20251208
+2025-12-20 20:13:55 | INFO     | 34616:35108 | app.mapping.dragon_tiger.daily_mapping:map_daily_dragon_tiger:29 - 开始获取龙虎榜数据: 20251208 - 20251208
+2025-12-20 20:13:55 | INFO     | 34616:35108 | app.mapping.dragon_tiger.daily_mapping:map_daily_dragon_tiger:38 - 尝试 API: akshare (优先级 1)
+2025-12-20 20:13:55 | DEBUG    | 34616:35108 | app.data_sources.akshare_client:fetch:16 - Calling Akshare API: stock_lhb_detail_em with params: {'start_date': '20251208', 'end_date': '20251208'}
+2025-12-20 20:14:00 | DEBUG    | 34616:35108 | app.data_sources.akshare_client:fetch:24 - Received data from Akshare API 'stock_lhb_detail_em':     序号      代码     名称         上榜日                解读    收盘价  ...          流通市值                       ...
+2025-12-20 20:14:00 | INFO     | 34616:35108 | app.mapping.dragon_tiger.daily_config:_fetch_from_akshare:78 - 成功获取龙虎榜数据: 76 条记录
+2025-12-20 20:14:00 | INFO     | 34616:35108 | app.mapping.dragon_tiger.daily_mapping:map_daily_dragon_tiger:46 - API akshare 成功获取 76 条龙虎榜记录
+2025-12-20 20:14:00 | INFO     | 34616:35108 | app.mapping.dragon_tiger.daily_mapping:map_daily_dragon_tiger:60 - 龙虎榜数据映射完成: 共 76 条记录
+2025-12-20 20:14:00 | INFO     | 34616:35108 | app.repository.dragon_tiger.daily_dragon_tiger:bulk_upsert:88 - 龙虎榜数据批量操作完成: 创建 76 条, 更新 0 条
+2025-12-20 20:14:00 | INFO     | 34616:35108 | app.services.dragon_tiger_service:import_by_date:52 - 龙虎榜数据导入完成: 20251208 - 创建 76 条, 更新 0 条
+2025-12-20 20:14:00 | INFO     | 34616:35108 | app.services.dragon_tiger_service:import_by_date:38 - 开始导入龙虎榜数据: 20251209
+2025-12-20 20:14:00 | INFO     | 34616:35108 | app.mapping.dragon_tiger.daily_mapping:map_daily_dragon_tiger:29 - 开始获取龙虎榜数据: 20251209 - 20251209
+2025-12-20 20:14:00 | INFO     | 34616:35108 | app.mapping.dragon_tiger.daily_mapping:map_daily_dragon_tiger:38 - 尝试 API: akshare (优先级 1)
+2025-12-20 20:14:00 | DEBUG    | 34616:35108 | app.data_sources.akshare_client:fetch:16 - Calling Akshare API: stock_lhb_detail_em with params: {'start_date': '20251209', 'end_date': '20251209'}
+2025-12-20 20:14:07 | DEBUG    | 34616:35108 | app.data_sources.akshare_client:fetch:24 - Received data from Akshare API 'stock_lhb_detail_em':     序号      代码    名称         上榜日                   解读  ...                                      上榜原因...
+2025-12-20 20:14:07 | INFO     | 34616:35108 | app.mapping.dragon_tiger.daily_config:_fetch_from_akshare:78 - 成功获取龙虎榜数据: 79 条记录
+2025-12-20 20:14:07 | INFO     | 34616:35108 | app.mapping.dragon_tiger.daily_mapping:map_daily_dragon_tiger:46 - API akshare 成功获取 79 条龙虎榜记录
+2025-12-20 20:14:07 | INFO     | 34616:35108 | app.mapping.dragon_tiger.daily_mapping:map_daily_dragon_tiger:60 - 龙虎榜数据映射完成: 共 79 条记录
+2025-12-20 20:14:07 | INFO     | 34616:35108 | app.repository.dragon_tiger.daily_dragon_tiger:bulk_upsert:88 - 龙虎榜数据批量操作完成: 创建 79 条, 更新 0 条
+2025-12-20 20:14:07 | INFO     | 34616:35108 | app.services.dragon_tiger_service:import_by_date:52 - 龙虎榜数据导入完成: 20251209 - 创建 79 条, 更新 0 条
+2025-12-20 20:14:07 | INFO     | 34616:35108 | app.services.dragon_tiger_service:import_by_date:38 - 开始导入龙虎榜数据: 20251210
+2025-12-20 20:14:07 | INFO     | 34616:35108 | app.mapping.dragon_tiger.daily_mapping:map_daily_dragon_tiger:29 - 开始获取龙虎榜数据: 20251210 - 20251210
+2025-12-20 20:14:07 | INFO     | 34616:35108 | app.mapping.dragon_tiger.daily_mapping:map_daily_dragon_tiger:38 - 尝试 API: akshare (优先级 1)
+2025-12-20 20:14:07 | DEBUG    | 34616:35108 | app.data_sources.akshare_client:fetch:16 - Calling Akshare API: stock_lhb_detail_em with params: {'start_date': '20251210', 'end_date': '20251210'}
+2025-12-20 20:14:12 | DEBUG    | 34616:35108 | app.data_sources.akshare_client:fetch:24 - Received data from Akshare API 'stock_lhb_detail_em':     序号      代码    名称         上榜日                   解读    收盘价  ...          流通市值                     ...
+2025-12-20 20:14:12 | INFO     | 34616:35108 | app.mapping.dragon_tiger.daily_config:_fetch_from_akshare:78 - 成功获取龙虎榜数据: 63 条记录
+2025-12-20 20:14:12 | INFO     | 34616:35108 | app.mapping.dragon_tiger.daily_mapping:map_daily_dragon_tiger:46 - API akshare 成功获取 63 条龙虎榜记录
+2025-12-20 20:14:12 | INFO     | 34616:35108 | app.mapping.dragon_tiger.daily_mapping:map_daily_dragon_tiger:60 - 龙虎榜数据映射完成: 共 63 条记录
+2025-12-20 20:14:12 | INFO     | 34616:35108 | app.repository.dragon_tiger.daily_dragon_tiger:bulk_upsert:88 - 龙虎榜数据批量操作完成: 创建 63 条, 更新 0 条
+2025-12-20 20:14:12 | INFO     | 34616:35108 | app.services.dragon_tiger_service:import_by_date:52 - 龙虎榜数据导入完成: 20251210 - 创建 63 条, 更新 0 条
+2025-12-20 20:14:12 | INFO     | 34616:35108 | app.services.dragon_tiger_service:import_by_date:38 - 开始导入龙虎榜数据: 20251211
+2025-12-20 20:14:12 | INFO     | 34616:35108 | app.mapping.dragon_tiger.daily_mapping:map_daily_dragon_tiger:29 - 开始获取龙虎榜数据: 20251211 - 20251211
+2025-12-20 20:14:12 | INFO     | 34616:35108 | app.mapping.dragon_tiger.daily_mapping:map_daily_dragon_tiger:38 - 尝试 API: akshare (优先级 1)
+2025-12-20 20:14:12 | DEBUG    | 34616:35108 | app.data_sources.akshare_client:fetch:16 - Calling Akshare API: stock_lhb_detail_em with params: {'start_date': '20251211', 'end_date': '20251211'}
+2025-12-20 20:14:16 | DEBUG    | 34616:35108 | app.data_sources.akshare_client:fetch:24 - Received data from Akshare API 'stock_lhb_detail_em':     序号      代码    名称         上榜日                解读  ...                                       上榜原因  ...
+2025-12-20 20:14:16 | INFO     | 34616:35108 | app.mapping.dragon_tiger.daily_config:_fetch_from_akshare:78 - 成功获取龙虎榜数据: 77 条记录
+2025-12-20 20:14:16 | INFO     | 34616:35108 | app.mapping.dragon_tiger.daily_mapping:map_daily_dragon_tiger:46 - API akshare 成功获取 77 条龙虎榜记录
+2025-12-20 20:14:16 | INFO     | 34616:35108 | app.mapping.dragon_tiger.daily_mapping:map_daily_dragon_tiger:60 - 龙虎榜数据映射完成: 共 77 条记录
+2025-12-20 20:14:16 | INFO     | 34616:35108 | app.repository.dragon_tiger.daily_dragon_tiger:bulk_upsert:88 - 龙虎榜数据批量操作完成: 创建 77 条, 更新 0 条
+2025-12-20 20:14:16 | INFO     | 34616:35108 | app.services.dragon_tiger_service:import_by_date:52 - 龙虎榜数据导入完成: 20251211 - 创建 77 条, 更新 0 条
+2025-12-20 20:14:16 | INFO     | 34616:35108 | app.services.dragon_tiger_service:import_by_date:38 - 开始导入龙虎榜数据: 20251212
+2025-12-20 20:14:16 | INFO     | 34616:35108 | app.mapping.dragon_tiger.daily_mapping:map_daily_dragon_tiger:29 - 开始获取龙虎榜数据: 20251212 - 20251212
+2025-12-20 20:14:16 | INFO     | 34616:35108 | app.mapping.dragon_tiger.daily_mapping:map_daily_dragon_tiger:38 - 尝试 API: akshare (优先级 1)
+2025-12-20 20:14:16 | DEBUG    | 34616:35108 | app.data_sources.akshare_client:fetch:16 - Calling Akshare API: stock_lhb_detail_em with params: {'start_date': '20251212', 'end_date': '20251212'}
+2025-12-20 20:14:20 | DEBUG    | 34616:35108 | app.data_sources.akshare_client:fetch:24 - Received data from Akshare API 'stock_lhb_detail_em':     序号      代码     名称         上榜日                解读  ...                                      上榜原因  ...
+2025-12-20 20:14:20 | INFO     | 34616:35108 | app.mapping.dragon_tiger.daily_config:_fetch_from_akshare:78 - 成功获取龙虎榜数据: 87 条记录
+2025-12-20 20:14:20 | INFO     | 34616:35108 | app.mapping.dragon_tiger.daily_mapping:map_daily_dragon_tiger:46 - API akshare 成功获取 87 条龙虎榜记录
+2025-12-20 20:14:20 | INFO     | 34616:35108 | app.mapping.dragon_tiger.daily_mapping:map_daily_dragon_tiger:60 - 龙虎榜数据映射完成: 共 87 条记录
+2025-12-20 20:14:20 | INFO     | 34616:35108 | app.repository.dragon_tiger.daily_dragon_tiger:bulk_upsert:88 - 龙虎榜数据批量操作完成: 创建 87 条, 更新 0 条
+2025-12-20 20:14:20 | INFO     | 34616:35108 | app.services.dragon_tiger_service:import_by_date:52 - 龙虎榜数据导入完成: 20251212 - 创建 87 条, 更新 0 条
+2025-12-20 20:14:20 | INFO     | 34616:35108 | app.services.dragon_tiger_service:import_by_date:38 - 开始导入龙虎榜数据: 20251213
+2025-12-20 20:14:20 | INFO     | 34616:35108 | app.mapping.dragon_tiger.daily_mapping:map_daily_dragon_tiger:29 - 开始获取龙虎榜数据: 20251213 - 20251213
+2025-12-20 20:14:20 | INFO     | 34616:35108 | app.mapping.dragon_tiger.daily_mapping:map_daily_dragon_tiger:38 - 尝试 API: akshare (优先级 1)
+2025-12-20 20:14:20 | DEBUG    | 34616:35108 | app.data_sources.akshare_client:fetch:16 - Calling Akshare API: stock_lhb_detail_em with params: {'start_date': '20251213', 'end_date': '20251213'}
+2025-12-20 20:14:21 | ERROR    | 34616:35108 | app.data_sources.akshare_client:fetch:32 - Error fetching data from Akshare API 'stock_lhb_detail_em': 'NoneType' object is not subscriptable
+2025-12-20 20:14:21 | ERROR    | 34616:35108 | app.mapping.dragon_tiger.daily_config:_fetch_from_akshare:82 - _fetch_from_akshare 失败: Error fetching data from Akshare API 'stock_lhb_detail_em': 'NoneType' object is not subscriptable
+2025-12-20 20:14:21 | WARNING  | 34616:35108 | app.mapping.dragon_tiger.daily_mapping:map_daily_dragon_tiger:50 - API akshare 未获取到数据
+2025-12-20 20:14:21 | WARNING  | 34616:35108 | app.mapping.dragon_tiger.daily_mapping:map_daily_dragon_tiger:58 - 未能获取到龙虎榜数据: 20251213 - 20251213
+2025-12-20 20:14:21 | WARNING  | 34616:35108 | app.services.dragon_tiger_service:import_by_date:45 - 未获取到龙虎榜数据: 20251213
+2025-12-20 20:14:21 | INFO     | 34616:35108 | app.services.dragon_tiger_service:import_by_date:38 - 开始导入龙虎榜数据: 20251214
+2025-12-20 20:14:21 | INFO     | 34616:35108 | app.mapping.dragon_tiger.daily_mapping:map_daily_dragon_tiger:29 - 开始获取龙虎榜数据: 20251214 - 20251214
+2025-12-20 20:14:21 | INFO     | 34616:35108 | app.mapping.dragon_tiger.daily_mapping:map_daily_dragon_tiger:38 - 尝试 API: akshare (优先级 1)
+2025-12-20 20:14:21 | DEBUG    | 34616:35108 | app.data_sources.akshare_client:fetch:16 - Calling Akshare API: stock_lhb_detail_em with params: {'start_date': '20251214', 'end_date': '20251214'}
+2025-12-20 20:14:22 | ERROR    | 34616:35108 | app.data_sources.akshare_client:fetch:32 - Error fetching data from Akshare API 'stock_lhb_detail_em': 'NoneType' object is not subscriptable
+2025-12-20 20:14:22 | ERROR    | 34616:35108 | app.mapping.dragon_tiger.daily_config:_fetch_from_akshare:82 - _fetch_from_akshare 失败: Error fetching data from Akshare API 'stock_lhb_detail_em': 'NoneType' object is not subscriptable
+2025-12-20 20:14:22 | WARNING  | 34616:35108 | app.mapping.dragon_tiger.daily_mapping:map_daily_dragon_tiger:50 - API akshare 未获取到数据
+2025-12-20 20:14:22 | WARNING  | 34616:35108 | app.mapping.dragon_tiger.daily_mapping:map_daily_dragon_tiger:58 - 未能获取到龙虎榜数据: 20251214 - 20251214
+2025-12-20 20:14:22 | WARNING  | 34616:35108 | app.services.dragon_tiger_service:import_by_date:45 - 未获取到龙虎榜数据: 20251214
+2025-12-20 20:14:22 | INFO     | 34616:35108 | app.services.dragon_tiger_service:import_by_date:38 - 开始导入龙虎榜数据: 20251215
+2025-12-20 20:14:22 | INFO     | 34616:35108 | app.mapping.dragon_tiger.daily_mapping:map_daily_dragon_tiger:29 - 开始获取龙虎榜数据: 20251215 - 20251215
+2025-12-20 20:14:22 | INFO     | 34616:35108 | app.mapping.dragon_tiger.daily_mapping:map_daily_dragon_tiger:38 - 尝试 API: akshare (优先级 1)
+2025-12-20 20:14:22 | DEBUG    | 34616:35108 | app.data_sources.akshare_client:fetch:16 - Calling Akshare API: stock_lhb_detail_em with params: {'start_date': '20251215', 'end_date': '20251215'}
+2025-12-20 20:14:26 | DEBUG    | 34616:35108 | app.data_sources.akshare_client:fetch:24 - Received data from Akshare API 'stock_lhb_detail_em':     序号      代码    名称         上榜日                   解读    收盘价  ...          流通市值                     ...
+2025-12-20 20:14:26 | INFO     | 34616:35108 | app.mapping.dragon_tiger.daily_config:_fetch_from_akshare:78 - 成功获取龙虎榜数据: 90 条记录
+2025-12-20 20:14:26 | INFO     | 34616:35108 | app.mapping.dragon_tiger.daily_mapping:map_daily_dragon_tiger:46 - API akshare 成功获取 90 条龙虎榜记录
+2025-12-20 20:14:26 | INFO     | 34616:35108 | app.mapping.dragon_tiger.daily_mapping:map_daily_dragon_tiger:60 - 龙虎榜数据映射完成: 共 90 条记录
+2025-12-20 20:14:26 | INFO     | 34616:35108 | app.repository.dragon_tiger.daily_dragon_tiger:bulk_upsert:88 - 龙虎榜数据批量操作完成: 创建 90 条, 更新 0 条
+2025-12-20 20:14:26 | INFO     | 34616:35108 | app.services.dragon_tiger_service:import_by_date:52 - 龙虎榜数据导入完成: 20251215 - 创建 90 条, 更新 0 条
+2025-12-20 20:14:26 | INFO     | 34616:35108 | app.services.dragon_tiger_service:import_by_date:38 - 开始导入龙虎榜数据: 20251216
+2025-12-20 20:14:26 | INFO     | 34616:35108 | app.mapping.dragon_tiger.daily_mapping:map_daily_dragon_tiger:29 - 开始获取龙虎榜数据: 20251216 - 20251216
+2025-12-20 20:14:26 | INFO     | 34616:35108 | app.mapping.dragon_tiger.daily_mapping:map_daily_dragon_tiger:38 - 尝试 API: akshare (优先级 1)
+2025-12-20 20:14:26 | DEBUG    | 34616:35108 | app.data_sources.akshare_client:fetch:16 - Calling Akshare API: stock_lhb_detail_em with params: {'start_date': '20251216', 'end_date': '20251216'}
+2025-12-20 20:14:29 | DEBUG    | 34616:35108 | app.data_sources.akshare_client:fetch:24 - Received data from Akshare API 'stock_lhb_detail_em':     序号      代码    名称         上榜日                解读    收盘价  ...          流通市值                        ...
+2025-12-20 20:14:29 | INFO     | 34616:35108 | app.mapping.dragon_tiger.daily_config:_fetch_from_akshare:78 - 成功获取龙虎榜数据: 84 条记录
+2025-12-20 20:14:29 | INFO     | 34616:35108 | app.mapping.dragon_tiger.daily_mapping:map_daily_dragon_tiger:46 - API akshare 成功获取 84 条龙虎榜记录
+2025-12-20 20:14:29 | INFO     | 34616:35108 | app.mapping.dragon_tiger.daily_mapping:map_daily_dragon_tiger:60 - 龙虎榜数据映射完成: 共 84 条记录
+2025-12-20 20:14:30 | INFO     | 34616:35108 | app.repository.dragon_tiger.daily_dragon_tiger:bulk_upsert:88 - 龙虎榜数据批量操作完成: 创建 84 条, 更新 0 条
+2025-12-20 20:14:30 | INFO     | 34616:35108 | app.services.dragon_tiger_service:import_by_date:52 - 龙虎榜数据导入完成: 20251216 - 创建 84 条, 更新 0 条
+2025-12-20 20:14:30 | INFO     | 34616:35108 | app.services.dragon_tiger_service:import_by_date:38 - 开始导入龙虎榜数据: 20251217
+2025-12-20 20:14:30 | INFO     | 34616:35108 | app.mapping.dragon_tiger.daily_mapping:map_daily_dragon_tiger:29 - 开始获取龙虎榜数据: 20251217 - 20251217
+2025-12-20 20:14:30 | INFO     | 34616:35108 | app.mapping.dragon_tiger.daily_mapping:map_daily_dragon_tiger:38 - 尝试 API: akshare (优先级 1)
+2025-12-20 20:14:30 | DEBUG    | 34616:35108 | app.data_sources.akshare_client:fetch:16 - Calling Akshare API: stock_lhb_detail_em with params: {'start_date': '20251217', 'end_date': '20251217'}
+2025-12-20 20:14:34 | DEBUG    | 34616:35108 | app.data_sources.akshare_client:fetch:24 - Received data from Akshare API 'stock_lhb_detail_em':     序号      代码    名称         上榜日                   解读    收盘价  ...          流通市值                     ...
+2025-12-20 20:14:34 | INFO     | 34616:35108 | app.mapping.dragon_tiger.daily_config:_fetch_from_akshare:78 - 成功获取龙虎榜数据: 65 条记录
+2025-12-20 20:14:34 | INFO     | 34616:35108 | app.mapping.dragon_tiger.daily_mapping:map_daily_dragon_tiger:46 - API akshare 成功获取 65 条龙虎榜记录
+2025-12-20 20:14:34 | INFO     | 34616:35108 | app.mapping.dragon_tiger.daily_mapping:map_daily_dragon_tiger:60 - 龙虎榜数据映射完成: 共 65 条记录
+2025-12-20 20:14:34 | INFO     | 34616:35108 | app.repository.dragon_tiger.daily_dragon_tiger:bulk_upsert:88 - 龙虎榜数据批量操作完成: 创建 65 条, 更新 0 条
+2025-12-20 20:14:34 | INFO     | 34616:35108 | app.services.dragon_tiger_service:import_by_date:52 - 龙虎榜数据导入完成: 20251217 - 创建 65 条, 更新 0 条
+2025-12-20 20:14:34 | INFO     | 34616:35108 | app.services.dragon_tiger_service:import_by_date:38 - 开始导入龙虎榜数据: 20251218
+2025-12-20 20:14:34 | INFO     | 34616:35108 | app.mapping.dragon_tiger.daily_mapping:map_daily_dragon_tiger:29 - 开始获取龙虎榜数据: 20251218 - 20251218
+2025-12-20 20:14:34 | INFO     | 34616:35108 | app.mapping.dragon_tiger.daily_mapping:map_daily_dragon_tiger:38 - 尝试 API: akshare (优先级 1)
+2025-12-20 20:14:34 | DEBUG    | 34616:35108 | app.data_sources.akshare_client:fetch:16 - Calling Akshare API: stock_lhb_detail_em with params: {'start_date': '20251218', 'end_date': '20251218'}
+2025-12-20 20:14:37 | DEBUG    | 34616:35108 | app.data_sources.akshare_client:fetch:24 - Received data from Akshare API 'stock_lhb_detail_em':     序号      代码     名称         上榜日                解读    收盘价  ...          流通市值                       ...
+2025-12-20 20:14:37 | INFO     | 34616:35108 | app.mapping.dragon_tiger.daily_config:_fetch_from_akshare:78 - 成功获取龙虎榜数据: 83 条记录
+2025-12-20 20:14:37 | INFO     | 34616:35108 | app.mapping.dragon_tiger.daily_mapping:map_daily_dragon_tiger:46 - API akshare 成功获取 83 条龙虎榜记录
+2025-12-20 20:14:37 | INFO     | 34616:35108 | app.mapping.dragon_tiger.daily_mapping:map_daily_dragon_tiger:60 - 龙虎榜数据映射完成: 共 83 条记录
+2025-12-20 20:14:37 | INFO     | 34616:35108 | app.repository.dragon_tiger.daily_dragon_tiger:bulk_upsert:88 - 龙虎榜数据批量操作完成: 创建 83 条, 更新 0 条
+2025-12-20 20:14:37 | INFO     | 34616:35108 | app.services.dragon_tiger_service:import_by_date:52 - 龙虎榜数据导入完成: 20251218 - 创建 83 条, 更新 0 条
+2025-12-20 20:14:37 | INFO     | 34616:35108 | __main__:main:171 - ============================================================
+2025-12-20 20:14:37 | INFO     | 34616:35108 | __main__:main:172 - 导入完成
+2025-12-20 20:14:37 | INFO     | 34616:35108 | __main__:main:173 - 成功: 14 天
+2025-12-20 20:14:37 | INFO     | 34616:35108 | __main__:main:174 - 失败: 4 天
+2025-12-20 20:14:37 | INFO     | 34616:35108 | __main__:main:175 - 总计创建: 1046 条
+2025-12-20 20:14:37 | INFO     | 34616:35108 | __main__:main:176 - 总计更新: 0 条
+2025-12-20 20:14:37 | INFO     | 34616:35108 | __main__:main:177 - ============================================================

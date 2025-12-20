@@ -13,7 +13,7 @@ config = Config()
 app = create_app()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     # 获取环境变量配置
     env = config.ENV
     host = config.FLASK_HOST
