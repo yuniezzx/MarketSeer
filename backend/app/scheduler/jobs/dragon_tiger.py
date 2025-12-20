@@ -4,8 +4,10 @@
 负责定期采集和更新龙虎榜数据
 """
 
+from datetime import datetime
 from logger import logger
 from app.utils.timer import is_trading_day
+from app.services.dragon_tiger_service import DragonTigerService
 
 
 def collect_daily_dragon_tiger(app):
@@ -19,21 +21,25 @@ def collect_daily_dragon_tiger(app):
     """
     with app.app_context():
         try:
-            # 检查是否为交易日
+            # 检查是否为交易日（周末和节假日不执行）
             if not is_trading_day():
                 logger.info("今天不是交易日，跳过龙虎榜数据采集")
                 return
 
             logger.info("=" * 60)
-            logger.info("开始采集每日龙虎榜数据...")
+            logger.info("开始采集每日龙虎榜数据")
             logger.info("=" * 60)
 
-            # TODO: 实现具体的数据采集逻辑
-            # 1. 调用数据源获取龙虎榜数据
-            # 2. 数据清洗和转换
-            # 3. 保存到数据库
+            # 创建服务实例并执行每日更新
+            service = DragonTigerService()
+            success = service.daily_update()
 
-            logger.info("每日龙虎榜数据采集完成")
+            if success:
+                logger.info("=" * 60)
+                logger.info("每日龙虎榜数据采集完成")
+                logger.info("=" * 60)
+            else:
+                logger.error("每日龙虎榜数据采集失败")
 
         except Exception as e:
             logger.exception(f"采集每日龙虎榜数据失败: {e}")
