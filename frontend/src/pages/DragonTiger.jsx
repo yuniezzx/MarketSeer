@@ -1,14 +1,14 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import dayjs from "dayjs";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { getDailyDragonTiger } from "@/api/dragonTiger";
+import { getDailyDragonTiger, getDragonTigerByRange } from "@/api/dragonTiger";
 
 function DragonTiger() {
-  // 计算开始日期：前两个星期，但不超过2025/12/01
-  const defaultStartDate = dayjs().subtract(14, "days");
+  // 计算开始日期：前一个星期，但不超过2025/12/01
+  const defaultStartDate = dayjs().subtract(7, "days");
   const cutoffDate = dayjs("2025-12-01");
   const startDateValue = defaultStartDate.isBefore(cutoffDate) ? cutoffDate : defaultStartDate;
 
@@ -17,7 +17,13 @@ function DragonTiger() {
   const [daysBack, setDaysBack] = useState(7);
   const [loading, setLoading] = useState(false);
   const [dragonTigerData, setDragonTigerData] = useState([]);
+  const [rangeData, setRangeData] = useState([]);
   const [error, setError] = useState(null);
+
+  // 页面首次加载时自动获取股票
+  useEffect(() => {
+    handleDailyQuery();
+  }, []);
 
   // 查询每日龙虎榜数据
   const handleDailyQuery = async () => {
@@ -29,6 +35,28 @@ function DragonTiger() {
         // 将数据按日期分组
         const groupedData = groupDataByDate(response.data);
         setDragonTigerData(groupedData);
+      } else {
+        setError(response.message || "查询失败");
+      }
+    } catch (err) {
+      setError(err.message || "网络请求失败");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // 查询日期范围的龙虎榜数据
+  const handleRangeQuery = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      // 将日期格式从 YYYY-MM-DD 转换为 YYYYMMDD
+      const startDateFormatted = startDate.replace(/-/g, "");
+      const endDateFormatted = endDate.replace(/-/g, "");
+
+      const response = await getDragonTigerByRange(startDateFormatted, endDateFormatted);
+      if (response.status === "success") {
+        setRangeData(response.data);
       } else {
         setError(response.message || "查询失败");
       }
@@ -197,34 +225,37 @@ function DragonTiger() {
 
         <TabsContent value="date-range" className="mt-4">
           <div className="p-6 border rounded-lg">
-            <div className="flex items-end gap-4 flex-wrap mb-4">
-              <div className="space-x-1">
-                <label className="text-sm font-medium">开始日期</label>
-                <Input
-                  type="date"
-                  value={startDate}
-                  onChange={e => setStartDate(e.target.value)}
-                  className="w-40"
-                  disabled={loading}
-                  size="sm"
-                />
-              </div>
-              <div className="space-x-1">
-                <label className="text-sm font-medium">结束日期</label>
-                <Input
-                  type="date"
-                  value={endDate}
-                  onChange={e => setEndDate(e.target.value)}
-                  className="w-40"
-                  disabled={loading}
-                  size="sm"
-                />
+            <div className="flex items-center justify-end gap-4 mb-4">
+              <div className="flex items-center gap-4">
+                <div className="space-x-1">
+                  <label className="text-sm font-medium">开始日期</label>
+                  <Input
+                    type="date"
+                    value={startDate}
+                    onChange={e => setStartDate(e.target.value)}
+                    className="w-40"
+                    disabled={loading}
+                    size="sm"
+                  />
+                </div>
+                <div className="space-x-1">
+                  <label className="text-sm font-medium">结束日期</label>
+                  <Input
+                    type="date"
+                    value={endDate}
+                    onChange={e => setEndDate(e.target.value)}
+                    className="w-40"
+                    disabled={loading}
+                    size="sm"
+                  />
+                </div>
               </div>
               <Button
                 disabled={loading}
                 variant="default"
                 size="sm"
                 className="bg-blue-600 hover:bg-blue-700 text-white border border-blue-600"
+                onClick={handleRangeQuery}
               >
                 {loading ? "查询中..." : "查询"}
               </Button>
@@ -232,7 +263,80 @@ function DragonTiger() {
 
             {/* 查询结果区域 */}
             <div className="pt-4">
-              <p className="text-gray-600 dark:text-gray-400 text-sm">选择日期范围后点击查询按钮查看龙虎榜数据</p>
+              {error && (
+                <div className="mb-4 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+                  <p className="text-red-600 dark:text-red-400 text-sm">{error}</p>
+                </div>
+              )}
+
+              {!loading && !error && rangeData.length === 0 && (
+                <p className="text-gray-600 dark:text-gray-400 text-sm">选择日期范围后点击查询按钮查看龙虎榜数据</p>
+              )}
+
+              {!loading && rangeData.length > 0 && (
+                <div className="space-y-4">
+                  <p className="text-sm text-gray-600 dark:text-gray-400">共查询到 {rangeData.length} 条记录</p>
+
+                  <div className="border rounded-lg overflow-hidden">
+                    <div className="overflow-x-auto">
+                      <Table>
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead className="w-28 text-center">日期</TableHead>
+                            <TableHead className="w-24 text-center">股票代码</TableHead>
+                            <TableHead className="w-28 text-center">股票名称</TableHead>
+                            <TableHead className="text-center w-24">收盘价</TableHead>
+                            <TableHead className="text-center w-24">涨跌幅(%)</TableHead>
+                            <TableHead className="text-center w-24">换手率(%)</TableHead>
+                            <TableHead className="text-center w-32">龙虎榜净买额(万)</TableHead>
+                            <TableHead className="text-center w-32">龙虎榜成交额(万)</TableHead>
+                            <TableHead className="text-center min-w-48">上榜原因</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {rangeData.map((item, index) => (
+                            <TableRow key={index}>
+                              <TableCell className="text-center">{item.listed_date}</TableCell>
+                              <TableCell className="font-mono text-center">{item.code}</TableCell>
+                              <TableCell className="text-center">{item.name}</TableCell>
+                              <TableCell className="text-center">{item.close_price?.toFixed(2) || "-"}</TableCell>
+                              <TableCell
+                                className={`text-center font-medium ${
+                                  item.change_percent > 0
+                                    ? "text-red-600 dark:text-red-400"
+                                    : item.change_percent < 0
+                                    ? "text-green-600 dark:text-green-400"
+                                    : ""
+                                }`}
+                              >
+                                {item.change_percent
+                                  ? `${item.change_percent > 0 ? "+" : ""}${item.change_percent.toFixed(2)}`
+                                  : "-"}
+                              </TableCell>
+                              <TableCell className="text-center">{item.turnover_rate?.toFixed(2) || "-"}</TableCell>
+                              <TableCell
+                                className={`text-center font-medium ${
+                                  item.lhb_net_amount > 0
+                                    ? "text-red-600 dark:text-red-400"
+                                    : item.lhb_net_amount < 0
+                                    ? "text-green-600 dark:text-green-400"
+                                    : ""
+                                }`}
+                              >
+                                {item.lhb_net_amount ? (item.lhb_net_amount / 10000).toFixed(2) : "-"}
+                              </TableCell>
+                              <TableCell className="text-center">
+                                {item.lhb_trade_amount ? (item.lhb_trade_amount / 10000).toFixed(2) : "-"}
+                              </TableCell>
+                              <TableCell className="text-sm text-center">{item.reasons || "-"}</TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </TabsContent>
