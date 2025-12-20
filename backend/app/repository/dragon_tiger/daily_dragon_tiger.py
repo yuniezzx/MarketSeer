@@ -4,7 +4,7 @@
 提供龙虎榜数据的数据库操作接口
 """
 
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Optional
 from app.repository.base import BaseRepository
 from app.models.dragon_tiger.daily_dragon_tiger import DailyDragonTiger
 from logger import logger
@@ -94,3 +94,33 @@ class DailyDragonTigerRepository(BaseRepository[DailyDragonTiger]):
 
             db.session.rollback()
             return (0, 0)
+
+    def get_by_date_range(self, start_date: str, end_date: str) -> List[DailyDragonTiger]:
+        """
+        获取指定日期范围内的龙虎榜数据
+
+        Args:
+            start_date: 开始日期 (格式: YYYYMMDD)
+            end_date: 结束日期 (格式: YYYYMMDD)
+
+        Returns:
+            龙虎榜数据列表
+        """
+        try:
+            from app.models.base import db
+
+            query = db.session.query(self.model)
+
+            # 日期范围过滤
+            query = query.filter(
+                self.model.listed_date >= start_date, self.model.listed_date <= end_date
+            )
+
+            records = query.all()
+            logger.info(f"查询日期范围 {start_date} 到 {end_date}，返回 {len(records)} 条记录")
+            return records
+
+        except Exception as e:
+            logger.error(f"日期范围查询失败: {e}")
+            logger.exception("详细错误信息:")
+            return []

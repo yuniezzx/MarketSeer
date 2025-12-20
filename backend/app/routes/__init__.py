@@ -20,3 +20,4 @@
 """
 
 from .stocks import stocks_bp
+from .dragon_tiger import dragon_tiger_bp

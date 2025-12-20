@@ -1,8 +1,2 @@
-2025-12-20 20:13:54 | ERROR    | 34616:35108 | app.data_sources.akshare_client:fetch:32 - Error fetching data from Akshare API 'stock_lhb_detail_em': 'NoneType' object is not subscriptable
-2025-12-20 20:13:54 | ERROR    | 34616:35108 | app.mapping.dragon_tiger.daily_config:_fetch_from_akshare:82 - _fetch_from_akshare 失败: Error fetching data from Akshare API 'stock_lhb_detail_em': 'NoneType' object is not subscriptable
-2025-12-20 20:13:55 | ERROR    | 34616:35108 | app.data_sources.akshare_client:fetch:32 - Error fetching data from Akshare API 'stock_lhb_detail_em': 'NoneType' object is not subscriptable
-2025-12-20 20:13:55 | ERROR    | 34616:35108 | app.mapping.dragon_tiger.daily_config:_fetch_from_akshare:82 - _fetch_from_akshare 失败: Error fetching data from Akshare API 'stock_lhb_detail_em': 'NoneType' object is not subscriptable
-2025-12-20 20:14:21 | ERROR    | 34616:35108 | app.data_sources.akshare_client:fetch:32 - Error fetching data from Akshare API 'stock_lhb_detail_em': 'NoneType' object is not subscriptable
-2025-12-20 20:14:21 | ERROR    | 34616:35108 | app.mapping.dragon_tiger.daily_config:_fetch_from_akshare:82 - _fetch_from_akshare 失败: Error fetching data from Akshare API 'stock_lhb_detail_em': 'NoneType' object is not subscriptable
-2025-12-20 20:14:22 | ERROR    | 34616:35108 | app.data_sources.akshare_client:fetch:32 - Error fetching data from Akshare API 'stock_lhb_detail_em': 'NoneType' object is not subscriptable
-2025-12-20 20:14:22 | ERROR    | 34616:35108 | app.mapping.dragon_tiger.daily_config:_fetch_from_akshare:82 - _fetch_from_akshare 失败: Error fetching data from Akshare API 'stock_lhb_detail_em': 'NoneType' object is not subscriptable
+2025-12-20 23:38:33 | ERROR    | 35548:26580 | app.data_sources.akshare_client:fetch:32 - Error fetching data from Akshare API 'stock_lhb_detail_em': 'NoneType' object is not subscriptable
+2025-12-20 23:38:33 | ERROR    | 35548:26580 | app.mapping.dragon_tiger.daily_config:_fetch_from_akshare:82 - _fetch_from_akshare 失败: Error fetching data from Akshare API 'stock_lhb_detail_em': 'NoneType' object is not subscriptable

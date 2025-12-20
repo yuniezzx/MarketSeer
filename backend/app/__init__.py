@@ -23,9 +23,10 @@ def create_app():
         init_db()
 
     # 注册蓝图
-    from app.routes import stocks_bp
+    from app.routes import stocks_bp, dragon_tiger_bp
 
     app.register_blueprint(stocks_bp)
+    app.register_blueprint(dragon_tiger_bp)
 
     # 初始化调度器（仅在主进程中初始化，避免 debug 模式重复执行）
     import os
