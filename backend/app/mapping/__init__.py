@@ -5,5 +5,10 @@ Mapping Layer
 """
 
 from .stocks.info_mapping import map_stock_info
+from .dragon_tiger.daily_mapping import map_daily_dragon_tiger, map_daily_dragon_tiger_by_date
 
-__all__ = ['map_stock_info']
+__all__ = [
+    "map_stock_info",
+    "map_daily_dragon_tiger",
+    "map_daily_dragon_tiger_by_date",
+]
