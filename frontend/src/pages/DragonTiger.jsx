@@ -3,27 +3,16 @@ import dayjs from "dayjs";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { getDailyDragonTiger } from "@/api/dragonTiger";
 
 function DragonTiger() {
   // 计算开始日期：前两个星期，但不超过2025/12/01
   const defaultStartDate = dayjs().subtract(14, "days");
   const cutoffDate = dayjs("2025-12-01");
-  const startDateValue = defaultStartDate.isBefore(cutoffDate)
-    ? cutoffDate
-    : defaultStartDate;
+  const startDateValue = defaultStartDate.isBefore(cutoffDate) ? cutoffDate : defaultStartDate;
 
-  const [startDate, setStartDate] = useState(
-    startDateValue.format("YYYY-MM-DD")
-  );
+  const [startDate, setStartDate] = useState(startDateValue.format("YYYY-MM-DD"));
   const [endDate, setEndDate] = useState(dayjs().format("YYYY-MM-DD"));
   const [daysBack, setDaysBack] = useState(7);
   const [loading, setLoading] = useState(false);
@@ -88,24 +77,18 @@ function DragonTiger() {
         <TabsContent value="daily" className="mt-4">
           <div className="p-6 border rounded-lg">
             <div className="flex items-center justify-end gap-2 mb-4">
-              <span className="text-xs text-gray-500 dark:text-gray-400 mr-2">
-                今天: {dayjs().format("YYYY-MM-DD")}
-              </span>
+              <span className="text-xs text-gray-500 dark:text-gray-400 mr-2">今天: {dayjs().format("YYYY-MM-DD")}</span>
               <Input
                 type="number"
                 value={daysBack}
-                onChange={e =>
-                  setDaysBack(Math.max(1, parseInt(e.target.value) || 1))
-                }
+                onChange={e => setDaysBack(Math.max(1, parseInt(e.target.value) || 1))}
                 className="w-20"
                 disabled={loading}
                 size="sm"
                 min="1"
                 max="365"
               />
-              <span className="text-sm text-gray-600 dark:text-gray-400">
-                天
-              </span>
+              <span className="text-sm text-gray-600 dark:text-gray-400">天</span>
               <Button
                 disabled={loading}
                 variant="default"
@@ -121,16 +104,12 @@ function DragonTiger() {
             <div>
               {error && (
                 <div className="mb-4 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
-                  <p className="text-red-600 dark:text-red-400 text-sm">
-                    {error}
-                  </p>
+                  <p className="text-red-600 dark:text-red-400 text-sm">{error}</p>
                 </div>
               )}
 
               {!loading && !error && dragonTigerData.length === 0 && (
-                <p className="text-gray-600 dark:text-gray-400 text-sm">
-                  设置天数后点击查询按钮查看最近N天的龙虎榜数据
-                </p>
+                <p className="text-gray-600 dark:text-gray-400 text-sm">设置天数后点击查询按钮查看最近N天的龙虎榜数据</p>
               )}
 
               {!loading && dragonTigerData.length > 0 && (
@@ -138,10 +117,7 @@ function DragonTiger() {
                   {dragonTigerData.map((dateGroup, groupIndex) => {
                     const date = Object.keys(dateGroup)[0];
                     const records = dateGroup[date];
-                    const totalRecords = dragonTigerData.reduce(
-                      (sum, group) => sum + Object.values(group)[0].length,
-                      0
-                    );
+                    const totalRecords = dragonTigerData.reduce((sum, group) => sum + Object.values(group)[0].length, 0);
 
                     return (
                       <div key={groupIndex} className="space-y-2">
@@ -150,9 +126,7 @@ function DragonTiger() {
                             {date} ({records.length}条记录)
                           </h3>
                           {groupIndex === 0 && (
-                            <p className="text-sm text-gray-600 dark:text-gray-400">
-                              共查询到 {totalRecords} 条记录
-                            </p>
+                            <p className="text-sm text-gray-600 dark:text-gray-400">共查询到 {totalRecords} 条记录</p>
                           )}
                         </div>
 
@@ -161,44 +135,22 @@ function DragonTiger() {
                             <Table>
                               <TableHeader>
                                 <TableRow>
-                                  <TableHead className="w-24 text-center">
-                                    股票代码
-                                  </TableHead>
-                                  <TableHead className="w-28 text-center">
-                                    股票名称
-                                  </TableHead>
-                                  <TableHead className="text-center w-24">
-                                    收盘价
-                                  </TableHead>
-                                  <TableHead className="text-center w-24">
-                                    涨跌幅(%)
-                                  </TableHead>
-                                  <TableHead className="text-center w-24">
-                                    换手率(%)
-                                  </TableHead>
-                                  <TableHead className="text-center w-32">
-                                    龙虎榜净买额(万)
-                                  </TableHead>
-                                  <TableHead className="text-center w-32">
-                                    龙虎榜成交额(万)
-                                  </TableHead>
-                                  <TableHead className="text-center min-w-48">
-                                    上榜原因
-                                  </TableHead>
+                                  <TableHead className="w-24 text-center">股票代码</TableHead>
+                                  <TableHead className="w-28 text-center">股票名称</TableHead>
+                                  <TableHead className="text-center w-24">收盘价</TableHead>
+                                  <TableHead className="text-center w-24">涨跌幅(%)</TableHead>
+                                  <TableHead className="text-center w-24">换手率(%)</TableHead>
+                                  <TableHead className="text-center w-32">龙虎榜净买额(万)</TableHead>
+                                  <TableHead className="text-center w-32">龙虎榜成交额(万)</TableHead>
+                                  <TableHead className="text-center min-w-48">上榜原因</TableHead>
                                 </TableRow>
                               </TableHeader>
                               <TableBody>
                                 {records.map((item, index) => (
                                   <TableRow key={index}>
-                                    <TableCell className="font-mono text-center">
-                                      {item.code}
-                                    </TableCell>
-                                    <TableCell className="text-center">
-                                      {item.name}
-                                    </TableCell>
-                                    <TableCell className="text-center">
-                                      {item.close_price?.toFixed(2) || "-"}
-                                    </TableCell>
+                                    <TableCell className="font-mono text-center">{item.code}</TableCell>
+                                    <TableCell className="text-center">{item.name}</TableCell>
+                                    <TableCell className="text-center">{item.close_price?.toFixed(2) || "-"}</TableCell>
                                     <TableCell
                                       className={`text-center font-medium ${
                                         item.change_percent > 0
@@ -209,14 +161,10 @@ function DragonTiger() {
                                       }`}
                                     >
                                       {item.change_percent
-                                        ? `${
-                                            item.change_percent > 0 ? "+" : ""
-                                          }${item.change_percent.toFixed(2)}`
+                                        ? `${item.change_percent > 0 ? "+" : ""}${item.change_percent.toFixed(2)}`
                                         : "-"}
                                     </TableCell>
-                                    <TableCell className="text-center">
-                                      {item.turnover_rate?.toFixed(2) || "-"}
-                                    </TableCell>
+                                    <TableCell className="text-center">{item.turnover_rate?.toFixed(2) || "-"}</TableCell>
                                     <TableCell
                                       className={`text-center font-medium ${
                                         item.lhb_net_amount > 0
@@ -226,22 +174,12 @@ function DragonTiger() {
                                           : ""
                                       }`}
                                     >
-                                      {item.lhb_net_amount
-                                        ? (item.lhb_net_amount / 10000).toFixed(
-                                            2
-                                          )
-                                        : "-"}
+                                      {item.lhb_net_amount ? (item.lhb_net_amount / 10000).toFixed(2) : "-"}
                                     </TableCell>
                                     <TableCell className="text-center">
-                                      {item.lhb_trade_amount
-                                        ? (
-                                            item.lhb_trade_amount / 10000
-                                          ).toFixed(2)
-                                        : "-"}
+                                      {item.lhb_trade_amount ? (item.lhb_trade_amount / 10000).toFixed(2) : "-"}
                                     </TableCell>
-                                    <TableCell className="text-sm text-center">
-                                      {item.reasons || "-"}
-                                    </TableCell>
+                                    <TableCell className="text-sm text-center">{item.reasons || "-"}</TableCell>
                                   </TableRow>
                                 ))}
                               </TableBody>
@@ -294,18 +232,14 @@ function DragonTiger() {
 
             {/* 查询结果区域 */}
             <div className="pt-4">
-              <p className="text-gray-600 dark:text-gray-400 text-sm">
-                选择日期范围后点击查询按钮查看龙虎榜数据
-              </p>
+              <p className="text-gray-600 dark:text-gray-400 text-sm">选择日期范围后点击查询按钮查看龙虎榜数据</p>
             </div>
           </div>
         </TabsContent>
 
         <TabsContent value="summary" className="mt-4">
           <div className="p-6 border rounded-lg">
-            <p className="text-gray-600 dark:text-gray-400 text-sm">
-              在这里显示汇总数据的表格
-            </p>
+            <p className="text-gray-600 dark:text-gray-400 text-sm">在这里显示汇总数据的表格</p>
           </div>
         </TabsContent>
       </Tabs>

@@ -1,14 +1,14 @@
-import { useState, useEffect } from 'react';
-import dayjs from 'dayjs';
-import { getStocks, addStock } from '../api/stocks';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from '@/components/ui/tooltip';
+import { useState, useEffect } from "react";
+import dayjs from "dayjs";
+import { getStocks, addStock } from "../api/stocks";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip";
 
 function StockList() {
   const [stocks, setStocks] = useState([]);
-  const [symbol, setSymbol] = useState('');
+  const [symbol, setSymbol] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -23,13 +23,13 @@ function StockList() {
     setError(null);
     try {
       const response = await getStocks();
-      if (response.status === 'success') {
+      if (response.status === "success") {
         setStocks(response.data);
       } else {
-        setError(response.message || '获取股票列表失败');
+        setError(response.message || "获取股票列表失败");
       }
     } catch (err) {
-      setError(err.message || '获取股票列表失败');
+      setError(err.message || "获取股票列表失败");
     } finally {
       setLoading(false);
     }
@@ -38,7 +38,7 @@ function StockList() {
   // 添加股票
   const handleAddStock = async () => {
     if (!symbol.trim()) {
-      setError('请输入股票代码');
+      setError("请输入股票代码");
       return;
     }
 
@@ -46,15 +46,15 @@ function StockList() {
     setError(null);
     try {
       const response = await addStock(symbol);
-      if (response.status === 'success') {
-        setSymbol('');
+      if (response.status === "success") {
+        setSymbol("");
         // 添加成功后重新获取列表
         await handleGetStocks();
       } else {
-        setError(response.message || '添加股票失败');
+        setError(response.message || "添加股票失败");
       }
     } catch (err) {
-      setError(err.message || '添加股票失败');
+      setError(err.message || "添加股票失败");
     } finally {
       setLoading(false);
     }
@@ -62,36 +62,36 @@ function StockList() {
 
   return (
     <TooltipProvider>
-      <div className='p-6'>
+      <div className="p-6">
         {/* 操作按钮区域 */}
-        <div className='flex items-center justify-end gap-3 mb-6'>
+        <div className="flex items-center justify-end gap-3 mb-6">
           <Input
-            size='sm'
-            placeholder='输入股票代码 (如: 600000)'
+            size="sm"
+            placeholder="输入股票代码 (如: 600000)"
             value={symbol}
             onChange={e => setSymbol(e.target.value)}
-            onKeyDown={e => e.key === 'Enter' && handleAddStock()}
-            className='max-w-xs'
+            onKeyDown={e => e.key === "Enter" && handleAddStock()}
+            className="max-w-xs"
             disabled={loading}
           />
-          <Button onClick={handleAddStock} disabled={loading} variant='outline' size='sm'>
+          <Button onClick={handleAddStock} disabled={loading} variant="outline" size="sm">
             添加股票
           </Button>
         </div>
 
         {/* 错误提示 */}
         {error && (
-          <div className='bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-800 dark:text-red-200 px-4 py-3 rounded mb-4 flex items-center justify-between'>
+          <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-800 dark:text-red-200 px-4 py-3 rounded mb-4 flex items-center justify-between">
             <span>{error}</span>
-            <Button onClick={handleGetStocks} disabled={loading} variant='outline' size='sm'>
-              {loading ? '加载中...' : '获取所有股票'}
+            <Button onClick={handleGetStocks} disabled={loading} variant="outline" size="sm">
+              {loading ? "加载中..." : "获取所有股票"}
             </Button>
           </div>
         )}
 
         {/* 股票列表表格 */}
         {stocks.length > 0 ? (
-          <div className='border rounded-lg'>
+          <div className="border rounded-lg">
             <Table>
               <TableHeader>
                 <TableRow>
@@ -110,36 +110,47 @@ function StockList() {
               <TableBody>
                 {stocks.map(stock => (
                   <TableRow key={stock.code}>
-                    <TableCell>{stock.tracking ? <span className='text-green-600 dark:text-green-400'>✓</span> : <span className='text-gray-400'>-</span>}</TableCell>
-                    <TableCell className='font-medium'>{stock.code}</TableCell>
+                    <TableCell>
+                      {stock.tracking ? (
+                        <span className="text-green-600 dark:text-green-400">✓</span>
+                      ) : (
+                        <span className="text-gray-400">-</span>
+                      )}
+                    </TableCell>
+                    <TableCell className="font-medium">{stock.code}</TableCell>
                     <TableCell>{stock.name}</TableCell>
                     <TableCell>{stock.market}</TableCell>
-                    <TableCell>{stock.industry || '-'}</TableCell>
+                    <TableCell>{stock.industry || "-"}</TableCell>
                     <TableCell>
                       <span
-                        className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${stock.status === 'active' ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200' : 'bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200'}`}>
+                        className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
+                          stock.status === "active"
+                            ? "bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200"
+                            : "bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200"
+                        }`}
+                      >
                         {stock.status}
                       </span>
                     </TableCell>
-                    <TableCell>{stock.establish_date ? dayjs(stock.establish_date).format('YYYY-MM-DD') : '-'}</TableCell>
-                    <TableCell>{stock.list_date ? dayjs(stock.list_date).format('YYYY-MM-DD') : '-'}</TableCell>
+                    <TableCell>{stock.establish_date ? dayjs(stock.establish_date).format("YYYY-MM-DD") : "-"}</TableCell>
+                    <TableCell>{stock.list_date ? dayjs(stock.list_date).format("YYYY-MM-DD") : "-"}</TableCell>
                     <TableCell className="max-w-32">
                       <Tooltip>
                         <TooltipTrigger asChild>
-                          <div className="truncate cursor-help">{stock.main_operation_business?.trim() || '-'}</div>
+                          <div className="truncate cursor-help">{stock.main_operation_business?.trim() || "-"}</div>
                         </TooltipTrigger>
                         <TooltipContent className="max-w-md">
-                          <p className="whitespace-pre-wrap">{stock.main_operation_business?.trim() || '-'}</p>
+                          <p className="whitespace-pre-wrap">{stock.main_operation_business?.trim() || "-"}</p>
                         </TooltipContent>
                       </Tooltip>
                     </TableCell>
                     <TableCell className="max-w-32">
                       <Tooltip>
                         <TooltipTrigger asChild>
-                          <div className="truncate cursor-help">{stock.operating_scope?.trim() || '-'}</div>
+                          <div className="truncate cursor-help">{stock.operating_scope?.trim() || "-"}</div>
                         </TooltipTrigger>
                         <TooltipContent className="max-w-md">
-                          <p className="whitespace-pre-wrap">{stock.operating_scope?.trim() || '-'}</p>
+                          <p className="whitespace-pre-wrap">{stock.operating_scope?.trim() || "-"}</p>
                         </TooltipContent>
                       </Tooltip>
                     </TableCell>
@@ -149,7 +160,7 @@ function StockList() {
             </Table>
           </div>
         ) : (
-          <div className='text-center py-12 text-gray-500 dark:text-gray-400'>{loading ? '加载中...' : '暂无股票数据'}</div>
+          <div className="text-center py-12 text-gray-500 dark:text-gray-400">{loading ? "加载中..." : "暂无股票数据"}</div>
         )}
       </div>
     </TooltipProvider>
