@@ -23,6 +23,7 @@ function DragonTiger() {
   // 页面首次加载时自动获取股票
   useEffect(() => {
     handleDailyQuery();
+    handleRangeQuery();
   }, []);
 
   // 查询每日龙虎榜数据
@@ -56,7 +57,9 @@ function DragonTiger() {
 
       const response = await getDragonTigerByRange(startDateFormatted, endDateFormatted);
       if (response.status === "success") {
-        setRangeData(response.data);
+        // 处理数据以支持单元格合并
+        const processedData = processRangeDataForMerging(response.data);
+        setRangeData(processedData);
       } else {
         setError(response.message || "查询失败");
       }
@@ -65,6 +68,33 @@ function DragonTiger() {
     } finally {
       setLoading(false);
     }
+  };
+
+  // 处理日期范围数据以支持单元格合并
+  const processRangeDataForMerging = data => {
+    // 按日期+代码+名称分组
+    const grouped = {};
+
+    data.forEach(item => {
+      const key = `${item.listed_date}_${item.code}_${item.name}`;
+      if (!grouped[key]) {
+        grouped[key] = [];
+      }
+      grouped[key].push(item);
+    });
+
+    // 转换为带有 rowSpan 信息的数组
+    const processedData = [];
+    Object.values(grouped).forEach(group => {
+      group.forEach((item, index) => {
+        processedData.push({
+          ...item,
+          rowSpan: index === 0 ? group.length : 0, // 第一行设置 rowSpan，其他行设置为 0 表示跳过
+        });
+      });
+    });
+
+    return processedData;
   };
 
   // 将数据按日期分组的函数
@@ -103,7 +133,7 @@ function DragonTiger() {
         </TabsList>
 
         <TabsContent value="daily" className="mt-4">
-          <div className="p-6 border rounded-lg">
+          <div className="p-6 bg-gray-50 dark:bg-gray-900 rounded-lg">
             <div className="flex items-center justify-end gap-2 mb-4">
               <span className="text-xs text-gray-500 dark:text-gray-400 mr-2">今天: {dayjs().format("YYYY-MM-DD")}</span>
               <Input
@@ -224,7 +254,7 @@ function DragonTiger() {
         </TabsContent>
 
         <TabsContent value="date-range" className="mt-4">
-          <div className="p-6 border rounded-lg">
+          <div className="p-6 bg-gray-50 dark:bg-gray-900 rounded-lg">
             <div className="flex items-center justify-end gap-4 mb-4">
               <div className="flex items-center gap-4">
                 <div className="space-x-1">
@@ -296,39 +326,62 @@ function DragonTiger() {
                         <TableBody>
                           {rangeData.map((item, index) => (
                             <TableRow key={index}>
-                              <TableCell className="text-center">{item.listed_date}</TableCell>
-                              <TableCell className="font-mono text-center">{item.code}</TableCell>
-                              <TableCell className="text-center">{item.name}</TableCell>
-                              <TableCell className="text-center">{item.close_price?.toFixed(2) || "-"}</TableCell>
-                              <TableCell
-                                className={`text-center font-medium ${
-                                  item.change_percent > 0
-                                    ? "text-red-600 dark:text-red-400"
-                                    : item.change_percent < 0
-                                    ? "text-green-600 dark:text-green-400"
-                                    : ""
-                                }`}
-                              >
-                                {item.change_percent
-                                  ? `${item.change_percent > 0 ? "+" : ""}${item.change_percent.toFixed(2)}`
-                                  : "-"}
-                              </TableCell>
-                              <TableCell className="text-center">{item.turnover_rate?.toFixed(2) || "-"}</TableCell>
-                              <TableCell
-                                className={`text-center font-medium ${
-                                  item.lhb_net_amount > 0
-                                    ? "text-red-600 dark:text-red-400"
-                                    : item.lhb_net_amount < 0
-                                    ? "text-green-600 dark:text-green-400"
-                                    : ""
-                                }`}
-                              >
-                                {item.lhb_net_amount ? (item.lhb_net_amount / 10000).toFixed(2) : "-"}
-                              </TableCell>
-                              <TableCell className="text-center">
-                                {item.lhb_trade_amount ? (item.lhb_trade_amount / 10000).toFixed(2) : "-"}
-                              </TableCell>
-                              <TableCell className="text-sm text-center">{item.reasons || "-"}</TableCell>
+                              {/* 只在第一行显示合并的单元格 */}
+                              {item.rowSpan > 0 ? (
+                                <>
+                                  <TableCell className="text-center" rowSpan={item.rowSpan}>
+                                    {item.listed_date}
+                                  </TableCell>
+                                  <TableCell className="font-mono text-center" rowSpan={item.rowSpan}>
+                                    {item.code}
+                                  </TableCell>
+                                  <TableCell className="text-center" rowSpan={item.rowSpan}>
+                                    {item.name}
+                                  </TableCell>
+                                  <TableCell className="text-center" rowSpan={item.rowSpan}>
+                                    {item.close_price?.toFixed(2) || "-"}
+                                  </TableCell>
+                                  <TableCell
+                                    className={`text-center font-medium ${
+                                      item.change_percent > 0
+                                        ? "text-red-600 dark:text-red-400"
+                                        : item.change_percent < 0
+                                        ? "text-green-600 dark:text-green-400"
+                                        : ""
+                                    }`}
+                                    rowSpan={item.rowSpan}
+                                  >
+                                    {item.change_percent
+                                      ? `${item.change_percent > 0 ? "+" : ""}${item.change_percent.toFixed(2)}`
+                                      : "-"}
+                                  </TableCell>
+                                  <TableCell className="text-center" rowSpan={item.rowSpan}>
+                                    {item.turnover_rate?.toFixed(2) || "-"}
+                                  </TableCell>
+                                  <TableCell
+                                    className={`text-center font-medium ${
+                                      item.lhb_net_amount > 0
+                                        ? "text-red-600 dark:text-red-400"
+                                        : item.lhb_net_amount < 0
+                                        ? "text-green-600 dark:text-green-400"
+                                        : ""
+                                    }`}
+                                    rowSpan={item.rowSpan}
+                                  >
+                                    {item.lhb_net_amount ? (item.lhb_net_amount / 10000).toFixed(2) : "-"}
+                                  </TableCell>
+                                  <TableCell className="text-center" rowSpan={item.rowSpan}>
+                                    {item.lhb_trade_amount ? (item.lhb_trade_amount / 10000).toFixed(2) : "-"}
+                                  </TableCell>
+                                  {/* 上榜原因列每行都显示 */}
+                                  <TableCell className="text-sm text-center">{item.reasons || "-"}</TableCell>
+                                </>
+                              ) : (
+                                <>
+                                  {/* 上榜原因列每行都显示 */}
+                                  <TableCell className="text-sm text-center">{item.reasons || "-"}</TableCell>
+                                </>
+                              )}
                             </TableRow>
                           ))}
                         </TableBody>
@@ -342,7 +395,7 @@ function DragonTiger() {
         </TabsContent>
 
         <TabsContent value="summary" className="mt-4">
-          <div className="p-6 border rounded-lg">
+          <div className="p-6 bg-gray-50 dark:bg-gray-900 rounded-lg">
             <p className="text-gray-600 dark:text-gray-400 text-sm">在这里显示汇总数据的表格</p>
           </div>
         </TabsContent>
