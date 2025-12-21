@@ -24,6 +24,7 @@ function DragonTiger() {
 
   // 每日模式数据
   const [dragonTigerData, setDragonTigerData] = useState([]);
+  const [dailySortStates, setDailySortStates] = useState({}); // 每个日期的排序状态: {日期: {field, direction}}
 
   // 日期范围模式数据
   const [rawRangeData, setRawRangeData] = useState([]); // 存储原始数据
@@ -239,6 +240,64 @@ function DragonTiger() {
     });
   };
 
+  // 每日模式的排序处理函数
+  const handleDailySort = (date, field) => {
+    setDailySortStates(prev => {
+      const currentState = prev[date] || { field: null, direction: null };
+
+      let newDirection;
+      if (currentState.field === field) {
+        // 如果点击的是当前排序字段，则循环：asc -> desc -> null
+        if (currentState.direction === "asc") {
+          newDirection = "desc";
+        } else if (currentState.direction === "desc") {
+          newDirection = null;
+        } else {
+          newDirection = "asc";
+        }
+      } else {
+        // 如果点击的是新字段，则设置为升序
+        newDirection = "asc";
+      }
+
+      return {
+        ...prev,
+        [date]: {
+          field: newDirection ? field : null,
+          direction: newDirection,
+        },
+      };
+    });
+  };
+
+  // 渲染每日排序图标的函数
+  const renderDailySortIcon = (date, field) => {
+    const sortState = dailySortStates[date] || { field: null, direction: null };
+
+    if (sortState.field !== field) {
+      // 默认状态：显示双向箭头
+      return <ChevronsUpDown className="inline w-4 h-4 ml-1 opacity-50" />;
+    }
+
+    // 根据排序方向显示对应图标
+    return sortState.direction === "asc" ? (
+      <ChevronUp className="inline w-4 h-4 ml-1 text-blue-600" />
+    ) : sortState.direction === "desc" ? (
+      <ChevronDown className="inline w-4 h-4 ml-1 text-blue-600" />
+    ) : (
+      <ChevronsUpDown className="inline w-4 h-4 ml-1 opacity-50" />
+    );
+  };
+
+  // 获取排序后的每日记录
+  const getSortedDailyRecords = (date, records) => {
+    const sortState = dailySortStates[date];
+    if (!sortState || !sortState.field || !sortState.direction) {
+      return records;
+    }
+    return sortData(records, sortState.field, sortState.direction);
+  };
+
   // 渲染排序图标的函数
   const renderSortIcon = field => {
     if (sortField !== field) {
@@ -321,6 +380,7 @@ function DragonTiger() {
                   {dragonTigerData.map((dateGroup, groupIndex) => {
                     const date = Object.keys(dateGroup)[0];
                     const records = dateGroup[date];
+                    const sortedRecords = getSortedDailyRecords(date, records);
                     const totalRecords = dragonTigerData.reduce((sum, group) => sum + Object.values(group)[0].length, 0);
 
                     return (
@@ -341,16 +401,41 @@ function DragonTiger() {
                                 <TableRow>
                                   <TableHead className="w-24 text-center">股票代码</TableHead>
                                   <TableHead className="w-28 text-center">股票名称</TableHead>
-                                  <TableHead className="text-center w-24">收盘价</TableHead>
-                                  <TableHead className="text-center w-24">涨跌幅(%)</TableHead>
-                                  <TableHead className="text-center w-24">换手率(%)</TableHead>
-                                  <TableHead className="text-center w-32">龙虎榜净买额(万)</TableHead>
-                                  <TableHead className="text-center w-32">龙虎榜成交额(万)</TableHead>
+                                  <TableHead
+                                    className="text-center w-24 cursor-pointer hover:bg-muted-50 select-none"
+                                    onClick={() => handleDailySort(date, "close_price")}
+                                  >
+                                    收盘价{renderDailySortIcon(date, "close_price")}
+                                  </TableHead>
+                                  <TableHead
+                                    className="text-center w-24 cursor-pointer hover:bg-muted-50 select-none"
+                                    onClick={() => handleDailySort(date, "change_percent")}
+                                  >
+                                    涨跌幅(%){renderDailySortIcon(date, "change_percent")}
+                                  </TableHead>
+                                  <TableHead
+                                    className="text-center w-24 cursor-pointer hover:bg-muted-50 select-none"
+                                    onClick={() => handleDailySort(date, "turnover_rate")}
+                                  >
+                                    换手率(%){renderDailySortIcon(date, "turnover_rate")}
+                                  </TableHead>
+                                  <TableHead
+                                    className="text-center w-32 cursor-pointer hover:bg-muted-50 select-none"
+                                    onClick={() => handleDailySort(date, "lhb_net_amount")}
+                                  >
+                                    龙虎榜净买额(万){renderDailySortIcon(date, "lhb_net_amount")}
+                                  </TableHead>
+                                  <TableHead
+                                    className="text-center w-32 cursor-pointer hover:bg-muted-50 select-none"
+                                    onClick={() => handleDailySort(date, "lhb_trade_amount")}
+                                  >
+                                    龙虎榜成交额(万){renderDailySortIcon(date, "lhb_trade_amount")}
+                                  </TableHead>
                                   <TableHead className="text-center min-w-48">上榜原因</TableHead>
                                 </TableRow>
                               </TableHeader>
                               <TableBody>
-                                {records.map((item, index) => (
+                                {sortedRecords.map((item, index) => (
                                   <TableRow key={index}>
                                     <TableCell className="font-mono text-center">{item.code}</TableCell>
                                     <TableCell className="text-center">{item.name}</TableCell>
