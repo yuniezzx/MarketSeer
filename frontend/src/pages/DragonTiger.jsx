@@ -35,6 +35,8 @@ function DragonTiger() {
     changePercentMax: "", // 涨跌幅最大值
     turnoverRateMin: "", // 换手率最小值
     turnoverRateMax: "", // 换手率最大值
+    closePriceMin: "", // 收盘价最小值
+    closePriceMax: "", // 收盘价最大值
   });
   const [sortField, setSortField] = useState(null); // 排序字段
   const [sortDirection, setSortDirection] = useState(null); // 'asc' | 'desc' | null
@@ -171,6 +173,17 @@ function DragonTiger() {
         return false;
       }
       if (turnoverRateMax !== null && stock.turnover_rate > turnoverRateMax) {
+        return false;
+      }
+
+      // 收盘价区间过滤
+      const closePriceMin = options.closePriceMin ? parseFloat(options.closePriceMin) : null;
+      const closePriceMax = options.closePriceMax ? parseFloat(options.closePriceMax) : null;
+
+      if (closePriceMin !== null && stock.close_price < closePriceMin) {
+        return false;
+      }
+      if (closePriceMax !== null && stock.close_price > closePriceMax) {
         return false;
       }
 
@@ -327,13 +340,13 @@ function DragonTiger() {
       <Tabs defaultValue="daily" className="w-full">
         <TabsList className="w-fit grid grid-cols-3">
           <TabsTrigger value="daily" className="text-sm">
-            每日模式
+            Daily Model
           </TabsTrigger>
           <TabsTrigger value="date-range" className="text-sm">
-            日期范围模式
+            Range Model
           </TabsTrigger>
           <TabsTrigger value="summary" className="text-sm">
-            总表模式
+            Analysis
           </TabsTrigger>
         </TabsList>
 
@@ -534,6 +547,28 @@ function DragonTiger() {
                   />
                   排除ST股票
                 </label>
+                <div className="flex items-center gap-2">
+                  <label className="text-sm font-medium">收盘价:</label>
+                  <Input
+                    type="number"
+                    placeholder="最小值"
+                    value={filterOptions.closePriceMin}
+                    onChange={e => setFilterOptions(prev => ({ ...prev, closePriceMin: e.target.value }))}
+                    className="w-20"
+                    step="0.01"
+                    size="sm"
+                  />
+                  <span className="text-sm text-gray-500">-</span>
+                  <Input
+                    type="number"
+                    placeholder="最大值"
+                    value={filterOptions.closePriceMax}
+                    onChange={e => setFilterOptions(prev => ({ ...prev, closePriceMax: e.target.value }))}
+                    className="w-20"
+                    step="0.01"
+                    size="sm"
+                  />
+                </div>
                 <div className="flex items-center gap-2">
                   <label className="text-sm font-medium">涨跌幅(%):</label>
                   <Input
