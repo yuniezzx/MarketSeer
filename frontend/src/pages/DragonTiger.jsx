@@ -7,6 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { getDailyDragonTiger, getDragonTigerByRange } from "@/api/dragonTiger";
 import { getTurnoverRateColor } from "@/lib/utils";
+import DragonTigerAnalysis from "@/components/shared/DragonTigerAnalysis";
 
 function DragonTiger() {
   const [loading, setLoading] = useState(false);
@@ -753,9 +754,12 @@ function DragonTiger() {
         </TabsContent>
 
         <TabsContent value="summary" className="mt-4">
-          <div className="p-6 bg-gray-50 dark:bg-gray-900 rounded-lg">
-            <p className="text-gray-600 dark:text-gray-400 text-sm">在这里显示汇总数据的表格</p>
-          </div>
+          <DragonTigerAnalysis
+            dailyData={dragonTigerData}
+            rangeData={rangeData}
+            dateRange={{ startDate, endDate }}
+            daysBack={daysBack}
+          />
         </TabsContent>
       </Tabs>
     </div>
