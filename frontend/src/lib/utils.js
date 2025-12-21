@@ -14,3 +14,60 @@ export function getTurnoverRateColor(rate) {
   if (rate < 50) return 'text-red-700 dark:text-red-300';
   return 'text-pink-600 dark:text-pink-400';
 }
+
+/**
+ * 聚合同一天同一只股票的多个上榜原因
+ * @param {Array} data - 原始数据数组
+ * @returns {Array} - 聚合后的数据数组
+ */
+export function aggregateReasons(data) {
+  if (!data || data.length === 0) return [];
+
+  const map = new Map();
+
+  data.forEach(item => {
+    const key = `${item.listed_date}_${item.code}`;
+    if (map.has(key)) {
+      // 已存在该股票，添加原因到数组
+      const existing = map.get(key);
+      if (item.reasons) {
+        existing.reasons.push(item.reasons);
+      }
+    } else {
+      // 新股票，初始化 reasons 为数组
+      map.set(key, {
+        ...item,
+        reasons: item.reasons ? [item.reasons] : [],
+      });
+    }
+  });
+
+  return Array.from(map.values());
+}
+
+/**
+ * 将数据按日期分组的函数
+ * @param {Array} data - 数据数组
+ * @returns {Array} - 分组后的数据数组 [{date: string, data: Array}]
+ */
+export function groupDataByDate(data) {
+  if (!data || data.length === 0) return [];
+
+  const grouped = {};
+
+  data.forEach(item => {
+    const date = item.listed_date;
+    if (!grouped[date]) {
+      grouped[date] = [];
+    }
+    grouped[date].push(item);
+  });
+
+  // 转换为数组格式，按日期降序排列
+  return Object.keys(grouped)
+    .sort((a, b) => b.localeCompare(a))
+    .map(date => ({
+      date,
+      data: aggregateReasons(grouped[date]),
+    }));
+}

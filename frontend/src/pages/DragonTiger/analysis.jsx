@@ -8,26 +8,10 @@ function DragonTigerAnalysis({ dailyData = [], rangeData = [], dateRange = {}, d
   const allData = [];
 
   // 处理每日数据
-  dailyData.forEach(dateGroup => {
-    const date = Object.keys(dateGroup)[0];
-    const stocks = dateGroup[date];
-    stocks.forEach(stock => {
-      allData.push({
-        ...stock,
-        analysis_date: date,
-        data_source: "daily",
-      });
-    });
-  });
+  dailyData.forEach(dateGroup => {});
 
   // 处理范围数据
-  rangeData.forEach(item => {
-    allData.push({
-      ...item,
-      analysis_date: item.listed_date,
-      data_source: "range",
-    });
-  });
+  rangeData.forEach(item => {});
 
   const renderSummaryStats = () => {
     return (
