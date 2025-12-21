@@ -7,6 +7,7 @@ import { DataTableWithToggle } from "@/components/ui/data-table";
 import { DataTableColumnToggle } from "@/components/ui/data-table-column-toggle";
 import { getDailyDragonTiger, getDragonTigerByRange } from "@/api/dragonTiger";
 import { aggregateReasons, groupDataByDate } from "@/lib/utils";
+import { INITIAL_DATE } from "@/lib/constants";
 import { dailyColumns, rangeColumns } from "./columns";
 import DragonTigerAnalysis from "./analysis";
 
@@ -16,7 +17,7 @@ function DragonTiger() {
 
   // 计算开始日期：前一个星期，但不超过2025/12/01
   const defaultStartDate = dayjs().subtract(7, "days");
-  const cutoffDate = dayjs("2025-12-01");
+  const cutoffDate = dayjs(INITIAL_DATE);
   const startDateValue = defaultStartDate.isBefore(cutoffDate) ? cutoffDate : defaultStartDate;
 
   // ===== 日期和时间相关状态 =====
@@ -31,7 +32,7 @@ function DragonTiger() {
   const [rawRangeData, setRawRangeData] = useState([]); // 存储原始数据
   const [rangeData, setRangeData] = useState([]);
   const [filterOptions, setFilterOptions] = useState({
-    excludeST: false, // 排除ST股票
+    excludeST: true, // 排除ST股票
     changePercentMin: "", // 涨跌幅最小值
     changePercentMax: "", // 涨跌幅最大值
     turnoverRateMin: "", // 换手率最小值
@@ -374,8 +375,8 @@ function DragonTiger() {
           <DragonTigerAnalysis
             dailyData={dragonTigerData}
             rangeData={rangeData}
-            dateRange={{ startDate, endDate }}
             daysBack={daysBack}
+            dateRange={{ startDate, endDate }}
           />
         </TabsContent>
       </Tabs>
