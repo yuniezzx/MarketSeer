@@ -117,7 +117,7 @@ export const dailyColumns = [
   },
   {
     accessorKey: "reasons",
-    header: "上榜原因",
+    header: () => <div className="text-center">上榜原因</div>,
     cell: ({ row }) => {
       const reasons = row.original.reasons;
       if (Array.isArray(reasons) && reasons.length > 0) {
@@ -239,7 +239,7 @@ export const rangeColumns = [
   },
   {
     accessorKey: "reasons",
-    header: "上榜原因",
+    header: () => <div className="text-center">上榜原因</div>,
     cell: ({ row }) => {
       const reasons = row.original.reasons;
       if (Array.isArray(reasons) && reasons.length > 0) {
