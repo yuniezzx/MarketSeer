@@ -118,6 +118,100 @@ python backend/scripts/range_upsert_daily_dragon_tiger.py --date 20251220
 
 ---
 
+## download_akshare_data.py
+
+### 概述
+
+`download_akshare_data.py` 是用于下载指定 akshare API 数据并保存到本地 JSON 文件的脚本。
+
+### 功能特点
+
+- ✅ 支持任意 akshare API 下载
+- ✅ 支持单日数据下载
+- ✅ 支持日期范围批量下载
+- ✅ 自动保存为 JSON 格式到 `backend/data/akshare_raw/` 目录
+- ✅ 完整的错误处理和日志记录
+- ✅ 详细的下载统计信息
+
+### 使用方法
+
+#### 1. 下载活跃营业部数据
+
+```bash
+python backend/scripts/download_akshare_data.py --api stock_lhb_hyyyb_em --start-date 20251218 --end-date 20251218
+```
+
+**参数说明：**
+- `--api`: akshare API 名称（如：stock_lhb_hyyyb_em）
+- `--start-date`: 开始日期，格式为 YYYYMMDD
+- `--end-date`: 结束日期，格式为 YYYYMMDD
+
+**输出示例：**
+```
+开始批量下载 stock_lhb_hyyyb_em 数据
+日期范围: 20251218 - 20251218
+日期数量: 1
+下载 API: stock_lhb_hyyyb_em, 日期: 20251218
+✓ 数据已保存到: C:\Users\Max\Desktop\MarketSeer\backend\data\akshare_raw\stock_lhb_hyyyb_em_20251218_20251218.json
+✓ 数据行数: 249
+✓ 数据列数: 10
+下载完成
+成功: 1 天
+失败: 0 天
+```
+
+#### 2. 下载日期范围数据
+
+```bash
+python backend/scripts/download_akshare_data.py --api stock_lhb_hyyyb_em --start-date 20251215 --end-date 20251219
+```
+
+**说明：**
+- 脚本会为每个日期生成单独的 JSON 文件
+- 文件命名格式：`{api_name}_{start_date}_{end_date}.json`
+
+#### 3. 查看帮助信息
+
+```bash
+python backend/scripts/download_akshare_data.py --help
+```
+
+### 数据格式
+
+- **保存位置**: `backend/data/akshare_raw/` 目录
+- **文件格式**: JSON (包含字典列表)
+- **文件名格式**: `{API名称}_{开始日期}_{结束日期}.json`
+
+### 注意事项
+
+1. **API 名称**: 必须是有效的 akshare API 函数名
+2. **日期格式**: 必须使用 YYYYMMDD 格式（8位数字）
+3. **数据类型**: 仅支持返回 pandas DataFrame 的 API
+4. **网络连接**: 需要确保网络连接正常
+5. **文件覆盖**: 相同参数会覆盖已存在的文件
+
+### 常见问题
+
+**Q: 如何下载其他 akshare 数据？**
+```bash
+# 例如下载龙虎榜详细数据
+python backend/scripts/download_akshare_data.py --api stock_lhb_detail_em --start-date 20251218 --end-date 20251218
+```
+
+**Q: 下载失败怎么办？**
+- 检查网络连接
+- 确认 API 名称是否正确
+- 查看控制台错误日志
+- 确认日期格式是否正确
+
+### 技术实现
+
+- **数据源**: `app.data_sources.akshare_client.AkshareClient`
+- **数据格式**: pandas DataFrame → JSON (字典列表)
+- **日志系统**: 集成项目日志系统
+
+---
+
 ## 其他脚本
 
 （待添加）
