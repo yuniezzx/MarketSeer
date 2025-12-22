@@ -313,7 +313,13 @@ function DragonTiger() {
                           )}
                         </div>
 
-                        <DataTableWithToggle columns={brokerageColumns} data={records} loading={false}>
+                        <DataTableWithToggle
+                          columns={brokerageColumns}
+                          data={records}
+                          loading={false}
+                          enablePagination={true}
+                          pageSize={20}
+                        >
                           {table => <DataTableColumnToggle table={table} />}
                         </DataTableWithToggle>
                       </div>
