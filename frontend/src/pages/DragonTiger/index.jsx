@@ -172,7 +172,7 @@ function DragonTiger() {
 
   return (
     <div className="p-6">
-      <dic onClick={() => console.log(brokerageData)}>Click</dic>
+      {/* <dic onClick={() => console.log(brokerageData)}>Click</dic> */}
       <Tabs defaultValue="daily" className="w-full">
         <TabsList className="w-fit grid grid-cols-4">
           <TabsTrigger value="daily" className="text-sm">
@@ -476,6 +476,7 @@ function DragonTiger() {
         <TabsContent value="summary" className="mt-4">
           <DragonTigerAnalysis
             dailyData={dragonTigerData}
+            brokerageData={brokerageData}
             rangeData={rangeData}
             daysBack={daysBack}
             dateRange={{ startDate, endDate }}
