@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-function DragonTigerAnalysis({ dailyData = [], brokerageData = [], rangeData = [], dateRange = {}, daysBack = 7 }) {
+function DragonTigerAnalysis({ dailyData = [], brokerageData = [], rangeData = [], dateRange = {} }) {
   const [activeAnalysis, setActiveAnalysis] = useState("summary");
 
   // 合并所有数据用于分析
@@ -23,7 +23,7 @@ function DragonTigerAnalysis({ dailyData = [], brokerageData = [], rangeData = [
           <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
             <p className="text-sm text-blue-800 dark:text-blue-200">
               📊 每日数据: {dailyData.length} 条, 券商数据: {brokerageData.length} 条, 范围数据: {rangeData.length} 条, 日期区间:{" "}
-              {dateRange.startDate} - {dateRange.endDate}, 回溯天数: {daysBack}
+              {dateRange.startDate} - {dateRange.endDate},
             </p>
           </div>
         </CardContent>

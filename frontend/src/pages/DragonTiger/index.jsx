@@ -23,7 +23,6 @@ function DragonTiger() {
   // ===== 日期和时间相关状态 =====
   const [startDate, setStartDate] = useState(startDateValue.format("YYYY-MM-DD"));
   const [endDate, setEndDate] = useState(dayjs().format("YYYY-MM-DD"));
-  const [daysBack, setDaysBack] = useState(7);
 
   // 每日模式数据
   const [dragonTigerData, setDragonTigerData] = useState([]);
@@ -66,6 +65,8 @@ function DragonTiger() {
     setLoading(true);
     setError(null);
     try {
+      // 计算日期差（天数）
+      const daysBack = dayjs(endDate).diff(dayjs(startDate), "day") + 1;
       const response = await getDailyDragonTiger(daysBack);
       if (response.status === "success") {
         // 将数据按日期分组
@@ -86,6 +87,8 @@ function DragonTiger() {
     setLoading(true);
     setError(null);
     try {
+      // 计算日期差（天数）
+      const daysBack = dayjs(endDate).diff(dayjs(startDate), "day") + 1;
       const response = await getDailyActiveBrokerage(daysBack);
       if (response.status === "success") {
         // 将数据按日期分组
@@ -174,47 +177,63 @@ function DragonTiger() {
     <div className="p-6">
       {/* <dic onClick={() => console.log(brokerageData)}>Click</dic> */}
       <Tabs defaultValue="daily" className="w-full">
-        <TabsList className="w-fit grid grid-cols-4">
-          <TabsTrigger value="daily" className="text-sm">
-            每日龙虎榜
-          </TabsTrigger>
-          <TabsTrigger value="daily-brokerage" className="text-sm">
-            每日机构榜
-          </TabsTrigger>
-          <TabsTrigger value="date-range" className="text-sm">
-            范围龙虎榜
-          </TabsTrigger>
-          <TabsTrigger value="summary" className="text-sm">
-            分析与总结
-          </TabsTrigger>
-        </TabsList>
+        <div className="flex items-center justify-between gap-4 mb-4">
+          <TabsList className="w-fit grid grid-cols-4">
+            <TabsTrigger value="daily" className="text-sm">
+              每日龙虎榜
+            </TabsTrigger>
+            <TabsTrigger value="daily-brokerage" className="text-sm">
+              每日机构榜
+            </TabsTrigger>
+            <TabsTrigger value="date-range" className="text-sm">
+              范围龙虎榜
+            </TabsTrigger>
+            <TabsTrigger value="summary" className="text-sm">
+              分析与总结
+            </TabsTrigger>
+          </TabsList>
+
+          <div className="flex items-center gap-4">
+            <div className="space-x-1">
+              <label className="text-sm font-medium">开始日期</label>
+              <Input
+                type="date"
+                value={startDate}
+                onChange={e => setStartDate(e.target.value)}
+                className="w-40"
+                disabled={loading}
+                size="sm"
+              />
+            </div>
+            <div className="space-x-1">
+              <label className="text-sm font-medium">结束日期</label>
+              <Input
+                type="date"
+                value={endDate}
+                onChange={e => setEndDate(e.target.value)}
+                className="w-40"
+                disabled={loading}
+                size="sm"
+              />
+            </div>
+            <Button
+              disabled={loading}
+              variant="default"
+              size="sm"
+              className="bg-blue-600 hover:bg-blue-700 text-white border border-blue-600"
+              onClick={() => {
+                handleDailyQuery();
+                handleBrokerageQuery();
+                handleRangeQuery();
+              }}
+            >
+              {loading ? "查询中..." : "查询"}
+            </Button>
+          </div>
+        </div>
 
         <TabsContent value="daily" className="mt-4">
           <div className="p-6 bg-gray-50 dark:bg-gray-900 rounded-lg">
-            <div className="flex items-center justify-end gap-2 mb-4">
-              <span className="text-xs text-gray-500 dark:text-gray-400 mr-2">今天: {dayjs().format("YYYY-MM-DD")}</span>
-              <Input
-                type="number"
-                value={daysBack}
-                onChange={e => setDaysBack(Math.max(1, parseInt(e.target.value) || 1))}
-                className="w-20"
-                disabled={loading}
-                size="sm"
-                min="1"
-                max="365"
-              />
-              <span className="text-sm text-gray-600 dark:text-gray-400">天</span>
-              <Button
-                disabled={loading}
-                variant="default"
-                size="sm"
-                className="bg-blue-600 hover:bg-blue-700 text-white border border-blue-600"
-                onClick={handleDailyQuery}
-              >
-                {loading ? "查询中..." : `查询`}
-              </Button>
-            </div>
-
             {/* 查询结果区域 */}
             <div>
               {error && (
@@ -259,30 +278,6 @@ function DragonTiger() {
 
         <TabsContent value="daily-brokerage" className="mt-4">
           <div className="p-6 bg-gray-50 dark:bg-gray-900 rounded-lg">
-            <div className="flex items-center justify-end gap-2 mb-4">
-              <span className="text-xs text-gray-500 dark:text-gray-400 mr-2">今天: {dayjs().format("YYYY-MM-DD")}</span>
-              <Input
-                type="number"
-                value={daysBack}
-                onChange={e => setDaysBack(Math.max(1, parseInt(e.target.value) || 1))}
-                className="w-20"
-                disabled={loading}
-                size="sm"
-                min="1"
-                max="365"
-              />
-              <span className="text-sm text-gray-600 dark:text-gray-400">天</span>
-              <Button
-                disabled={loading}
-                variant="default"
-                size="sm"
-                className="bg-blue-600 hover:bg-blue-700 text-white border border-blue-600"
-                onClick={handleBrokerageQuery}
-              >
-                {loading ? "查询中..." : `查询`}
-              </Button>
-            </div>
-
             {/* 查询结果区域 */}
             <div>
               {error && (
@@ -334,41 +329,6 @@ function DragonTiger() {
         <TabsContent value="date-range" className="mt-4">
           <div className="p-6 bg-gray-50 dark:bg-gray-900 rounded-lg">
             <div className="mb-4">
-              <div className="flex items-center justify-end gap-4 mb-2">
-                <div className="flex items-center gap-4">
-                  <div className="space-x-1">
-                    <label className="text-sm font-medium">开始日期</label>
-                    <Input
-                      type="date"
-                      value={startDate}
-                      onChange={e => setStartDate(e.target.value)}
-                      className="w-40"
-                      disabled={loading}
-                      size="sm"
-                    />
-                  </div>
-                  <div className="space-x-1">
-                    <label className="text-sm font-medium">结束日期</label>
-                    <Input
-                      type="date"
-                      value={endDate}
-                      onChange={e => setEndDate(e.target.value)}
-                      className="w-40"
-                      disabled={loading}
-                      size="sm"
-                    />
-                  </div>
-                </div>
-                <Button
-                  disabled={loading}
-                  variant="default"
-                  size="sm"
-                  className="bg-blue-600 hover:bg-blue-700 text-white border border-blue-600"
-                  onClick={handleRangeQuery}
-                >
-                  {loading ? "查询中..." : "查询"}
-                </Button>
-              </div>
               <div className="flex items-center gap-6 p-2 bg-gray-100 dark:bg-gray-700 rounded">
                 <label className="flex items-center gap-2 text-sm">
                   <input
@@ -478,7 +438,6 @@ function DragonTiger() {
             dailyData={dragonTigerData}
             brokerageData={brokerageData}
             rangeData={rangeData}
-            daysBack={daysBack}
             dateRange={{ startDate, endDate }}
           />
         </TabsContent>
