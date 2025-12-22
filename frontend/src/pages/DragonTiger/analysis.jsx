@@ -1,14 +1,14 @@
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-function DragonTigerAnalysis({ dailyData = [], brokerageData = [], rangeData = [], dateRange = {} }) {
+function DragonTigerAnalysis({ dragonTigerData = [], brokerageData = [], rangeData = [], dateRange = {} }) {
   const [activeAnalysis, setActiveAnalysis] = useState("summary");
 
   // 合并所有数据用于分析
   const allData = [];
 
   // 处理每日数据
-  dailyData.forEach(dateGroup => {});
+  dragonTigerData.forEach(dateGroup => {});
 
   // 处理范围数据
   rangeData.forEach(item => {});
@@ -22,8 +22,9 @@ function DragonTigerAnalysis({ dailyData = [], brokerageData = [], rangeData = [
         <CardContent>
           <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
             <p className="text-sm text-blue-800 dark:text-blue-200">
-              📊 每日数据: {dailyData.length} 条, 券商数据: {brokerageData.length} 条, 范围数据: {rangeData.length} 条, 日期区间:{" "}
-              {dateRange.startDate} - {dateRange.endDate},
+              📊 每日数据: {dragonTigerData.reduce((sum, group) => sum + group.data.length, 0)} 条, 券商数据:{" "}
+              {brokerageData.reduce((sum, group) => sum + group.data.length, 0)} 条, 范围数据: {rangeData.length} 条, 日期区间:{" "}
+              {dateRange.startDate} - {dateRange.endDate}
             </p>
           </div>
         </CardContent>
@@ -57,7 +58,7 @@ function DragonTigerAnalysis({ dailyData = [], brokerageData = [], rangeData = [
     );
   };
 
-  if (dailyData.length === 0 && brokerageData.length === 0 && rangeData.length === 0) {
+  if (dragonTigerData.length === 0 && brokerageData.length === 0 && rangeData.length === 0) {
     return <div className="p-6 text-center text-gray-500">暂无数据可供分析，请先在其他标签页获取数据</div>;
   }
 
