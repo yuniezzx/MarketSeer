@@ -5,10 +5,10 @@ import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DataTableWithToggle } from "@/components/ui/data-table";
 import { DataTableColumnToggle } from "@/components/ui/data-table-column-toggle";
-import { getDailyDragonTiger, getDragonTigerByRange } from "@/api/dragonTiger";
+import { getDailyDragonTiger, getDragonTigerByRange, getDailyActiveBrokerage } from "@/api/dragonTiger";
 import { aggregateReasons, groupDataByDate } from "@/lib/utils";
 import { INITIAL_DATE } from "@/lib/constants";
-import { dailyColumns, rangeColumns } from "./columns";
+import { dailyColumns, rangeColumns, brokerageColumns } from "./columns";
 import DragonTigerAnalysis from "./analysis";
 
 function DragonTiger() {
@@ -28,6 +28,9 @@ function DragonTiger() {
   // 每日模式数据
   const [dragonTigerData, setDragonTigerData] = useState([]);
 
+  // 每日机构数据
+  const [brokerageData, setBrokerageData] = useState([]);
+
   // 日期范围模式数据
   const [rawRangeData, setRawRangeData] = useState([]); // 存储原始数据
   const [rangeData, setRangeData] = useState([]);
@@ -44,6 +47,7 @@ function DragonTiger() {
   // 页面首次加载时自动获取股票
   useEffect(() => {
     handleDailyQuery();
+    handleBrokerageQuery();
     handleRangeQuery();
   }, []);
 
@@ -67,6 +71,26 @@ function DragonTiger() {
         // 将数据按日期分组
         const groupedData = groupDataByDate(response.data);
         setDragonTigerData(groupedData);
+      } else {
+        setError(response.message || "查询失败");
+      }
+    } catch (err) {
+      setError(err.message || "网络请求失败");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // 查询每日机构数据
+  const handleBrokerageQuery = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await getDailyActiveBrokerage(daysBack);
+      if (response.status === "success") {
+        // 将数据按日期分组
+        const groupedData = groupDataByDate(response.data);
+        setBrokerageData(groupedData);
       } else {
         setError(response.message || "查询失败");
       }
@@ -148,16 +172,20 @@ function DragonTiger() {
 
   return (
     <div className="p-6">
+      <dic onClick={() => console.log(brokerageData)}>Click</dic>
       <Tabs defaultValue="daily" className="w-full">
-        <TabsList className="w-fit grid grid-cols-3">
+        <TabsList className="w-fit grid grid-cols-4">
           <TabsTrigger value="daily" className="text-sm">
-            Daily Model
+            每日龙虎榜
+          </TabsTrigger>
+          <TabsTrigger value="daily-brokerage" className="text-sm">
+            每日机构榜
           </TabsTrigger>
           <TabsTrigger value="date-range" className="text-sm">
-            Range Model
+            范围龙虎榜
           </TabsTrigger>
           <TabsTrigger value="summary" className="text-sm">
-            Analysis
+            分析与总结
           </TabsTrigger>
         </TabsList>
 
@@ -218,6 +246,74 @@ function DragonTiger() {
                         </div>
 
                         <DataTableWithToggle columns={dailyColumns} data={records} loading={false}>
+                          {table => <DataTableColumnToggle table={table} />}
+                        </DataTableWithToggle>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          </div>
+        </TabsContent>
+
+        <TabsContent value="daily-brokerage" className="mt-4">
+          <div className="p-6 bg-gray-50 dark:bg-gray-900 rounded-lg">
+            <div className="flex items-center justify-end gap-2 mb-4">
+              <span className="text-xs text-gray-500 dark:text-gray-400 mr-2">今天: {dayjs().format("YYYY-MM-DD")}</span>
+              <Input
+                type="number"
+                value={daysBack}
+                onChange={e => setDaysBack(Math.max(1, parseInt(e.target.value) || 1))}
+                className="w-20"
+                disabled={loading}
+                size="sm"
+                min="1"
+                max="365"
+              />
+              <span className="text-sm text-gray-600 dark:text-gray-400">天</span>
+              <Button
+                disabled={loading}
+                variant="default"
+                size="sm"
+                className="bg-blue-600 hover:bg-blue-700 text-white border border-blue-600"
+                onClick={handleBrokerageQuery}
+              >
+                {loading ? "查询中..." : `查询`}
+              </Button>
+            </div>
+
+            {/* 查询结果区域 */}
+            <div>
+              {error && (
+                <div className="mb-4 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+                  <p className="text-red-600 dark:text-red-400 text-sm">{error}</p>
+                </div>
+              )}
+
+              {!loading && !error && brokerageData.length === 0 && (
+                <p className="text-gray-600 dark:text-gray-400 text-sm">设置天数后点击查询按钮查看最近N天的机构数据</p>
+              )}
+
+              {!loading && brokerageData.length > 0 && (
+                <div className="space-y-6">
+                  {brokerageData.map((dateGroup, groupIndex) => {
+                    const date = dateGroup.date;
+                    const records = dateGroup.data;
+                    const totalRecords = brokerageData.reduce((sum, group) => sum + group.data.length, 0);
+
+                    return (
+                      <div key={groupIndex} className="space-y-2">
+                        <div className="flex items-center justify-between">
+                          <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                            {date} ({records.length}条记录)
+                          </h3>
+                          {groupIndex === 0 && (
+                            <p className="text-sm text-gray-600 dark:text-gray-400">共查询到 {totalRecords} 条记录</p>
+                          )}
+                        </div>
+
+                        <DataTableWithToggle columns={brokerageColumns} data={records} loading={false}>
                           {table => <DataTableColumnToggle table={table} />}
                         </DataTableWithToggle>
                       </div>

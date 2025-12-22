@@ -16,7 +16,7 @@ export function getTurnoverRateColor(rate) {
 }
 
 /**
- * 聚合同一天同一只股票的多个上榜原因
+ * 聚合同一天同一只股票的多个上榜原因，或保持营业部数据的唯一性
  * @param {Array} data - 原始数据数组
  * @returns {Array} - 聚合后的数据数组
  */
@@ -26,15 +26,17 @@ export function aggregateReasons(data) {
   const map = new Map();
 
   data.forEach(item => {
-    const key = `${item.listed_date}_${item.code}`;
+    // 支持股票数据（code）和营业部数据（brokerage_code）
+    const identifier = item.code || item.brokerage_code;
+    const key = `${item.listed_date}_${identifier}`;
     if (map.has(key)) {
-      // 已存在该股票，添加原因到数组
+      // 已存在该股票/营业部，添加原因到数组
       const existing = map.get(key);
       if (item.reasons) {
         existing.reasons.push(item.reasons);
       }
     } else {
-      // 新股票，初始化 reasons 为数组
+      // 新股票/营业部，初始化 reasons 为数组
       map.set(key, {
         ...item,
         reasons: item.reasons ? [item.reasons] : [],

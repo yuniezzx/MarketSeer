@@ -140,6 +140,96 @@ export const dailyColumns = [
   },
 ];
 
+// 每日活跃营业部列定义
+export const brokerageColumns = [
+  {
+    accessorKey: "brokerage_code",
+    header: () => <div className="text-center">营业部代码</div>,
+    cell: ({ row }) => <div className="font-mono text-center">{row.original.brokerage_code}</div>,
+    meta: {
+      displayName: "代码",
+    },
+    enableHiding: false, // 代码列不允许隐藏
+  },
+  {
+    accessorKey: "brokerage_name",
+    header: () => <div className="text-center">营业部名称</div>,
+    cell: ({ row }) => <div className="text-center">{row.original.brokerage_name}</div>,
+    meta: {
+      displayName: "名称",
+    },
+    enableHiding: false, // 名称列不允许隐藏
+  },
+  {
+    accessorKey: "buy_stock_count",
+    header: ({ column }) => <SortableHeader column={column} label="买入个股数" />,
+    cell: ({ row }) => <div className="text-center">{row.original.buy_stock_count || "-"}</div>,
+    meta: {
+      displayName: "买入个股数",
+    },
+  },
+  {
+    accessorKey: "sell_stock_count",
+    header: ({ column }) => <SortableHeader column={column} label="卖出个股数" />,
+    cell: ({ row }) => <div className="text-center">{row.original.sell_stock_count || "-"}</div>,
+    meta: {
+      displayName: "卖出个股数",
+    },
+  },
+  {
+    accessorKey: "buy_total_amount",
+    header: ({ column }) => <SortableHeader column={column} label="买入总金额(万)" />,
+    cell: ({ row }) => {
+      const value = row.original.buy_total_amount;
+      return <div className="text-center">{value ? (value / 10000).toFixed(2) : "-"}</div>;
+    },
+    meta: {
+      displayName: "买入总金额",
+    },
+  },
+  {
+    accessorKey: "sell_total_amount",
+    header: ({ column }) => <SortableHeader column={column} label="卖出总金额(万)" />,
+    cell: ({ row }) => {
+      const value = row.original.sell_total_amount;
+      return <div className="text-center">{value ? (value / 10000).toFixed(2) : "-"}</div>;
+    },
+    meta: {
+      displayName: "卖出总金额",
+    },
+  },
+  {
+    accessorKey: "net_total_amount",
+    header: ({ column }) => <SortableHeader column={column} label="总买卖净额(万)" />,
+    cell: ({ row }) => {
+      const value = row.original.net_total_amount;
+      return (
+        <div
+          className={`text-center font-medium ${
+            value > 0 ? "text-red-600 dark:text-red-400" : value < 0 ? "text-green-600 dark:text-green-400" : ""
+          }`}
+        >
+          {value ? (value / 10000).toFixed(2) : "-"}
+        </div>
+      );
+    },
+    meta: {
+      displayName: "净买额",
+    },
+  },
+  {
+    accessorKey: "buy_stocks",
+    header: () => <div className="text-center">买入股票</div>,
+    cell: ({ row }) => {
+      const stocks = row.original.buy_stocks;
+      return <div className="text-sm text-center">{stocks || "-"}</div>;
+    },
+    meta: {
+      displayName: "买入股票",
+    },
+  },
+];
+
 // Range Model 列定义（包含日期列）
 export const rangeColumns = [
   {

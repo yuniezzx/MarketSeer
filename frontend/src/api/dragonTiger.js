@@ -39,3 +39,20 @@ export const getDragonTigerByRange = (startDate, endDate) => {
     params,
   });
 };
+
+/**
+ * 获取最近N天的活跃营业部数据
+ * @param {number} daysBack - 查询最近几天的数据，默认7天
+ * @returns {Promise} 返回活跃营业部数据
+ */
+export const getDailyActiveBrokerage = (daysBack = 7) => {
+  const params = {
+    daysBack,
+  };
+
+  return request({
+    url: '/api/dragon-tiger/daily-brokerage',
+    method: 'GET',
+    params,
+  });
+};

@@ -4,8 +4,8 @@
 提供每日活跃营业部数据的业务逻辑处理
 """
 
-from typing import Optional, Dict, Any
-from datetime import datetime
+from typing import Optional, Dict, Any, List
+from datetime import datetime, timedelta
 from logger import logger
 from .base_service import BaseService
 from app.repository.dragon_tiger.daily_active_brokerage import DailyActiveBrokerageRepository
@@ -92,7 +92,44 @@ class ActiveBrokerageService(BaseService):
             logger.exception(f"每日更新活跃营业部数据失败: {str(e)}")
             return False
 
-    def get_by_date_range(self, start_date: str, end_date: str) -> Dict[str, Any]:
+    def get_daily_active_brokerage(self, days_back: int = 7) -> List[Dict[str, Any]]:
+        """
+        获取最近N天的活跃营业部数据
+
+        Args:
+            days_back: 查询最近几天的数据 (默认7天)
+
+        Returns:
+            活跃营业部数据列表
+        """
+        try:
+            # 计算日期范围
+            end_date = datetime.now()
+            start_date = end_date - timedelta(days=days_back - 1)
+
+            # 格式化日期为 YYYY-MM-DD
+            start_date_str = start_date.strftime("%Y-%m-%d")
+            end_date_str = end_date.strftime("%Y-%m-%d")
+
+            logger.info(f"查询活跃营业部数据: {start_date_str} 到 {end_date_str}")
+
+            # 从数据库查询
+            records = self.repository.get_by_date_range(
+                start_date=start_date_str, end_date=end_date_str
+            )
+
+            # 转换为字典列表
+            result = [record.to_dict() for record in records]
+
+            logger.info(f"查询成功，返回 {len(result)} 条记录")
+            return result
+
+        except Exception as e:
+            logger.error(f"查询活跃营业部数据失败: {str(e)}")
+            logger.exception("详细错误信息:")
+            return []
+
+    def get_active_brokerage_by_date_range(self, start_date: str, end_date: str) -> Dict[str, Any]:
         """
         获取指定日期范围的活跃营业部数据
 
