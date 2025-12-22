@@ -9,6 +9,7 @@ from app.repository.base import BaseRepository
 from app.models.dragon_tiger.daily_active_brokerage import DailyActiveBrokerage
 from logger import logger
 
+
 class DailyActiveBrokerageRepository(BaseRepository[DailyActiveBrokerage]):
     """
     每日活跃营业部数据 Repository
@@ -42,7 +43,9 @@ class DailyActiveBrokerageRepository(BaseRepository[DailyActiveBrokerage]):
                 listed_date = item.get("listed_date")
 
                 if not brokerage_code or not listed_date:
-                    logger.warning(f"跳过无效记录: brokerage_code={brokerage_code}, listed_date={listed_date}")
+                    logger.warning(
+                        f"跳过无效记录: brokerage_code={brokerage_code}, listed_date={listed_date}"
+                    )
                     continue
 
                 # 使用双字段复合键查找现有记录
@@ -65,18 +68,23 @@ class DailyActiveBrokerageRepository(BaseRepository[DailyActiveBrokerage]):
                     # 创建新记录
                     record = self.model(**item)
                     from app.models.base import db
+
                     db.session.add(record)
                     created_count += 1
 
             # 提交事务
             from app.models.base import db
+
             db.session.commit()
-            logger.info(f"每日活跃营业部数据批量操作完成: 创建 {created_count} 条, 更新 {updated_count} 条")
+            logger.info(
+                f"每日活跃营业部数据批量操作完成: 创建 {created_count} 条, 更新 {updated_count} 条"
+            )
             return (created_count, updated_count)
 
         except Exception as e:
             logger.error(f"批量 upsert 失败: {e}")
             from app.models.base import db
+
             db.session.rollback()
             return (0, 0)
 
@@ -93,10 +101,10 @@ class DailyActiveBrokerageRepository(BaseRepository[DailyActiveBrokerage]):
         """
         try:
             from app.models.base import db
+
             query = db.session.query(self.model)
             query = query.filter(
-                self.model.listed_date >= start_date,
-                self.model.listed_date <= end_date
+                self.model.listed_date >= start_date, self.model.listed_date <= end_date
             )
             records = query.all()
             logger.info(f"查询日期范围 {start_date} 到 {end_date},返回 {len(records)} 条记录")

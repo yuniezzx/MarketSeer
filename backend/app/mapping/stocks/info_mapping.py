@@ -41,8 +41,8 @@ def map_stock_info(symbol: str, client_manager: ClientManager) -> Dict[str, Any]
             logger.info(f"[{symbol}] 所有字段已完整,停止降级")
             break
 
-        api_name = api_config['name']
-        fetch_func = api_config['fetch_func']
+        api_name = api_config["name"]
+        fetch_func = api_config["fetch_func"]
 
         logger.info(
             f"[{symbol}] 尝试 API: {api_name} "
@@ -67,7 +67,9 @@ def map_stock_info(symbol: str, client_manager: ClientManager) -> Dict[str, Any]
 
     # 最终结果检查
     if missing_fields:
-        logger.warning(f"[{symbol}] 映射完成,仍有 {len(missing_fields)} 个字段缺失: " f"{missing_fields}")
+        logger.warning(
+            f"[{symbol}] 映射完成,仍有 {len(missing_fields)} 个字段缺失: " f"{missing_fields}"
+        )
     else:
         logger.info(f"[{symbol}] 映射完成,所有字段完整")
 
@@ -77,7 +79,9 @@ def map_stock_info(symbol: str, client_manager: ClientManager) -> Dict[str, Any]
     return result
 
 
-def _merge_fields(result: Dict[str, Any], new_fields: Dict[str, Any], missing_fields: Set[str]) -> None:
+def _merge_fields(
+    result: Dict[str, Any], new_fields: Dict[str, Any], missing_fields: Set[str]
+) -> None:
     """
     增量合并字段(不覆盖已有值)
 
@@ -95,23 +99,23 @@ def _merge_fields(result: Dict[str, Any], new_fields: Dict[str, Any], missing_fi
 def _add_computed_fields(result: Dict[str, Any], symbol: str) -> Dict[str, Any]:
     """添加计算和默认字段"""
     # 1. 从代码计算 market
-    if 'market' not in result:
-        result['market'] = get_market_code(symbol)
+    if "market" not in result:
+        result["market"] = get_market_code(symbol)
 
     # 2. 设置默认 status
-    if 'status' not in result:
-        result['status'] = '上市'
+    if "status" not in result:
+        result["status"] = "上市"
 
     # 3. 设置默认 tracking
-    if 'tracking' not in result:
-        result['tracking'] = False
+    if "tracking" not in result:
+        result["tracking"] = False
 
     return result
 
 
 def _convert_date_fields(result: Dict[str, Any]) -> Dict[str, Any]:
     """转换和校验日期字段"""
-    date_fields = ['establish_date', 'list_date']
+    date_fields = ["establish_date", "list_date"]
 
     for field in date_fields:
         if field in result:

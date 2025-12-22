@@ -101,7 +101,11 @@ class BaseRepository(Generic[ModelType]):
             return None
 
     def get_all(
-        self, offset: int = 0, limit: Optional[int] = None, order_by: Optional[str] = None, desc: bool = False
+        self,
+        offset: int = 0,
+        limit: Optional[int] = None,
+        order_by: Optional[str] = None,
+        desc: bool = False,
     ) -> List[ModelType]:
         """
         获取所有记录（支持分页和排序）

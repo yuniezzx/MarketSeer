@@ -24,6 +24,7 @@ from app import create_app
 from app.services.active_brokerage_service import ActiveBrokerageService
 from logger import logger
 
+
 def validate_date(date_str: str) -> bool:
     """
     验证日期格式
@@ -39,6 +40,7 @@ def validate_date(date_str: str) -> bool:
         return True
     except ValueError:
         return False
+
 
 def generate_date_range(start_date: str, end_date: str) -> list[str]:
     """
@@ -61,6 +63,7 @@ def generate_date_range(start_date: str, end_date: str) -> list[str]:
         current += timedelta(days=1)
 
     return dates
+
 
 def import_single_date(service: ActiveBrokerageService, date: str) -> bool:
     """
@@ -85,6 +88,7 @@ def import_single_date(service: ActiveBrokerageService, date: str) -> bool:
         logger.error(f"✗ {msg}")
 
     return success
+
 
 def main():
     """主函数"""
@@ -171,6 +175,7 @@ def main():
         logger.info(f"总计创建: {total_created} 条")
         logger.info(f"总计更新: {total_updated} 条")
         logger.info("=" * 60)
+
 
 if __name__ == "__main__":
     main()

@@ -80,6 +80,7 @@ def collect_daily_active_brokerage(app):
         except Exception as e:
             logger.exception(f"采集每日活跃营业部数据失败: {e}")
 
+
 def register_jobs(scheduler, app):
     """
     注册龙虎榜相关的定时任务

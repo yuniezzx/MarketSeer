@@ -13,7 +13,9 @@ from app.data_sources import ClientManager
 # ============ API特定函数 ============
 
 
-def _fetch_from_em(symbol: str, client_manager: ClientManager, needed_fields: Set[str]) -> Dict[str, Any]:
+def _fetch_from_em(
+    symbol: str, client_manager: ClientManager, needed_fields: Set[str]
+) -> Dict[str, Any]:
     """
     从东方财富获取数据
 
@@ -32,25 +34,25 @@ def _fetch_from_em(symbol: str, client_manager: ClientManager, needed_fields: Se
     """
     try:
         # 1. 调用API
-        client = client_manager.get_client('akshare')
-        data = client.fetch('stock_individual_info_em', {'symbol': symbol})
+        client = client_manager.get_client("akshare")
+        data = client.fetch("stock_individual_info_em", {"symbol": symbol})
 
         if data is None or (isinstance(data, pd.DataFrame) and len(data) == 0):
             return {}
 
         # 2. 字段映射
         field_mapping = {
-            'code': '股票代码',
-            'name': '股票简称',
-            'full_name': '股票名称',
-            'market': '市场类型',
-            'industry_code': '行业代码',
-            'industry': '行业',
-            'establish_date': '成立日期',
-            'list_date': '上市日期',
-            'main_operation_business': '主营业务',
-            'operating_scope': '经营范围',
-            'status': '上市状态',
+            "code": "股票代码",
+            "name": "股票简称",
+            "full_name": "股票名称",
+            "market": "市场类型",
+            "industry_code": "行业代码",
+            "industry": "行业",
+            "establish_date": "成立日期",
+            "list_date": "上市日期",
+            "main_operation_business": "主营业务",
+            "operating_scope": "经营范围",
+            "status": "上市状态",
         }
 
         # 3. 提取需要的字段
@@ -59,10 +61,10 @@ def _fetch_from_em(symbol: str, client_manager: ClientManager, needed_fields: Se
             if model_field in field_mapping:
                 api_field = field_mapping[model_field]
                 value = _get_value(data, api_field)
-                if value is not None and value != '':
+                if value is not None and value != "":
                     result[model_field] = value
 
-        print('result:', result)
+        print("result:", result)
         return result
 
     except Exception as e:
@@ -70,7 +72,9 @@ def _fetch_from_em(symbol: str, client_manager: ClientManager, needed_fields: Se
         return {}
 
 
-def _fetch_from_xq(symbol: str, client_manager: ClientManager, needed_fields: Set[str]) -> Dict[str, Any]:
+def _fetch_from_xq(
+    symbol: str, client_manager: ClientManager, needed_fields: Set[str]
+) -> Dict[str, Any]:
     """
     从雪球获取数据
 
@@ -92,20 +96,20 @@ def _fetch_from_xq(symbol: str, client_manager: ClientManager, needed_fields: Se
         xq_symbol = add_market_prefix(symbol)
 
         # 2. 调用API
-        client = client_manager.get_client('akshare')
-        data = client.fetch('stock_individual_basic_info_xq', {'symbol': xq_symbol})
+        client = client_manager.get_client("akshare")
+        data = client.fetch("stock_individual_basic_info_xq", {"symbol": xq_symbol})
 
         if data is None or (isinstance(data, pd.DataFrame) and len(data) == 0):
             return {}
 
         # 3. 字段映射 (雪球API的实际字段名)
         field_mapping = {
-            'name': 'org_short_name_cn',  # 股票简称
-            'full_name': 'org_name_cn',  # 公司全称
-            'establish_date': 'established_date',  # 成立日期 (时间戳)
-            'list_date': 'listed_date',  # 上市日期 (时间戳)
-            'main_operation_business': 'main_operation_business',  # 主营业务
-            'operating_scope': 'operating_scope',  # 经营范围
+            "name": "org_short_name_cn",  # 股票简称
+            "full_name": "org_name_cn",  # 公司全称
+            "establish_date": "established_date",  # 成立日期 (时间戳)
+            "list_date": "listed_date",  # 上市日期 (时间戳)
+            "main_operation_business": "main_operation_business",  # 主营业务
+            "operating_scope": "operating_scope",  # 经营范围
         }
 
         # 4. 提取需要的字段
@@ -114,21 +118,21 @@ def _fetch_from_xq(symbol: str, client_manager: ClientManager, needed_fields: Se
             if model_field in field_mapping:
                 api_field = field_mapping[model_field]
                 value = _get_value(data, api_field)
-                if value is not None and value != '':
+                if value is not None and value != "":
                     result[model_field] = value
 
         # 5. 特殊处理: 行业信息 (嵌套在 affiliate_industry 中)
-        if 'industry' in needed_fields or 'industry_code' in needed_fields:
-            industry_data = _get_value(data, 'affiliate_industry')
+        if "industry" in needed_fields or "industry_code" in needed_fields:
+            industry_data = _get_value(data, "affiliate_industry")
             if industry_data and isinstance(industry_data, dict):
-                if 'industry' in needed_fields:
-                    ind_name = industry_data.get('ind_name')
+                if "industry" in needed_fields:
+                    ind_name = industry_data.get("ind_name")
                     if ind_name:
-                        result['industry'] = ind_name
-                if 'industry_code' in needed_fields:
-                    ind_code = industry_data.get('ind_code')
+                        result["industry"] = ind_name
+                if "industry_code" in needed_fields:
+                    ind_code = industry_data.get("ind_code")
                     if ind_code:
-                        result['industry_code'] = ind_code
+                        result["industry_code"] = ind_code
 
         return result
 
@@ -158,21 +162,21 @@ def _fetch_from_efinance(
     """
     try:
         # 1. 调用API
-        client = client_manager.get_client('efinance')
-        data = client.fetch('stock_individual_info', {'stock_codes': symbol})
+        client = client_manager.get_client("efinance")
+        data = client.fetch("stock_individual_info", {"stock_codes": symbol})
 
         if data is None or (isinstance(data, pd.DataFrame) and len(data) == 0):
             return {}
 
         # 2. 字段映射
         field_mapping = {
-            'code': '股票代码',
-            'name': '股票简称',
-            'full_name': '股票名称',
-            'market': '市场',
-            'industry': '行业',
-            'list_date': '上市日期',
-            'status': '上市状态',
+            "code": "股票代码",
+            "name": "股票简称",
+            "full_name": "股票名称",
+            "market": "市场",
+            "industry": "行业",
+            "list_date": "上市日期",
+            "status": "上市状态",
         }
 
         # 3. 提取需要的字段
@@ -181,7 +185,7 @@ def _fetch_from_efinance(
             if model_field in field_mapping:
                 api_field = field_mapping[model_field]
                 value = _get_value(data, api_field)
-                if value is not None and value != '':
+                if value is not None and value != "":
                     result[model_field] = value
 
         return result
@@ -207,10 +211,10 @@ def _get_value(data: Any, field: str) -> Optional[Any]:
     """
     try:
         if isinstance(data, pd.DataFrame):
-            if 'item' in data.columns and 'value' in data.columns:
-                matched_rows = data[data['item'] == field]
+            if "item" in data.columns and "value" in data.columns:
+                matched_rows = data[data["item"] == field]
                 if not matched_rows.empty:
-                    value = matched_rows.iloc[0]['value']
+                    value = matched_rows.iloc[0]["value"]
                     if pd.isna(value):
                         return None
                     return value
@@ -230,23 +234,23 @@ def _get_value(data: Any, field: str) -> Optional[Any]:
 
 # API优先级配置: 每个API只需配置优先级、名称和对应的函数
 API_PRIORITY_CONFIG = [
-    {'priority': 1, 'name': 'em', 'fetch_func': _fetch_from_em},
-    {'priority': 2, 'name': 'xq', 'fetch_func': _fetch_from_xq},
-    {'priority': 3, 'name': 'efinance', 'fetch_func': _fetch_from_efinance},
+    {"priority": 1, "name": "em", "fetch_func": _fetch_from_em},
+    {"priority": 2, "name": "xq", "fetch_func": _fetch_from_xq},
+    {"priority": 3, "name": "efinance", "fetch_func": _fetch_from_efinance},
 ]
 
 # 所有支持的字段列表
 ALL_FIELDS = [
-    'code',  # 股票代码
-    'name',  # 股票简称
-    'full_name',  # 股票全称
+    "code",  # 股票代码
+    "name",  # 股票简称
+    "full_name",  # 股票全称
     # 'market',  # 市场类型
-    'industry_code',  # 行业代码
-    'industry',  # 行业名称
-    'establish_date',  # 成立日期
-    'list_date',  # 上市日期
-    'main_operation_business',  # 主营业务
-    'operating_scope',  # 经营范围
+    "industry_code",  # 行业代码
+    "industry",  # 行业名称
+    "establish_date",  # 成立日期
+    "list_date",  # 上市日期
+    "main_operation_business",  # 主营业务
+    "operating_scope",  # 经营范围
     # 'status',  # 上市状态
     # 'tracking', # 是否跟踪
 ]

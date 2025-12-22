@@ -7,7 +7,7 @@ from config import Config
 config = Config()
 
 # 确保日志目录存在
-log_dir = Path("logs")
+log_dir = Path(__file__).parent / "logs"
 log_dir.mkdir(exist_ok=True)
 
 # 移除默认处理器

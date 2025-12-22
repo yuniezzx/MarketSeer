@@ -23,30 +23,34 @@ class StocksService(BaseService):
         if stock:
             self.logger.info(f"股票信息已保存或更新: {stock.code} - {stock.name}")
             return {
-                'code': stock.code,
-                'name': stock.name,
-                'market': stock.market,
-                'industry': stock.industry,
-                'status': stock.status,
+                "code": stock.code,
+                "name": stock.name,
+                "market": stock.market,
+                "industry": stock.industry,
+                "status": stock.status,
             }
 
     def list_stocks(
-        self, offset: int = 0, limit: Optional[int] = None, order_by: Optional[str] = None, desc: bool = False
+        self,
+        offset: int = 0,
+        limit: Optional[int] = None,
+        order_by: Optional[str] = None,
+        desc: bool = False,
     ):
         """获取所有股票列表,支持分页和排序"""
         stocks = self.stock_repo.get_all(offset=offset, limit=limit, order_by=order_by, desc=desc)
         return [
             {
-                'code': stock.code,
-                'name': stock.name,
-                'market': stock.market,
-                'industry': stock.industry,
-                'establish_date': stock.establish_date,
-                'list_date': stock.list_date,
-                'main_operation_business': stock.main_operation_business,
-                'operating_scope': stock.operating_scope,
-                'status': stock.status,
-                'tracking': stock.tracking,
+                "code": stock.code,
+                "name": stock.name,
+                "market": stock.market,
+                "industry": stock.industry,
+                "establish_date": stock.establish_date,
+                "list_date": stock.list_date,
+                "main_operation_business": stock.main_operation_business,
+                "operating_scope": stock.operating_scope,
+                "status": stock.status,
+                "tracking": stock.tracking,
             }
             for stock in stocks
         ]

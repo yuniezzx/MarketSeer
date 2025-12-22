@@ -21,10 +21,12 @@ class AkshareClient(BaseClient):
 
             result = api_func(**params)
 
-            self.logger.debug(f"Received data from Akshare API '{api_name}': {str(result)[:100]}...")
-            
+            self.logger.debug(
+                f"Received data from Akshare API '{api_name}': {str(result)[:100]}..."
+            )
+
             self._save_raw_data(api_name, params, result)
-            
+
             return result
 
         except Exception as e:
