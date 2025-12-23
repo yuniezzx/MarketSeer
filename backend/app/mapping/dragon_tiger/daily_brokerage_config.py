@@ -2,6 +2,7 @@
 
 from typing import Any, Dict, List, Optional
 import pandas as pd
+from logger import logger
 from app.data_sources.client_manager import ClientManager
 
 
@@ -13,8 +14,8 @@ def _fetch_from_akshare(
     API: stock_lhb_hyyyb_em
 
     Args:
-        start_date: 开始日期 YYYYMMDD
-        end_date: 结束日期 YYYYMMDD
+        start_date: 开始日期 YYYY-MM-DD
+        end_date: 结束日期 YYYY-MM-DD
         client_manager: 客户端管理器
 
     Returns:
@@ -22,10 +23,19 @@ def _fetch_from_akshare(
     """
     akshare_client = client_manager.get_client("akshare")
 
-    # 调用 akshare API
-    df = akshare_client.fetch(
-        "stock_lhb_hyyyb_em", params={"start_date": start_date, "end_date": end_date}
-    )
+    # 转换日期格式从 YYYY-MM-DD 到 YYYYMMDD
+    start_date_api = start_date.replace("-", "")
+    end_date_api = end_date.replace("-", "")
+
+    try:
+        # 调用 akshare API
+        df = akshare_client.fetch(
+            "stock_lhb_hyyyb_em", params={"start_date": start_date_api, "end_date": end_date_api}
+        )
+    except Exception as e:
+        # 如果API调用失败，返回空列表而不是抛出异常
+        logger.warning(f"获取活跃营业部数据失败: {start_date} 到 {end_date}, 错误: {str(e)}")
+        return []
 
     if df is None or df.empty:
         return []
