@@ -434,12 +434,7 @@ function DragonTiger() {
         </TabsContent>
 
         <TabsContent value="summary" className="mt-4">
-          <DragonTigerAnalysis
-            dragonTigerData={dragonTigerData}
-            brokerageData={brokerageData}
-            rangeData={rangeData}
-            dateRange={{ startDate, endDate }}
-          />
+          <DragonTigerAnalysis brokerageData={brokerageData} rangeData={rangeData} dateRange={{ startDate, endDate }} />
         </TabsContent>
       </Tabs>
     </div>
