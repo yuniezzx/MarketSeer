@@ -69,12 +69,13 @@ wheels = [
 
 [[package]]
 name = "akshare"
-version = "1.17.94"
+version = "1.18.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "aiohttp" },
     { name = "akracer", marker = "sys_platform == 'linux'" },
     { name = "beautifulsoup4" },
+    { name = "curl-cffi" },
     { name = "decorator" },
     { name = "html5lib" },
     { name = "jsonpath" },
@@ -90,9 +91,9 @@ dependencies = [
     { name = "urllib3" },
     { name = "xlrd" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/32/ef/80a2f01b71b116b6a0702a51f07418b448143ca02ff1c3f5b20bb891ad74/akshare-1.17.94.tar.gz", hash = "sha256:634ba927dbff3287c004f5bbe1ffb819453dafc2adc5275496760c70c3742cbf", size = 852884, upload-time = "2025-12-12T06:49:21.304Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/99/69/dfadee169cc311b240a3f4f6945cfb08479bf4a17b945e79ba814a99513d/akshare-1.18.2.tar.gz", hash = "sha256:5a070fd9c53744d10a22bf635c9884a4d251c5eb938e1c03dfb3cee0a5056565", size = 856249, upload-time = "2025-12-24T08:35:11.35Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/91/8e/c8fc1f23b0a3b92631550736b6d1213d17bb93a611b17c9e6b051a07cc85/akshare-1.17.94-py3-none-any.whl", hash = "sha256:aaa0f4b8512b7e843999cb0325c04d90f9a09963e53d816f8f53c976aa2c9b23", size = 1071713, upload-time = "2025-12-12T06:49:19.813Z" },
+    { url = "https://files.pythonhosted.org/packages/51/86/fc82ec69cc27aadd2ea17c54096453150ab17c57a8ead4c03ea07e802061/akshare-1.18.2-py3-none-any.whl", hash = "sha256:e95214da13960aa5e8eb0995a74849070d9bbab4dde221d71d45cc44afa76ca3", size = 1075952, upload-time = "2025-12-24T08:35:09.605Z" },
 ]
 
 [[package]]
@@ -1195,7 +1196,7 @@ jupyter = [
 
 [package.metadata]
 requires-dist = [
-    { name = "akshare", specifier = ">=1.17.94" },
+    { name = "akshare", specifier = ">=1.18.1" },
     { name = "apscheduler", specifier = ">=3.10.0" },
     { name = "baostock", specifier = ">=0.8.9" },
     { name = "black", marker = "extra == 'dev'", specifier = ">=23.7.0" },
