@@ -29,17 +29,23 @@ export function aggregateReasons(data) {
     // 支持股票数据（code）和营业部数据（brokerage_code）
     const identifier = item.code || item.brokerage_code;
     const key = `${item.listed_date}_${identifier}`;
+    
     if (map.has(key)) {
       // 已存在该股票/营业部，添加原因到数组
       const existing = map.get(key);
-      if (item.reasons) {
-        existing.reasons.push(item.reasons);
+      
+      // 兼容两种字段名：lhb_reason（股票）和 reasons（营业部）
+      const reasonValue = item.lhb_reason || item.reasons;
+      if (reasonValue) {
+        existing.reasons.push(reasonValue);
       }
     } else {
       // 新股票/营业部，初始化 reasons 为数组
+      // 兼容两种字段名：lhb_reason（股票）和 reasons（营业部）
+      const reasonValue = item.lhb_reason || item.reasons;
       map.set(key, {
         ...item,
-        reasons: item.reasons ? [item.reasons] : [],
+        reasons: reasonValue ? [reasonValue] : [],
       });
     }
   });

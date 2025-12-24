@@ -175,7 +175,7 @@ function DragonTiger() {
 
   return (
     <div className="p-6">
-      <dic onClick={() => console.log(dailyData)}>Click</dic>
+      {/* <dic onClick={() => console.log(dailyData)}>Click</dic> */}
       <Tabs defaultValue="daily" className="w-full">
         <div className="flex items-center justify-between gap-4 mb-4">
           <TabsList className="w-fit grid grid-cols-4">
