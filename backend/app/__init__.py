@@ -10,7 +10,7 @@ def create_app():
     app.config.from_object(Config)
 
     # 启用 CORS
-    CORS(app)
+    CORS(app, resources={r"/*": {"origins": Config.CORS_ORIGINS}})
 
     # 初始化数据库
     from app.models import db, init_db
