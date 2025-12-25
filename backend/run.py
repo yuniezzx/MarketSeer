@@ -21,8 +21,8 @@ if __name__ == "__main__":
     debug = config.FLASK_DEBUG
 
     logger.info("=" * 60)
-    logger.info("MarketSeer 后端服务启动中...")
-    logger.info(f"开发模式 : {'开发环境' if env == 'development' else '生产环境'}")
+    logger.info("MarketSeer Backend Server Starting...")
+    logger.info(f"Environment: {'Development' if env == 'development' else 'Production'}")
     logger.info(f"Debug: {debug}")
     logger.info(f"API Base URL: http://{host}:{port}/api")
     logger.info("=" * 60)
@@ -30,8 +30,8 @@ if __name__ == "__main__":
     try:
         app.run(host=host, port=port, debug=debug)
     except KeyboardInterrupt:
-        logger.warning("收到停止信号，正在关闭服务...")
+        logger.warning("Received stop signal, shutting down server...")
     except Exception as e:
-        logger.exception(f"服务启动失败: {e}")
+        logger.exception(f"Server startup failed: {e}")
     finally:
-        logger.info("MarketSeer 后端服务已停止")
+        logger.info("MarketSeer Backend Server Stopped")

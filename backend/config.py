@@ -49,4 +49,7 @@ class Config:
     AKSHARE_RAW_DATA_DIR = DATA_DIR / "akshare_raw"
 
     # CORS 配置
-    CORS_ORIGINS = ["http://localhost:3000", "http://localhost:5173", "http://localhost:5000"]
+    CORS_ORIGINS = os.environ.get(
+        "CORS_ORIGINS", 
+        "http://localhost:3000,http://localhost:5173,http://localhost:5000"
+    ).split(",")
