@@ -66,10 +66,13 @@ def _register_jobs(app):
     Args:
         app: Flask 应用实例
     """
-    from .jobs import dragon_tiger
+    from .jobs import dragon_tiger, market_quote
 
     # 注册龙虎榜数据采集任务
     dragon_tiger.register_jobs(scheduler, app)
+
+    # 注册每日行情数据采集任务
+    market_quote.register_jobs(scheduler, app)
 
     logger.info("所有定时任务已注册")
 
