@@ -76,6 +76,12 @@ def _register_jobs(app):
 
     logger.info("所有定时任务已注册")
 
+    # 🧪 测试：立即执行一次每日行情数据采集任务
+    # logger.info("=" * 60)
+    # logger.info("🧪 测试：立即执行一次每日行情数据采集任务")
+    # logger.info("=" * 60)
+    # market_quote.collect_daily_market_quote(app)
+
 
 def shutdown_scheduler():
     """关闭调度器"""

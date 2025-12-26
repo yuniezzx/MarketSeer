@@ -35,17 +35,15 @@ class DailyMarketQuoteRepository(BaseRepository[DailyMarketQuote]):
                 continue
 
             # 使用复合键查找现有记录
-            existing = self.get_by_filters(
-                {"code": code, "trade_date": trade_date}, limit=1
-            )
+            existing = self.get_by_filters({"code": code, "trade_date": trade_date}, limit=1)
 
             if existing:
                 # 更新现有记录
-                self.update(existing[0].id, item)
+                self.update(existing[0].id, **item)
                 updated_count += 1
             else:
                 # 创建新记录
-                self.create(item)
+                self.create(**item)
                 created_count += 1
 
         db.session.commit()
@@ -74,9 +72,7 @@ class DailyMarketQuoteRepository(BaseRepository[DailyMarketQuote]):
 
         return query.all()
 
-    def get_by_code(
-        self, code: str, limit: Optional[int] = None
-    ) -> List[DailyMarketQuote]:
+    def get_by_code(self, code: str, limit: Optional[int] = None) -> List[DailyMarketQuote]:
         """
         获取指定股票代码的行情数据
 
