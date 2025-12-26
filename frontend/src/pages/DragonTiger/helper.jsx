@@ -22,6 +22,8 @@ export const getMultipleListingStocks = rangeData => {
         totalBuyAmount: 0, // 累计买入总额
         totalSellAmount: 0, // 累计卖出总额
         totalTradeAmount: 0, // 累计成交额
+        totalNetRatio: 0, // 累计净买额占比
+        totalTradeRatio: 0, // 累计成交额占比
         details: [],
       });
     }
@@ -36,6 +38,8 @@ export const getMultipleListingStocks = rangeData => {
     stock.totalBuyAmount += item.lhb_buy_amount || 0;
     stock.totalSellAmount += item.lhb_sell_amount || 0;
     stock.totalTradeAmount += item.lhb_trade_amount || 0;
+    stock.totalNetRatio += item.lhb_net_ratio || 0;
+    stock.totalTradeRatio += item.lhb_trade_ratio || 0;
   });
 
   // 筛选出现超过一次的股票，并按上榜次数降序排列
@@ -81,6 +85,8 @@ export const formatChartData = (multipleListingStocks, topN) => {
     buyAmount: stock.totalBuyAmount / 10000,
     sellAmount: stock.totalSellAmount / 10000,
     tradeAmount: stock.totalTradeAmount / 10000,
+    avgNetRatio: stock.count > 0 ? stock.totalNetRatio / stock.count : 0, // 平均净买额占比
+    avgTradeRatio: stock.count > 0 ? stock.totalTradeRatio / stock.count : 0, // 平均成交额占比
     dates: stock.dates,
     details: stock.details, // 保留详细信息用于显示上榜原因
     isPositive: stock.totalNetAmount >= 0,

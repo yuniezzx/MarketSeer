@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import dayjs from "dayjs";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,8 +13,12 @@ import { dailyColumns, rangeColumns, brokerageColumns } from "./columns";
 import DragonTigerAnalysis from "./analysis";
 
 function DragonTiger() {
+  const [searchParams, setSearchParams] = useSearchParams();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+
+  // 从URL获取当前tab，默认为"daily"
+  const currentTab = searchParams.get("tab") || "daily";
 
   // 计算开始日期：前一个星期，但不超过2025/12/01
   const defaultStartDate = dayjs().subtract(7, "days");
@@ -176,7 +181,7 @@ function DragonTiger() {
   return (
     <div className="p-6">
       {/* <dic onClick={() => console.log(dailyData)}>Click</dic> */}
-      <Tabs defaultValue="daily" className="w-full">
+      <Tabs value={currentTab} onValueChange={value => setSearchParams({ tab: value })} className="w-full">
         <div className="flex items-center justify-between gap-4 mb-4">
           <TabsList className="w-fit grid grid-cols-4">
             <TabsTrigger value="daily" className="text-sm">

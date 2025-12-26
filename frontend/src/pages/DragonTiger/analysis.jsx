@@ -96,6 +96,8 @@ function DragonTigerAnalysis({ brokerageData = [], rangeData = [], dateRange = {
                           <th className="px-4 py-2 text-left">股票名称</th>
                           <th className="px-4 py-2 text-center">上榜次数</th>
                           <th className="px-4 py-2 text-right">总净买入额(万)</th>
+                          <th className="px-4 py-2 text-right">平均净买额占比(%)</th>
+                          <th className="px-4 py-2 text-right">平均成交额占比(%)</th>
                           <th className="px-4 py-2 text-left">上榜日期</th>
                         </tr>
                       </thead>
@@ -118,6 +120,21 @@ function DragonTigerAnalysis({ brokerageData = [], rangeData = [], dateRange = {
                               >
                                 {stock.netAmount >= 0 ? "+" : ""}
                                 {stock.netAmount.toFixed(2)}
+                              </span>
+                            </td>
+                            <td className="px-4 py-2 text-right">
+                              <span
+                                className={`font-semibold ${
+                                  stock.avgNetRatio >= 0 ? "text-red-600 dark:text-red-400" : "text-green-600 dark:text-green-400"
+                                }`}
+                              >
+                                {stock.avgNetRatio >= 0 ? "+" : ""}
+                                {stock.avgNetRatio.toFixed(2)}
+                              </span>
+                            </td>
+                            <td className="px-4 py-2 text-right">
+                              <span className="font-semibold text-gray-700 dark:text-gray-300">
+                                {stock.avgTradeRatio.toFixed(2)}
                               </span>
                             </td>
                             <td className="px-4 py-2 text-xs">
@@ -198,7 +215,7 @@ function DragonTigerAnalysis({ brokerageData = [], rangeData = [], dateRange = {
 
   return (
     <div className="p-6">
-      <div onClick={() => console.log(multipleListingStocks)}>Click</div>
+      {/* <div onClick={() => console.log(multipleListingStocks)}>Click</div> */}
       <div className="mb-6">
         <div className="flex space-x-2 mb-4">
           <button

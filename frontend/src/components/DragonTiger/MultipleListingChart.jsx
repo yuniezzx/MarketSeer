@@ -56,7 +56,7 @@ const MultipleListingChart = ({ data, sortMode, sortModeLabel, onSortToggle, onB
         <div>
           <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">多次上榜股票资金流向</h3>
           <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-            双向柱状图：左侧绿色为净卖出，右侧红色为净买入 | 柱子颜色深浅表示上榜频率
+            双向柱状图：左侧绿色为总净卖出，右侧红色为总净买入 | 柱子颜色深浅表示上榜频率
           </p>
         </div>
         <div className="flex items-center gap-3">

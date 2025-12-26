@@ -116,6 +116,80 @@ export const dailyColumns = [
     },
   },
   {
+    accessorKey: "lhb_buy_amount",
+    header: ({ column }) => <SortableHeader column={column} label="龙虎榜买入额(万)" />,
+    cell: ({ row }) => {
+      const value = row.original.lhb_buy_amount;
+      return <div className="text-center">{value ? (value / 10000).toFixed(2) : "-"}</div>;
+    },
+    meta: {
+      displayName: "买入额",
+    },
+  },
+  {
+    accessorKey: "lhb_sell_amount",
+    header: ({ column }) => <SortableHeader column={column} label="龙虎榜卖出额(万)" />,
+    cell: ({ row }) => {
+      const value = row.original.lhb_sell_amount;
+      return <div className="text-center">{value ? (value / 10000).toFixed(2) : "-"}</div>;
+    },
+    meta: {
+      displayName: "卖出额",
+    },
+  },
+  {
+    accessorKey: "circulating_market_cap",
+    header: ({ column }) => <SortableHeader column={column} label="流通市值(亿)" />,
+    cell: ({ row }) => {
+      const value = row.original.circulating_market_cap;
+      return <div className="text-center">{value ? (value / 100000000).toFixed(2) : "-"}</div>;
+    },
+    meta: {
+      displayName: "流通市值",
+    },
+  },
+  {
+    accessorKey: "market_total_amount",
+    header: ({ column }) => <SortableHeader column={column} label="市场总成交额(万)" />,
+    cell: ({ row }) => {
+      const value = row.original.market_total_amount;
+      return <div className="text-center">{value ? (value / 10000).toFixed(2) : "-"}</div>;
+    },
+    meta: {
+      displayName: "市场总成交额",
+    },
+  },
+  {
+    accessorKey: "lhb_net_ratio",
+    header: ({ column }) => <SortableHeader column={column} label="净买额占比(%)" />,
+    cell: ({ row }) => {
+      const value = row.original.lhb_net_ratio;
+      return (
+        <div
+          className={`text-center font-medium ${
+            value > 0 ? "text-red-600 dark:text-red-400" : value < 0 ? "text-green-600 dark:text-green-400" : ""
+          }`}
+        >
+          {value ? `${value > 0 ? "+" : ""}${value.toFixed(2)}` : "-"}
+        </div>
+      );
+    },
+    meta: {
+      displayName: "净买额占比",
+    },
+  },
+  {
+    accessorKey: "lhb_trade_ratio",
+    header: ({ column }) => <SortableHeader column={column} label="成交额占比(%)" />,
+    cell: ({ row }) => {
+      const value = row.original.lhb_trade_ratio;
+      return <div className="text-center">{value ? value.toFixed(2) : "-"}</div>;
+    },
+    meta: {
+      displayName: "成交额占比",
+    },
+  },
+  {
     accessorKey: "reasons",
     header: () => <div className="text-center">上榜原因</div>,
     cell: ({ row }) => {
@@ -325,6 +399,80 @@ export const rangeColumns = [
     },
     meta: {
       displayName: "成交额",
+    },
+  },
+  {
+    accessorKey: "lhb_buy_amount",
+    header: ({ column }) => <SortableHeader column={column} label="龙虎榜买入额(万)" />,
+    cell: ({ row }) => {
+      const value = row.original.lhb_buy_amount;
+      return <div className="text-center">{value ? (value / 10000).toFixed(2) : "-"}</div>;
+    },
+    meta: {
+      displayName: "买入额",
+    },
+  },
+  {
+    accessorKey: "lhb_sell_amount",
+    header: ({ column }) => <SortableHeader column={column} label="龙虎榜卖出额(万)" />,
+    cell: ({ row }) => {
+      const value = row.original.lhb_sell_amount;
+      return <div className="text-center">{value ? (value / 10000).toFixed(2) : "-"}</div>;
+    },
+    meta: {
+      displayName: "卖出额",
+    },
+  },
+  {
+    accessorKey: "circulating_market_cap",
+    header: ({ column }) => <SortableHeader column={column} label="流通市值(亿)" />,
+    cell: ({ row }) => {
+      const value = row.original.circulating_market_cap;
+      return <div className="text-center">{value ? (value / 100000000).toFixed(2) : "-"}</div>;
+    },
+    meta: {
+      displayName: "流通市值",
+    },
+  },
+  {
+    accessorKey: "market_total_amount",
+    header: ({ column }) => <SortableHeader column={column} label="市场总成交额(万)" />,
+    cell: ({ row }) => {
+      const value = row.original.market_total_amount;
+      return <div className="text-center">{value ? (value / 10000).toFixed(2) : "-"}</div>;
+    },
+    meta: {
+      displayName: "市场总成交额",
+    },
+  },
+  {
+    accessorKey: "lhb_net_ratio",
+    header: ({ column }) => <SortableHeader column={column} label="净买额占比(%)" />,
+    cell: ({ row }) => {
+      const value = row.original.lhb_net_ratio;
+      return (
+        <div
+          className={`text-center font-medium ${
+            value > 0 ? "text-red-600 dark:text-red-400" : value < 0 ? "text-green-600 dark:text-green-400" : ""
+          }`}
+        >
+          {value ? `${value > 0 ? "+" : ""}${value.toFixed(2)}` : "-"}
+        </div>
+      );
+    },
+    meta: {
+      displayName: "净买额占比",
+    },
+  },
+  {
+    accessorKey: "lhb_trade_ratio",
+    header: ({ column }) => <SortableHeader column={column} label="成交额占比(%)" />,
+    cell: ({ row }) => {
+      const value = row.original.lhb_trade_ratio;
+      return <div className="text-center">{value ? value.toFixed(2) : "-"}</div>;
+    },
+    meta: {
+      displayName: "成交额占比",
     },
   },
   {

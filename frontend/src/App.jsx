@@ -1,5 +1,6 @@
 import { Routes, Route } from "react-router-dom";
 import Navbar from "./components/shared/Navbar";
+import FloatingBall from "./components/shared/FloatingBall";
 import Home from "./pages/Home";
 import StockList from "./pages/StockList";
 import DragonTiger from "./pages/DragonTiger";
@@ -16,6 +17,9 @@ function App() {
         <Route path="/stocks" element={<StockList />} />
         <Route path="/dragon-tiger" element={<DragonTiger />} />
       </Routes>
+
+      {/* Floating Ball for field explanations */}
+      <FloatingBall />
     </div>
   );
 }

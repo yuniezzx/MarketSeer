@@ -55,6 +55,25 @@ const CustomTooltip = ({ active, payload }) => {
         </div>
       </div>
 
+      {/* 占比指标 */}
+      <div className="bg-blue-50 dark:bg-blue-900/20 rounded p-2 space-y-1.5 mb-3">
+        <div className="flex items-center justify-between text-xs">
+          <span className="text-gray-600 dark:text-gray-400">📊 平均净买额占比:</span>
+          <span
+            className={`font-semibold ${
+              data.avgNetRatio >= 0 ? "text-red-700 dark:text-red-300" : "text-green-700 dark:text-green-300"
+            }`}
+          >
+            {data.avgNetRatio >= 0 ? "+" : ""}
+            {data.avgNetRatio?.toFixed(2) || "0.00"}%
+          </span>
+        </div>
+        <div className="flex items-center justify-between text-xs">
+          <span className="text-gray-600 dark:text-gray-400">📈 平均成交额占比:</span>
+          <span className="font-semibold text-gray-700 dark:text-gray-300">{data.avgTradeRatio?.toFixed(2) || "0.00"}%</span>
+        </div>
+      </div>
+
       {/* 上榜日期 */}
       <div className="border-t border-gray-200 dark:border-gray-700 pt-2">
         <p className="text-xs text-gray-600 dark:text-gray-400 mb-1.5">📅 上榜日期:</p>
