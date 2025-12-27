@@ -41,9 +41,9 @@ function FloatingBall() {
       {/* 解释内容卡片 */}
       {isOpen && (
         <div className="fixed bottom-24 right-6 z-50 w-96 max-h-[600px] animate-in fade-in slide-in-from-bottom-4 duration-300">
-          <Card className="p-4 shadow-2xl overflow-y-auto max-h-[600px]">
+          <Card className="p-4 shadow-2xl overflow-y-auto max-h-[600px] bg-blue-50/95 dark:bg-blue-950/95 backdrop-blur-sm">
             {/* 标题 */}
-            <div className="flex items-center justify-between mb-4 pb-3 border-b border-gray-200 dark:border-gray-700">
+            <div className="flex items-center justify-between mb-4 pb-3 border-b border-blue-200 dark:border-blue-800">
               <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 flex items-center gap-2">
                 <BookOpen className="w-5 h-5 text-blue-600" />
                 {explanation.title}
@@ -55,17 +55,17 @@ function FloatingBall() {
               {explanation.fields.map((field, index) => (
                 <div
                   key={index}
-                  className="p-3 bg-gray-50 dark:bg-gray-800 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-750 transition-colors"
+                  className="p-3 bg-white dark:bg-blue-900/40 rounded-lg hover:bg-blue-100 dark:hover:bg-blue-900/50 transition-colors border border-blue-100 dark:border-blue-800/50"
                 >
-                  <div className="font-medium text-gray-900 dark:text-gray-100 mb-1">{field.name}</div>
-                  <div className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">{field.description}</div>
+                  <div className="font-medium text-blue-900 dark:text-blue-100 mb-1">{field.name}</div>
+                  <div className="text-sm text-blue-800 dark:text-blue-200 leading-relaxed">{field.description}</div>
                 </div>
               ))}
             </div>
 
             {/* 底部提示 */}
-            <div className="mt-4 pt-3 border-t border-gray-200 dark:border-gray-700">
-              <p className="text-xs text-gray-500 dark:text-gray-400 text-center">点击右下角按钮关闭</p>
+            <div className="mt-4 pt-3 border-t border-blue-200 dark:border-blue-800">
+              <p className="text-xs text-blue-600 dark:text-blue-400 text-center">点击右下角按钮关闭</p>
             </div>
           </Card>
         </div>

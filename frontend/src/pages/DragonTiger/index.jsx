@@ -137,7 +137,7 @@ function DragonTiger() {
   const filterStocks = (stocks, options) => {
     return stocks.filter(stock => {
       // 排除ST股票
-      if (options.excludeST && stock.name.startsWith("*ST")) {
+      if (options.excludeST && (stock.name.startsWith("*ST") || stock.name.startsWith("ST"))) {
         return false;
       }
 
